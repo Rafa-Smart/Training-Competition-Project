@@ -60,8 +60,8 @@ class Ball {
 
       // NAH SETELAH ITU KETIKA SI BOLANYA DIATAS DAN DY NYA ITU -50 DAN Y NYA ADALAH 400
       // MAKA LANJUT LAGI DIA AKN TERUS DI TAMBHA SI DY NYA SAMA SI 0.5 JADI 49.5 TERUS SI Y NYA AKN DI TAMBAH DARI ASALNYA 400 DI TAMBAH -49.5 MAKA JADI 350.5 DAN SI DY NYA JUGA AKN TERUS BERKURANG JADI 49 
-      this.dy *= -1;  
-      this.dx *=-1
+      this.dy *= -0.8;  
+      this.dx *= -0.7
     }
 
     // sekrang saya mau batasin dari bats kanan dankri
@@ -74,7 +74,8 @@ class Ball {
       this.x = canvas.width - this.width
       // nah ini tuh buat apa, biar posisinya dia langsng kaya berhenti tepat dititik ujung si bola yang nyentuh si dinding kanan yabaru
       // baru deh kita balikin si x nya pake kali biar dia kebalik lagi
-      this.dx *= -1
+      this.dx *= -0.8
+      this.dy *= -0.8
     }
 
     // gini juga kalo yang kiri berati kita pek x 0 karea paling kiri itu x nya 0
@@ -82,13 +83,14 @@ class Ball {
     if(this.x + this.width <= 0 ){
       this.x = 0 + this.width // biar dia ada di ujung kiri dan ga nembus tembok
       // lalu kita balikin pake -1 
-      this.dx *= -1
+      this.dx *= -0.8;this.dy *= 0.8
     }
 
     // gitu juga kalo yang keatas
     if(this.y - this.height <= 0){
       this.y = 0 + this.height
-      this.dy *= -1
+      this.dy *= -0.8
+      this.dx *= 0.8
     }
 
 
@@ -99,8 +101,8 @@ class Ball {
   }
 
   reset(canvas){
-    this.x = canvas.x/2 -this.width/2
-    this.y = canvas.y/2 -this.height/2
+    this.x = canvas.width/2 -this.width/2
+    this.y = canvas.height/2 -this.height/2
     this.dx = 0;
     this.dy = 0;
   }
