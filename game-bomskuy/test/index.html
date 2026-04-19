@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlindMaze</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      max-width: 1000px;
+      max-height: 600px;
+      border: 1px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 500px;
+      gap: 0.5rem;
+    }
+
+    form>* {
+      width: 100%;
+    }
+
+    .between {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    input,
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      color: white;
+    }
+
+    input {
+      background: transparent;
+      border: 1px solid white;
+    }
+
+    button {
+      background: blue;
+      cursor: pointer;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid white;
+      padding: 0.25rem 0.5rem;
+    }
+
+
+    a {
+      font-size: 0.75rem;
+      color: blue;
+    }
+
+    #instructions {
+      text-align: start;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: black;
+      border: 1px solid white;
+      transform: translate(-50%, -50%);
+      padding: 2rem;
+    }
+
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-weight: bold;
+      border: 1px solid white;
+      padding: 0.25rem;
+      cursor: pointer;
+    }
+
+    #game_screen {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: end;
+      align-items: center;
+      flex-direction: column;
+    }
+
+
+
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="menu_screen" class="row">
+      <div>
+        <h1 class="title">BlindMaze</h1>
+        <form action="">
+          <input type="text" id="name" required placeholder="Enter Name">
+          <button>Start</button>
+          <div class="between">
+            <a href="#" onclick="leaderboard.classList.toggle('hidden')">Leaderboard</a>
+            <a href="#" onclick="instructions.classList.toggle('hidden')">Show Instructions</a>
+          </div>
+        </form>
+      </div>
+      <div id="leaderboard" class="hidden" style="max-height: 400px;overflow-y:auto;">
+        <h2>Leaderboard</h2>
+        <table>
+          <thead>
+
+            <tr>
+              <td>#</td>
+              <td>Name</td>
+              <td>Stage</td>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+
+          </tbody>
+        </table>
+      </div>
+      <div id="instructions" class="hidden">
+        <h2>Instructions</h2>
+        <ol>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet consectetur adipisicing.</li>
+          <li>Lorem ipsum dolor sit amet consectetur.</li>
+          <li>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</li>
+          <li>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</li>
+        </ol>
+        <div class="close" onclick="instructions.classList.add('hidden')">&times;</div>
+      </div>
+    </div>
+    <div id="game_screen" class="hidden">
+      <h1>BlindMaze</h1>
+      <canvas id="canvas" height="500" width="400"></canvas>
+    </div>
+  </div>
+  <script>
+    function fetchLeaderboard() {
+      data = JSON.parse(localStorage.getItem('leaderboard') || '[]')
+      data = data.sort((a, b) => b.stage - a.stage)
+      tbody.innerHTML = ''
+      data.forEach((item, i) => {
+        tbody.innerHTML += `
+        <tr>
+        <td>${i + 1}</td>
+        <td>${item.name}</td>
+        <td>${item.stage}</td>
+      </tr>
+      `
+      })
+    }
+    fetchLeaderboard()
+    const ctx = canvas.getContext('2d')
+    const padTop = 100;
+    const size = 40;
+    class Game {
+      constructor(canvas, ctx) {
+        this.paused = false;
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.memorizingTime = 10;
+        this.timer = 20;
+        this.lives = 5;
+        this.round = 1;
+        this.hint = 1;
+        this.generateMap()
+        this.listener()
+        this.start(ctx)
+        this.render(ctx)
+
+      }
+      generateMap() {
+        // Initialize empty 10x10 board
+        this.board = Array(10).fill().map(() => Array(10).fill(0));
+
+        // Generate random start point on left column
+        const startY = Math.floor(Math.random() * 10);
+        this.board[startY][0] = 2; // 2 represents start/player position
+
+        // Generate random finish point on right column
+        const finishY = Math.floor(Math.random() * 10);
+        this.board[finishY][9] = 3; // 3 represents finish
+
+        // Generate random walls (1s) while ensuring path exists
+        for (let x = 1; x < 9; x++) {
+          for (let y = 0; y < 10; y++) {
+            // Add wall with 30% probability
+            if (Math.random() < 0.3) {
+              // Before adding wall, check if it blocks the only possible path
+              const tempBoard = this.board.map(row => [...row]);
+              tempBoard[y][x] = 1;
+
+              // Check if path exists using flood fill
+              if (this.hasPath(tempBoard, 0, startY, 9, finishY)) {
+                this.board[y][x] = 1;
+              }
+            }
+          }
+        }
+
+        // Set player position
+        this.player = new Player(0, startY);
+      }
+
+      // Helper method to check if path exists using flood fill
+      hasPath(board, startX, startY, targetX, targetY) {
+        const visited = Array(10).fill().map(() => Array(10).fill(false));
+
+        const floodFill = (x, y) => {
+          if (x < 0 || x >= 10 || y < 0 || y >= 10) return false;
+          if (visited[y][x]) return false;
+          if (board[y][x] === 1) return false;
+          if (x === targetX && y === targetY) return true;
+
+          visited[y][x] = true;
+
+          return floodFill(x + 1, y) ||
+            floodFill(x - 1, y) ||
+            floodFill(x, y + 1) ||
+            floodFill(x, y - 1);
+        };
+
+        return floodFill(startX, startY);
+      }
+      start(ctx) {
+        this.paused = false;
+        this.board.forEach((row, y) => {
+          row.forEach((cell, x) => {
+            if (cell == 2) {
+              this.player = new Player(x, y)
+            }
+          })
+        })
+        this.lastTime = performance.now()
+      }
+      update(ctx) {
+        const currentTime = performance.now();
+        this.deltaTime = (currentTime - this.lastTime) / 1000
+        this.lastTime = currentTime;
+
+        if (this.memorizingTime > 0) {
+          this.memorizingTime -= this.deltaTime
+        } else if (this.timer > 0) {
+          this.timer -= this.deltaTime
+        }
+
+        if (this.lives <= 0 || this.timer <= 0 && !this.paused) {
+          this.paused = true;
+          if (confirm(`Game Over!\nYour name: ${document.getElementById('name').value}\nStage:${this.round}\nSave score?`) == true) {
+            const rawData = JSON.parse(localStorage.getItem('leaderboard') || '[]')
+            rawData.push({ name: document.getElementById('name').value, stage: this.round })
+            localStorage.setItem('leaderboard', JSON.stringify(rawData));
+            game_screen.classList.add('hidden')
+            fetchLeaderboard()
+            menu_screen.classList.remove('hidden')
+          } else {
+            this.hint = 1;
+            this.timer = 20;
+            this.memorizingTime = 10;
+            this.lives = 5;
+            this.round = 1;
+            this.start(ctx)
+            this.generateMap()
+          }
+        }
+      }
+      render(ctx) {
+        this.update(ctx)
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        this.board.forEach((row, y) => {
+          row.forEach((cell, x) => {
+            ctx.fillStyle = 'silver'
+            ctx.strokeStyle = 'white'
+            if (cell == 1 && this.memorizingTime > 0) {
+              ctx.fillRect(x * size, y * size + padTop, size, size)
+            }
+            ctx.strokeRect(x * size, y * size + padTop, size, size)
+            if (cell == 3) {
+              ctx.fillStyle = 'yellow'
+              ctx.fillRect(x * size + 35, y * size + padTop, 5, size)
+            }
+          })
+        })
+        this.player.draw(ctx)
+        this.render_UI(ctx)
+
+        if (!this.paused) {
+          requestAnimationFrame(() => this.render(ctx))
+        }
+      }
+      render_UI(ctx) {
+        ctx.textAlign = 'start'
+        ctx.font = 'bold 16px Arial'
+        ctx.fillStyle = 'white'
+        ctx.fillText(`Round: ${this.round}`, 10, 90)
+        ctx.textAlign = 'center'
+        if (this.memorizingTime > 0) {
+
+          ctx.font = 'bold 16px Arial'
+          ctx.fillText(`Memorizing Time`, canvas.width / 2, 40)
+          ctx.font = 'bold 32px Arial'
+          ctx.fillText(`${Math.round(this.memorizingTime)}s`, canvas.width / 2, 80)
+        } else if (this.timer > 0) {
+          ctx.font = 'bold 16px Arial'
+          ctx.fillText(`Move Time!`, canvas.width / 2, 40)
+          ctx.font = 'bold 32px Arial'
+          ctx.fillText(`${Math.round(this.timer)}s`, canvas.width / 2, 80)
+          if (this.hint > 0) {
+            ctx.font = 'bold 16px Arial'
+            ctx.fillStyle = 'blue'
+            ctx.textAlign = 'start'
+            ctx.fillText('hint', canvas.width - 15 * 5, 95)
+          }
+
+        }
+        Array(5).fill('').forEach((live, x) => {
+          ctx.fillStyle = 'rgba(255,0,0,0.5)';
+          ctx.fillRect(canvas.width - 15 * 5 + x * 15, 70, 10, 10)
+        })
+        if (this.lives > 0) {
+
+          Array(this.lives).fill('').forEach((live, x) => {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(canvas.width - 15 * 5 + x * 15, 70, 10, 10)
+          })
+        }
+      }
+      listener() {
+        window.addEventListener('keydown', e => {
+          if (this.memorizingTime > 0) return;
+          if (e.code == 'ArrowRight') {
+            if (this.player.x + 1 < 10) this.player.x++
+          } else if (e.code == 'ArrowLeft') {
+            if (this.player.x - 1 >= 0) this.player.x--
+          } else if (e.code == 'ArrowUp') {
+            if (this.player.y - 1 >= 0) this.player.y--
+          } else if (e.code == 'ArrowDown') {
+            if (this.player.y + 1 < 10) this.player.y++
+          }
+          if (this.board[this.player.y][this.player.x] == 1 && !this.paused && this.lives > 0) {
+            this.lives--;
+            this.paused = true;
+            alert('You hit wall')
+            this.start(ctx)
+          }
+          if (this.board[this.player.y][this.player.x] == 3 && !this.paused) {
+            this.paused = true;
+            alert('Next Stage')
+            this.generateMap();
+            this.round++;
+            this.memorizingTime = 10
+            this.timer = 20
+            this.start(ctx)
+          }
+        })
+        canvas.addEventListener('click', (e) => {
+          const x = e.clientX - canvas.getBoundingClientRect().left
+          const y = e.clientY - canvas.getBoundingClientRect().top
+          if (this.memorizingTime > 0) return;
+          if (x > 320 && x < 350 && y > 80 && y < 100 && this.hint > 0) {
+            this.memorizingTime = 1;
+            this.hint--
+          }
+        })
+      }
+    }
+    class Player {
+      constructor(x, y) {
+        this.x = x
+        this.y = y
+        this.r = 15;
+        this.color = 'red'
+      }
+      draw(ctx) {
+        ctx.fillStyle = this.color
+        ctx.beginPath()
+        const x = this.x * size + size / 2;
+        const y = this.y * size + padTop + size / 2;
+        ctx.arc(x, y, this.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+    function main() {
+      game = new Game(canvas, ctx);
+    }
+    document.querySelector('form').addEventListener('submit', (e) => {
+      e.preventDefault()
+      game_screne.classList.remove('hidden')
+      menu_screen.classList.add('hidden')
+      main()
+    })
+  </script>
+</body>
+
+</html>

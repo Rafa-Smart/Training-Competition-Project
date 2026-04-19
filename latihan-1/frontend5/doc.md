@@ -1,0 +1,1 @@
+npm install bootstrap bootstrap-icons react-router react-router-dom sweetalert2 axios
