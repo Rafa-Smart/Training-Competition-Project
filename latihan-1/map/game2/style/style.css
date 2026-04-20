@@ -1,0 +1,363 @@
+/* ============================================ */
+/* RESET & BASE                                 */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #C8EBFF;
+}
+
+/* ============================================ */
+/* PANEL CARI RUTE (sidebar kiri)               */
+/* Selalu tampil di sisi kiri viewport          */
+/* ============================================ */
+#route-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: #fff;
+    z-index: 200;
+    padding: 20px 16px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.12);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#route-panel h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+/* Grup input (icon + text field) */
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.input-group img {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* Tombol Search */
+#btn-search {
+    width: 100%;
+    padding: 10px;
+    background: #7B2FF2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#btn-search:hover:not(:disabled) {
+    background: #6320d0;
+}
+
+#btn-search:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Tombol sort: Fastest / Cheapest */
+#sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+#sort-controls.hidden {
+    display: none;
+}
+
+.sort-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #888;
+    text-decoration: underline;
+    padding: 2px 6px;
+}
+
+.sort-btn.active {
+    color: #7B2FF2;
+    font-weight: 700;
+}
+
+/* Hasil pencarian rute */
+#route-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.route-card {
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.route-card h3 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.route-card .steps {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.route-card .info {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #444;
+}
+
+/* ============================================ */
+/* AREA PETA                                    */
+/* Tempat peta interaktif (zoom & pan)          */
+/* ============================================ */
+#map-area {
+    position: fixed;
+    left: 280px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background: #C8EBFF;
+    cursor: grab;
+}
+
+#map-area.dragging {
+    cursor: grabbing;
+}
+
+/* Container yang di-transform (zoom + pan) */
+#map-container {
+    position: absolute;
+    transform-origin: 0 0;
+}
+
+/* Gambar peta */
+#map-img {
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Layer SVG garis koneksi */
+#lines-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none; /* Klik garis dihandle via JS, bukan SVG */
+}
+
+/* Garis terlihat */
+#lines-layer .line-visible {
+    stroke-width: 3;
+    fill: none;
+}
+
+/* Garis yang sedang dipilih (glow kuning) */
+#lines-layer .line-visible.selected {
+    stroke-width: 5;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 0, 0.8));
+}
+
+/* Teks jarak di tengah garis */
+#lines-layer text {
+    font-size: 11px;
+    font-weight: 700;
+    user-select: none;
+}
+
+/* Layer pinpoint */
+#pinpoints-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Layer tembus klik */
+}
+
+/* ============================================ */
+/* PINPOINT                                     */
+/* Marker lokasi dengan label & tombol          */
+/* ============================================ */
+.pinpoint {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: auto; /* Pinpoint bisa diklik */
+}
+
+/* Label: kotak putih berisi nama + tombol */
+.pinpoint-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1.5px solid #333;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-bottom: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    user-select: none;
+}
+
+/* Glow saat mode connecting */
+.pinpoint-label.connecting {
+    border-color: #7B2FF2;
+    background: #EDE7F6;
+    box-shadow: 0 0 8px rgba(123, 47, 242, 0.5);
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 4px rgba(123, 47, 242, 0.4); }
+    to   { box-shadow: 0 0 14px rgba(123, 47, 242, 0.9); }
+}
+
+/* Tombol icon di label (connect & delete) */
+.pinpoint-label .btn-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+}
+
+.pinpoint-label .btn-icon:hover {
+    opacity: 1;
+}
+
+/* Icon pin merah */
+.pinpoint-marker {
+    width: 36px;
+    height: 36px;
+}
+
+.pinpoint-marker svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================ */
+/* POPUP (Add Pinpoint & Connect)               */
+/* ============================================ */
+.popup {
+    position: fixed;
+    z-index: 300;
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid #ddd;
+    min-width: 200px;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.popup-close {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+}
+
+.popup-close:hover {
+    opacity: 1;
+}
+
+.popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup input,
+.popup select {
+    padding: 8px 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+}
+
+.popup input:focus,
+.popup select:focus {
+    border-color: #7B2FF2;
+}
+
+.popup button[type="submit"] {
+    padding: 8px;
+    background: #7B2FF2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.popup button[type="submit"]:hover {
+    background: #6320d0;
+}

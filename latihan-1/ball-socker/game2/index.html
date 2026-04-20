@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ball Soccer</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="home-screen">
+        <h1>game soccer</h1>
+        <form action="" method="post">
+          <div class="from-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" />
+          </div>
+          <div class="characters">
+            <div class="form-group">
+              <label for="player1">Player 1</label>
+              <select name="player1" id="player1">
+                <option value="">Select Player</option>
+                <option value="Brazil">Brazil</option>
+                <option value="England">England</option>
+                <option value="Spain">Spain</option>
+                <option value="Japan">Japan</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Germany">Germany</option>
+                <option value="Italy">Italy</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="player1">Player 1</label>
+              <select name="player1" id="player1">
+                <option value="">Select Player</option>
+                <option value="Brazil">Brazil</option>
+                <option value="England">England</option>
+                <option value="Spain">Spain</option>
+                <option value="Japan">Japan</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Germany">Germany</option>
+                <option value="Italy">Italy</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ball">Choose ball</label>
+            <select name="ball" id="ball">
+              <option value="01">Ball 01</option>
+              <option value="02">Ball 02</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            onclick="
+              {
+                window.location.href = 'http://localhost:5500/screen/game.html';
+              }
+            "
+          >
+            Play
+          </button>
+          <label for="player2">Player 2</label>
+        </form>
+      </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+  </body>
+</html>
