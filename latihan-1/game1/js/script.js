@@ -66,8 +66,8 @@ class Game {
   }
 
   drawPlayers() {
-    this.player1.draw(ctx);
-    this.player2.draw(ctx);
+    this.player1.draw(ctx, false);
+    this.player2.draw(ctx, true);
   }
   drawBall() {
     this.ball.draw(ctx);
@@ -133,6 +133,11 @@ class Game {
 
       // kalo semua terpenuhi artinya bola overlap
     ) {
+
+      // nah ini seklaian biar pas dia kick itu kita kasih animasi
+      player.kick()
+
+
       // dan di cek aja sekarnag apakah lebih condong ke kanan apa kekiri
       //  arah horizontal (biar natural)
       // kalo lebih kecil / - berati kan contong ke kiri dn kalo conodng ke kanan / +  allu akli 0.5
