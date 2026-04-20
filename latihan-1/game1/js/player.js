@@ -46,9 +46,9 @@ class Player {
       // bair ga ilang context this nya
       ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
-  }
-
-  update() {
+  } 
+ 
+  update() { 
     // nah jadi kalo gini tuh artina si x akan selalu berubah berdasarkan dari perubahan si dx nya, begitu pula yang y dan dy
 
     // ssebenerya bisa gini ya

@@ -136,6 +136,11 @@ class Game {
       // dan di cek aja sekarnag apakah lebih condong ke kanan apa kekiri
       //  arah horizontal (biar natural)
       // kalo lebih kecil / - berati kan contong ke kiri dn kalo conodng ke kanan / +  allu akli 0.5
+
+      // nah jadi kallo si titik x dari ball lebih kecil, artinyakan lagi ada di kiri\
+      // da di kali dnenga 0.5 maka akan minus
+      // nah tapi kalo si titik x dari ball lebih besar artinya kan lagi di kanan
+      // dan kalo di kali dnegna 0.5 maka akan jadi plus
       ball.dx = (ball.x - player.x) * 0.05;
 
       //  sundul ke atas

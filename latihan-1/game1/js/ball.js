@@ -6,7 +6,7 @@ class Ball {
     // disni juga si bolahnya kita kasih dy dna dx
     this.dx = 0;
     this.dy = 0;
-    this.gravity = 0.5
+    this.gravity = 0.5;
     this.width = 50;
     this.height = 50;
     this.image = loadImage("../assets/Ball 02.png");
@@ -60,19 +60,21 @@ class Ball {
 
       // NAH SETELAH ITU KETIKA SI BOLANYA DIATAS DAN DY NYA ITU -50 DAN Y NYA ADALAH 400
       // MAKA LANJUT LAGI DIA AKN TERUS DI TAMBHA SI DY NYA SAMA SI 0.5 JADI 49.5 TERUS SI Y NYA AKN DI TAMBAH DARI ASALNYA 400 DI TAMBAH -49.5 MAKA JADI 350.5 DAN SI DY NYA JUGA AKN TERUS BERKURANG JADI 49 
-      this.dy *= -0.8;  
-      this.dx *= -0.7
-    }
 
-    // sekrang saya mau batasin dari bats kanan dankri
+      // ini yang bekin mantul 
+      this.dy *= -0.8;   
+      this.dx *= -0.7 
+    } 
+
+    // sekrang saya mau batasin dari bats kanan dankri 
 
     // batas kanan 
-    // jadi kita cek kalo misalnya si bola ya inagt ini ita tambahin lagi pake widthnya biar ps ke ujung bola
+    // jadi kita cek kalo misalnya si bola ya inagt ini ita tambahin lagi pake widthnya biar ps ke ujung bola 
     if(this.x + this.width >= canvas.width)
     {
       // sudah sampai ke titik paling kanan maka di panulin algi 
-      this.x = canvas.width - this.width
       // nah ini tuh buat apa, biar posisinya dia langsng kaya berhenti tepat dititik ujung si bola yang nyentuh si dinding kanan yabaru
+      this.x = canvas.width - this.width
       // baru deh kita balikin si x nya pake kali biar dia kebalik lagi
       this.dx *= -0.8
       this.dy *= -0.8
