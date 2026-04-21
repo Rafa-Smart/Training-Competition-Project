@@ -20,7 +20,7 @@ class MapView {
         this.oy = (ah - h * this.scale) / 2;
     }
 
-    // Terapkan posisi & zoom ke CSS renderPins
+    // Terapkan posisi & zoom ke CSS
     applyTransform(w, h) {
         this.container.style.transform = `translate(${this.ox}px,${this.oy}px) scale(${this.scale})`;
         this.linesEl.setAttribute('width', w);

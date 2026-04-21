@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Peta Indonesia Interaktif - Pencari Rute</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* mencegah highlight teks saat drag */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a2a32;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR (Find Route) - selalu di kiri */
+        .sidebar {
+            width: 320px;
+            background: rgba(30, 40, 50, 0.95);
+            backdrop-filter: blur(8px);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+            gap: 18px;
+            border-right: 2px solid #2c4c6c;
+            z-index: 20;
+            overflow-y: auto;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h3 {
+            font-size: 1.5rem;
+            border-left: 5px solid #ff9800;
+            padding-left: 12px;
+            margin-bottom: 8px;
+        }
+
+        .route-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .route-input-group input {
+            padding: 10px 12px;
+            border-radius: 24px;
+            border: none;
+            background: #2a3a44;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .route-input-group input:focus {
+            background: #1f2e38;
+            box-shadow: 0 0 0 2px #ff9800;
+        }
+
+        .route-options {
+            display: flex;
+            gap: 20px;
+            margin: 8px 0;
+            justify-content: center;
+        }
+
+        .route-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #1e3a4a;
+            padding: 6px 14px;
+            border-radius: 32px;
+        }
+
+        button {
+            background: #ff9800;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+
+        button:disabled {
+            background: #5a626e;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .route-results {
+            background: #0f1a1f;
+            border-radius: 20px;
+            padding: 12px;
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-top: 8px;
+        }
+
+        .route-card {
+            background: #1e2e38;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 6px solid #ff9800;
+            font-size: 0.85rem;
+        }
+
+        .route-card strong {
+            color: #ffb347;
+        }
+
+        /* Container peta + canvas overlay */
+        .map-container {
+            flex: 1;
+            position: relative;
+            background: #0a2f3a;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .map-container:active {
+            cursor: grabbing;
+        }
+
+        .map-svg-layer,
+        .map-canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* biar canvas tidak mengganggu klik SVG */
+        }
+
+        .map-svg-layer svg {
+            width: 100%;
+            height: 100%;
+            pointer-events: auto; /* SVG bisa menerima event double-click dll */
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* garis dan pin digambar di canvas, tapi interaksi tetap lewat SVG */
+        }
+
+        /* Tooltip / popup custom untuk tambah titik */
+        .custom-popup {
+            position: absolute;
+            background: #1e2a32;
+            border-radius: 24px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 200;
+            display: flex;
+            gap: 10px;
+            border: 1px solid #ff9800;
+            backdrop-filter: blur(4px);
+        }
+
+        .custom-popup input {
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: none;
+            background: #2e3e48;
+            color: white;
+        }
+
+        .custom-popup button {
+            padding: 6px 14px;
+            background: #ff9800;
+        }
+
+        /* info kecil */
+        .info-status {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+            z-index: 25;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h3>🗺️ FIND RUTE</h3>
+    <div class="route-input-group">
+        <input type="text" id="fromInput" placeholder="Dari titik (contoh: Jakarta)" autocomplete="off">
+        <input type="text" id="toInput" placeholder="Ke titik (contoh: Surabaya)" autocomplete="off">
+    </div>
+    <div class="route-options">
+        <label><input type="radio" name="routeOpt" value="fastest" checked> ⚡ Tercepat</label>
+        <label><input type="radio" name="routeOpt" value="cheapest"> 💰 Termurah</label>
+    </div>
+    <button id="searchBtn" disabled>Cari Rute</button>
+    <div class="route-results" id="routeResults">
+        <div style="text-align:center; opacity:0.7;">🔍 Hasil rute akan muncul di sini</div>
+    </div>
+    <div style="font-size:12px; margin-top:auto; text-align:center; opacity:0.6;">
+        💡 Double-klik peta ➕ tambah titik<br>
+        🖱️ Klik ikon 🔗 lalu pilih titik tujuan → isi jarak & moda
+    </div>
+</div>
+
+<div class="map-container" id="mapContainer">
+    <div class="map-svg-layer" id="svgLayer">
+        <!-- SVG PETA INDONESIA (Contoh sederhana dengan pulau-pulau utama) -->
+        <svg id="indonesiaMap" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+            <rect width="1200" height="800" fill="#cfe8fc" />
+            <!-- Sumatera -->
+            <path d="M200,300 L240,250 L300,240 L340,270 L330,340 L280,400 L220,420 L190,380 L180,330 Z" fill="#a5d6a5" stroke="#2e6b2e" stroke-width="2"/>
+            <!-- Jawa -->
+            <path d="M380,420 L440,410 L510,430 L580,460 L560,500 L480,500 L400,480 L370,450 Z" fill="#9ccc65" stroke="#2e6b2e" stroke-width="2"/>
+            <!-- Kalimantan -->
+            <path d="M480,180 L620,150 L720,190 L700,280 L580,300 L460,260 Z" fill="#81c784" stroke="#2e6b2e" stroke-width="2"/>
+            <!-- Sulawesi -->
+            <path d="M760,320 L820,280 L880,320 L860,400 L800,440 L750,390 Z" fill="#66bb6a" stroke="#2e6b2e" stroke-width="2"/>
+            <!-- Papua -->
+            <path d="M920,380 L1050,340 L1100,400 L1080,480 L1000,500 L930,460 Z" fill="#4caf50" stroke="#2e6b2e" stroke-width="2"/>
+            <!-- Kepulauan kecil tambahan -->
+            <circle cx="340" cy="500" r="15" fill="#b9f6ca" stroke="#2e6b2e" stroke-width="1.5"/>
+            <circle cx="860" cy="240" r="12" fill="#b9f6ca" stroke="#2e6b2e"/>
+        </svg>
+    </div>
+    <canvas id="overlayCanvas" class="map-canvas-layer"></canvas>
+    <div class="info-status" id="statusMsg">✅ Siap | Klik Connect lalu pilih tujuan</div>
+</div>
+
+<script>
+    // ========================== MODUL UTAMA ==========================
+    // 1. Data & Storage (pinpoints, edges)
+    // 2. Renderer Canvas (garis, marker, teks jarak)
+    // 3. Pan & Zoom Interaksi
+    // 4. Pinpoint & Koneksi (Connect, Delete, popup)
+    // 5. Algoritma Pencarian Rute (Yen's K-shortest path dengan weight custom)
+    // ==================================================================
+
+    (function(){
+        // --------------------- GLOBAL STATE -------------------------
+        let pinpoints = [];      // { id, name, x, y (dalam koordinat viewBox SVG 1200x800) }
+        let edges = [];          // { id, fromId, toId, distanceKm, mode, color, speedKmh, costPerKm }
+        let nextId = 1;
+        
+        // State untuk mode connecting
+        let connectingMode = false;
+        let connectingFromId = null;
+        
+        // Pan & Zoom state
+        let scale = 1;
+        let translateX = 0, translateY = 0;
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let lastTranslate = { x: 0, y: 0 };
+        
+        // DOM Elements
+        const svgElement = document.getElementById('indonesiaMap');
+        const canvas = document.getElementById('overlayCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('mapContainer');
+        const fromInput = document.getElementById('fromInput');
+        const toInput = document.getElementById('toInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const routeResultsDiv = document.getElementById('routeResults');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        // Helper: menyimpan ke localStorage
+        function saveData() {
+            const dataToStore = {
+                pinpoints: pinpoints.map(p => ({ id: p.id, name: p.name, x: p.x, y: p.y })),
+                edges: edges,
+                nextId: nextId
+            };
+            localStorage.setItem('indonesiaMapData', JSON.stringify(dataToStore));
+        }
+        
+        // Load dari localStorage
+        function loadData() {
+            const raw = localStorage.getItem('indonesiaMapData');
+            if(!raw) return;
+            try {
+                const data = JSON.parse(raw);
+                pinpoints = data.pinpoints || [];
+                edges = data.edges || [];
+                nextId = data.nextId || 1;
+                // pastikan setiap pinpoint punya id, x, y
+                renderCanvas(); // gambar ulang
+                updateSidebarDropdownHints(); // update autocomplete
+            } catch(e) { console.warn(e); }
+        }
+        
+        // update placeholder/hints untuk input (biar user tahu nama titik)
+        function updateSidebarDropdownHints() {
+            // kita pakai datalist? tapi cukup validasi exist
+            // tidak perlu dropdown otomatis, cuma validasi ketika mengetik
+            validateRouteInputs();
+        }
+        
+        // Validasi apakah from dan to ada di pinpoints
+        function validateRouteInputs() {
+            const fromName = fromInput.value.trim();
+            const toName = toInput.value.trim();
+            const fromExist = pinpoints.some(p => p.name === fromName);
+            const toExist = pinpoints.some(p => p.name === toName);
+            const valid = fromExist && toExist && fromName !== toName;
+            searchBtn.disabled = !valid;
+            if(!valid && (fromName !== "" || toName !== "")) {
+                statusMsg.innerText = "⚠️ Nama titik tidak valid atau sama";
+                setTimeout(()=>{ if(statusMsg.innerText.includes("tidak valid")) statusMsg.innerText = "✅ Siap"; },1500);
+            }
+        }
+        
+        fromInput.addEventListener('input', validateRouteInputs);
+        toInput.addEventListener('input', validateRouteInputs);
+        
+        // Fungsi mendapatkan nodeId dari nama
+        function getPinpointIdByName(name) {
+            const p = pinpoints.find(p => p.name === name);
+            return p ? p.id : null;
+        }
+        
+        // ------------------- RENDER CANVAS (garis + marker + teks jarak) -----------------
+        function transformPoint(x, y) {
+            // Koordinat viewBox (0-1200,0-800) -> ke layar dengan scale & translate
+            const screenX = x * scale + translateX;
+            const screenY = y * scale + translateY;
+            return { x: screenX, y: screenY };
+        }
+        
+        function drawArrowHead(from, to, color) {
+            // tidak wajib, tapi untuk estetika garis berarah? PDF tidak perlu arrow, tapi lebih rapi
+        }
+        
+        function renderCanvas() {
+            if(!ctx) return;
+            // sesuaikan ukuran canvas dengan container
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(!pinpoints.length) return;
+            
+            // Gambar edges terlebih dahulu (garis)
+            for(let edge of edges) {
+                const fromNode = pinpoints.find(p => p.id === edge.fromId);
+                const toNode = pinpoints.find(p => p.id === edge.toId);
+                if(!fromNode || !toNode) continue;
+                const p1 = transformPoint(fromNode.x, fromNode.y);
+                const p2 = transformPoint(toNode.x, toNode.y);
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.strokeStyle = edge.color;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                // Gambar teks jarak di tengah garis
+                const midX = (p1.x + p2.x) / 2;
+                const midY = (p1.y + p2.y) / 2;
+                ctx.font = "bold 16px 'Segoe UI'";
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "white";
+                ctx.shadowColor = "black";
+                ctx.shadowBlur = 3;
+                ctx.fillText(`${edge.distanceKm} km`, midX-20, midY-8);
+                ctx.fillStyle = "#ffcc00";
+                ctx.font = "bold 14px monospace";
+                ctx.fillText(edge.mode.charAt(0).toUpperCase(), midX+10, midY+5);
+                ctx.shadowBlur = 0;
+            }
+            
+            // Gambar marker pin (lingkaran merah + teks nama)
+            for(let p of pinpoints) {
+                const pos = transformPoint(p.x, p.y);
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 12, 0, 2*Math.PI);
+                ctx.fillStyle = "#e34234";
+                ctx.shadowBlur = 4;
+                ctx.fill();
+                ctx.fillStyle = "white";
+                ctx.font = "bold 14px sans-serif";
+                ctx.shadowBlur = 2;
+                ctx.fillText(p.name, pos.x+14, pos.y-6);
+                // Tombol kecil (connect & delete) akan dibuat dalam bentuk HTML diatas? Karena canvas tidak bisa klik.
+                // Untuk interaksi, kita gunakan SVG overlay element? Lebih mudah buat HTML floating? Tidak.
+                // Spesifikasi: setiap pinpoint harus punya tombol connect dan delete. Karena canvas hanya gambar, 
+                // kita buat panel kecil saat klik pada pinpoint? Atau buat div melayang? Solusi: ketika klik pada pinpoint (deteksi koordinat),
+                // tampilkan popup dengan tombol. Lebih user friendly.
+                // Kita akan implementasikan event listener klik pada container, konversi ke koordinat viewBox, cari pinpoint terdekat.
+            }
+            ctx.shadowBlur = 0;
+        }
+        
+        // Detect pinpoint terdekat dari koordinat layar (untuk koneksi & delete)
+        function findPinpointAtScreen(screenX, screenY) {
+            let minDist = 20; // radius deteksi
+            let found = null;
+            for(let p of pinpoints) {
+                const pos = transformPoint(p.x, p.y);
+                const dx = pos.x - screenX;
+                const dy = pos.y - screenY;
+                const dist = Math.hypot(dx, dy);
+                if(dist < minDist) {
+                    minDist = dist;
+                    found = p;
+                }
+            }
+            return found;
+        }
+        
+        // Menampilkan popup connect / delete
+        function showPinpointActions(pinpoint, eventX, eventY) {
+            // buat div kecil
+            const existing = document.querySelector('.pinpoint-actions');
+            if(existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = 'pinpoint-actions';
+            div.style.position = 'absolute';
+            div.style.left = `${eventX}px`;
+            div.style.top = `${eventY-40}px`;
+            div.style.backgroundColor = '#1e2e38';
+            div.style.borderRadius = '32px';
+            div.style.padding = '8px 12px';
+            div.style.display = 'flex';
+            div.style.gap = '12px';
+            div.style.zIndex = '300';
+            div.style.boxShadow = '0 2px 12px black';
+            const btnConnect = document.createElement('button');
+            btnConnect.innerText = '🔗 Connect';
+            btnConnect.style.background = '#2c7a47';
+            const btnDelete = document.createElement('button');
+            btnDelete.innerText = '🗑️ Delete';
+            btnDelete.style.background = '#b33';
+            div.appendChild(btnConnect);
+            div.appendChild(btnDelete);
+            document.body.appendChild(div);
+            
+            // Hapus jika klik di luar
+            const removePopup = () => div.remove();
+            btnConnect.onclick = (e) => {
+                e.stopPropagation();
+                if(connectingMode) {
+                    statusMsg.innerText = '❌ Batalkan koneksi sebelumnya';
+                    connectingMode = false;
+                    connectingFromId = null;
+                }
+                connectingMode = true;
+                connectingFromId = pinpoint.id;
+                statusMsg.innerText = `🔗 Mode Connect: klik pada titik tujuan (${pinpoint.name} -> ?)`;
+                div.remove();
+            };
+            btnDelete.onclick = (e) => {
+                e.stopPropagation();
+                if(confirm(`Hapus titik "${pinpoint.name}" dan semua koneksinya?`)) {
+                    // hapus edges yang terlibat
+                    edges = edges.filter(e => e.fromId !== pinpoint.id && e.toId !== pinpoint.id);
+                    pinpoints = pinpoints.filter(p => p.id !== pinpoint.id);
+                    if(connectingFromId === pinpoint.id) connectingMode = false;
+                    saveData();
+                    renderCanvas();
+                    updateSidebarDropdownHints();
+                    statusMsg.innerText = `🗑️ Titik ${pinpoint.name} dihapus`;
+                }
+                div.remove();
+            };
+            setTimeout(() => {
+                document.addEventListener('click', function once(e) {
+                    if(!div.contains(e.target)) div.remove();
+                    document.removeEventListener('click', once);
+                });
+            }, 10);
+        }
+        
+        // Event klik pada SVG (deteksi pinpoint untuk action)
+        svgElement.addEventListener('click', (e) => {
+            // cari koordinat relatif terhadap container map
+            const rect = container.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            const pinpointClicked = findPinpointAtScreen(clickX, clickY);
+            if(pinpointClicked) {
+                e.stopPropagation();
+                showPinpointActions(pinpointClicked, e.clientX, e.clientY);
+            } else {
+                // jika mode connecting aktif dan tidak klik titik, batalkan?
+                if(connectingMode) {
+                    statusMsg.innerText = 'Mode Connect dibatalkan (klik di luar)';
+                    connectingMode = false;
+                    connectingFromId = null;
+                }
+                // tutup action popup jika ada
+                const act = document.querySelector('.pinpoint-actions');
+                if(act) act.remove();
+            }
+        });
+        
+        // Fungsi untuk membuat koneksi (setelah mode connecting lalu klik target)
+        svgElement.addEventListener('click', async (e) => {
+            if(!connectingMode || connectingFromId === null) return;
+            const rect = container.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            const targetPin = findPinpointAtScreen(clickX, clickY);
+            if(targetPin && targetPin.id !== connectingFromId) {
+                // tampilkan form popup untuk jarak & moda
+                e.stopPropagation();
+                const fromPoint = pinpoints.find(p=>p.id===connectingFromId);
+                const toPoint = targetPin;
+                const popupDiv = document.createElement('div');
+                popupDiv.className = 'custom-popup';
+                popupDiv.style.left = `${e.clientX}px`;
+                popupDiv.style.top = `${e.clientY-60}px`;
+                popupDiv.innerHTML = `
+                    <input type="number" id="distKm" placeholder="Jarak (km)" step="1" required style="width:100px">
+                    <select id="modeSelect">
+                        <option value="Train">🚆 Kereta Api</option>
+                        <option value="Bus">🚌 Bus</option>
+                        <option value="Airplane">✈️ Pesawat</option>
+                    </select>
+                    <button id="confirmConnect">Hubungkan</button>
+                `;
+                document.body.appendChild(popupDiv);
+                const confirmBtn = popupDiv.querySelector('#confirmConnect');
+                confirmBtn.onclick = () => {
+                    const distance = parseFloat(popupDiv.querySelector('#distKm').value);
+                    const mode = popupDiv.querySelector('#modeSelect').value;
+                    if(isNaN(distance) || distance <=0) {
+                        alert("Masukkan jarak valid (km)");
+                        return;
+                    }
+                    let modeData = {};
+                    if(mode === 'Train') modeData = {color:"#33E339", speed:120, costPerKm:500};
+                    else if(mode === 'Bus') modeData = {color:"#A83BE8", speed:80, costPerKm:100};
+                    else modeData = {color:"#000000", speed:800, costPerKm:1000};
+                    
+                    const newEdge = {
+                        id: Date.now() + Math.random(),
+                        fromId: connectingFromId,
+                        toId: targetPin.id,
+                        distanceKm: distance,
+                        mode: mode,
+                        color: modeData.color,
+                        speedKmh: modeData.speed,
+                        costPerKm: modeData.costPerKm
+                    };
+                    edges.push(newEdge);
+                    saveData();
+                    renderCanvas();
+                    statusMsg.innerText = `✅ Koneksi ${fromPoint.name} → ${toPoint.name} (${mode}, ${distance}km)`;
+                    connectingMode = false;
+                    connectingFromId = null;
+                    popupDiv.remove();
+                    updateSidebarDropdownHints();
+                };
+                setTimeout(()=>{
+                    document.addEventListener('click', function rm(e){
+                        if(!popupDiv.contains(e.target)) popupDiv.remove();
+                        document.removeEventListener('click', rm);
+                    });
+                },50);
+            }
+            connectingMode = false; // setelah klik atau gagal, nonaktifkan mode
+            connectingFromId = null;
+        });
+        
+        // DOUBLE CLICK: Tambah pinpoint
+        svgElement.addEventListener('dblclick', (e) => {
+            const rect = container.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            // konversi layar ke viewBox (inverse transform)
+            const viewBoxX = (clickX - translateX) / scale;
+            const viewBoxY = (clickY - translateY) / scale;
+            if(viewBoxX >=0 && viewBoxX <=1200 && viewBoxY>=0 && viewBoxY<=800) {
+                const popup = document.createElement('div');
+                popup.className = 'custom-popup';
+                popup.style.left = `${e.clientX}px`;
+                popup.style.top = `${e.clientY-50}px`;
+                popup.innerHTML = `<input type="text" id="pinName" placeholder="Nama lokasi" autocomplete="off"><button id="savePin">Tambah</button>`;
+                document.body.appendChild(popup);
+                const saveBtn = popup.querySelector('#savePin');
+                const inputName = popup.querySelector('#pinName');
+                saveBtn.onclick = () => {
+                    const name = inputName.value.trim();
+                    if(name === "") { alert("Nama tidak boleh kosong"); return; }
+                    if(pinpoints.some(p=>p.name===name)) { alert("Nama sudah ada!"); return; }
+                    const newPin = { id: nextId++, name: name, x: viewBoxX, y: viewBoxY };
+                    pinpoints.push(newPin);
+                    saveData();
+                    renderCanvas();
+                    updateSidebarDropdownHints();
+                    popup.remove();
+                    statusMsg.innerText = `📍 Titik "${name}" ditambahkan`;
+                };
+                setTimeout(()=>{
+                    document.addEventListener('click', function rem(e) { if(!popup.contains(e.target)) popup.remove(); document.removeEventListener('click', rem);});
+                },20);
+            }
+        });
+        
+        // --------------------- PAN & ZOOM (CTRL + scroll/ CTRL +/-) --------------------
+        function updateTransform() {
+            const svgGroup = svgElement; // langsung set transform style pada container svg? lebih mudah set pada layer
+            const layerDiv = document.getElementById('svgLayer');
+            layerDiv.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            layerDiv.style.transformOrigin = "0 0";
+            const canvasLayer = document.querySelector('.map-canvas-layer');
+            canvasLayer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            canvasLayer.style.transformOrigin = "0 0";
+            renderCanvas(); // redraw ulang garis & marker sesuai transformasi
+        }
+        
+        container.addEventListener('wheel', (e) => {
+            if(e.ctrlKey) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.min(Math.max(scale * delta, 0.5), 4);
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                const beforeX = (mouseX - translateX) / scale;
+                const beforeY = (mouseY - translateY) / scale;
+                scale = newScale;
+                translateX = mouseX - beforeX * scale;
+                translateY = mouseY - beforeY * scale;
+                updateTransform();
+            }
+        });
+        
+        // Drag untuk pan
+        container.addEventListener('mousedown', (e) => {
+            if(e.button === 0) {
+                isDragging = true;
+                dragStart = { x: e.clientX, y: e.clientY };
+                lastTranslate = { x: translateX, y: translateY };
+                container.style.cursor = 'grabbing';
+            }
+        });
+        window.addEventListener('mousemove', (e) => {
+            if(!isDragging) return;
+            const dx = e.clientX - dragStart.x;
+            const dy = e.clientY - dragStart.y;
+            translateX = lastTranslate.x + dx;
+            translateY = lastTranslate.y + dy;
+            updateTransform();
+        });
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        });
+        
+        // CTRL + / - keyboard
+        window.addEventListener('keydown', (e) => {
+            if(e.ctrlKey && (e.key === '+' || e.key === '=')) {
+                e.preventDefault();
+                scale = Math.min(scale * 1.1, 4);
+                updateTransform();
+            } else if(e.ctrlKey && e.key === '-') {
+                e.preventDefault();
+                scale = Math.max(scale * 0.9, 0.5);
+                updateTransform();
+            }
+        });
+        
+        // --------------- ALGORITMA PENCARIAN RUTE (YEN's K-SHORTEST PATHS) --------------
+        function getNeighbors(nodeId) {
+            const neighbors = [];
+            for(let edge of edges) {
+                if(edge.fromId === nodeId) neighbors.push({toId: edge.toId, edge: edge});
+                if(edge.toId === nodeId) neighbors.push({toId: edge.fromId, edge: edge}); // graf tak berarah
+            }
+            return neighbors;
+        }
+        
+        function computeWeight(edge, modeType) { // modeType: 'fastest' (duration) atau 'cheapest'
+            if(modeType === 'fastest') return edge.distanceKm / edge.speedKmh; // jam
+            else return edge.distanceKm * edge.costPerKm; // rupiah
+        }
+        
+        // Dijkstra untuk shortest path weight
+        function dijkstra(startId, endId, weightType) {
+            const dist = new Map();
+            const prev = new Map();
+            const visited = new Set();
+            const nodesQueue = [];
+            for(let p of pinpoints) dist.set(p.id, Infinity);
+            dist.set(startId, 0);
+            nodesQueue.push({id: startId, dist:0});
+            while(nodesQueue.length) {
+                nodesQueue.sort((a,b)=>a.dist-b.dist);
+                const {id: current} = nodesQueue.shift();
+                if(visited.has(current)) continue;
+                visited.add(current);
+                if(current === endId) break;
+                const neighbors = getNeighbors(current);
+                for(let {toId, edge} of neighbors) {
+                    const w = computeWeight(edge, weightType);
+                    const newDist = dist.get(current) + w;
+                    if(newDist < dist.get(toId)) {
+                        dist.set(toId, newDist);
+                        prev.set(toId, {node: current, edgeUsed: edge});
+                        nodesQueue.push({id: toId, dist: newDist});
+                    }
+                }
+            }
+            if(dist.get(endId) === Infinity) return null;
+            // rebuild path
+            let path = [];
+            let cur = endId;
+            while(cur !== startId) {
+                const step = prev.get(cur);
+                if(!step) break;
+                path.unshift({from: step.node, to: cur, edge: step.edgeUsed});
+                cur = step.node;
+            }
+            return { pathEdges: path, totalWeight: dist.get(endId) };
+        }
+        
+        // K-Shortest Paths (Yen) sederhana, hingga 10
+        function kShortestPaths(startId, endId, weightType, K=10) {
+            // A* / Yen, implementasi praktis: kita cari dengan pendekatan path enumeration limited
+            let shortest = dijkstra(startId, endId, weightType);
+            if(!shortest) return [];
+            let A = [shortest]; // list of {pathEdges, totalWeight}
+            let B = []; // kandidat
+            for(let k=1; k<K; k++) {
+                let prevPath = A[k-1];
+                for(let i=0; i<prevPath.pathEdges.length; i++) {
+                    let spurNode = (i===0) ? startId : prevPath.pathEdges[i-1].to;
+                    let rootPath = prevPath.pathEdges.slice(0,i);
+                    // hapus sementara edges yang ada di rootpath dari graph? sederhana: kita buat filter edges
+                    let removedEdges = [];
+                    for(let path of A) {
+                        if(path.pathEdges.length > i && 
+                           path.pathEdges.slice(0,i).every((e,idx)=> e.from===rootPath[idx]?.from && e.to===rootPath[idx]?.to)) {
+                            let edgeToRemove = path.pathEdges[i];
+                            // hapus edge sementara
+                            let idxRm = edges.findIndex(e=> e.id === edgeToRemove.edge.id);
+                            if(idxRm !== -1) {
+                                removedEdges.push(edges[idxRm]);
+                                edges.splice(idxRm,1);
+                            }
+                        }
+                    }
+                    let spurPath = dijkstra(spurNode, endId, weightType);
+                    if(spurPath) {
+                        let totalPathEdges = [...rootPath, ...spurPath.pathEdges];
+                        let totalW = rootPath.reduce((acc,seg)=> acc+computeWeight(seg.edge,weightType),0) + spurPath.totalWeight;
+                        if(!B.some(candidate => candidate.totalWeight === totalW && JSON.stringify(candidate.pathEdges)===JSON.stringify(totalPathEdges)))
+                            B.push({pathEdges: totalPathEdges, totalWeight: totalW});
+                    }
+                    // restore edges
+                    for(let e of removedEdges) edges.push(e);
+                }
+                if(B.length===0) break;
+                B.sort((a,b)=> a.totalWeight - b.totalWeight);
+                let best = B.shift();
+                A.push(best);
+            }
+            return A;
+        }
+        
+        // Pencarian rute utama
+        async function findRoutes() {
+            const fromName = fromInput.value.trim();
+            const toName = toInput.value.trim();
+            const fromId = getPinpointIdByName(fromName);
+            const toId = getPinpointIdByName(toName);
+            if(!fromId || !toId) return;
+            const weightOption = document.querySelector('input[name="routeOpt"]:checked').value;
+            const weightType = weightOption === 'fastest' ? 'fastest' : 'cheapest';
+            const kPaths = kShortestPaths(fromId, toId, weightType, 10);
+            routeResultsDiv.innerHTML = '';
+            if(kPaths.length === 0) {
+                routeResultsDiv.innerHTML = '<div style="padding:12px;">❌ Tidak ada rute yang tersedia</div>';
+                return;
+            }
+            for(let idx=0; idx<kPaths.length; idx++) {
+                const path = kPaths[idx];
+                let totalDuration = 0, totalCost = 0;
+                let stepsHtml = '';
+                for(let seg of path.pathEdges) {
+                    const fromNode = pinpoints.find(p=>p.id===seg.from);
+                    const toNode = pinpoints.find(p=>p.id===seg.to);
+                    const dur = seg.edge.distanceKm / seg.edge.speedKmh;
+                    const cost = seg.edge.distanceKm * seg.edge.costPerKm;
+                    totalDuration += dur;
+                    totalCost += cost;
+                    stepsHtml += `<div>➡️ ${fromNode.name} → ${toNode.name} : ${seg.edge.mode} (${seg.edge.distanceKm}km, ${dur.toFixed(2)} jam, Rp${cost.toLocaleString()})</div>`;
+                }
+                const card = document.createElement('div');
+                card.className = 'route-card';
+                card.innerHTML = `<strong>Rute ${idx+1}</strong><br>🕒 Durasi: ${totalDuration.toFixed(2)} jam | 💰 Biaya: Rp${totalCost.toLocaleString()}<br><div style="font-size:12px; margin-top:6px;">${stepsHtml}</div>`;
+                routeResultsDiv.appendChild(card);
+            }
+        }
+        
+        searchBtn.addEventListener('click', findRoutes);
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            renderCanvas();
+            updateTransform();
+        });
+        
+        // Inisialisasi
+        function init() {
+            loadData();
+            if(pinpoints.length === 0) {
+                // contoh titik awal default agar user langsung punya referensi
+                pinpoints.push({id: nextId++, name: "Jakarta", x: 420, y: 440});
+                pinpoints.push({id: nextId++, name: "Surabaya", x: 540, y: 470});
+                pinpoints.push({id: nextId++, name: "Medan", x: 240, y: 330});
+                edges.push({id: Date.now()+1, fromId:1, toId:2, distanceKm:680, mode:"Train", color:"#33E339", speedKmh:120, costPerKm:500});
+                edges.push({id: Date.now()+2, fromId:1, toId:3, distanceKm:1400, mode:"Airplane", color:"#000000", speedKmh:800, costPerKm:1000});
+                saveData();
+            }
+            updateTransform();
+            renderCanvas();
+            updateSidebarDropdownHints();
+            container.style.cursor = 'grab';
+            statusMsg.innerText = '✅ Peta siap | Double-klik tambah titik';
+        }
+        init();
+    })();
+</script>
+</body>
+</html>

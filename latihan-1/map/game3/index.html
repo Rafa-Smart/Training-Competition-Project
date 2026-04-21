@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <div id="route-panel">
+      <h1>find route</h1>
+      <div class="input-group">
+        <img src="assets/MaterialSymbolsLocationOn.svg" alt="from" />
+        <input
+          type="text"
+          id="input-form"
+          placeholder="from"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="input-group">
+        <img
+          src="assets/MaterialSymbolsLocationOnOutline.svg"
+          id="input-to"
+          placeholder="to"
+          alt=""
+        />
+        <input type="text" id="input-to" placeholder="to" autocomplete="off" />
+      </div>
+
+      <button id="btn-search" disabled>Search</button>
+
+      <div id="sort-control" class="hidden">
+        <span>Sort by:</span>
+        <button class="sort-btn active" data-sort="fastest">Fastest</button>
+        <button class="sort-btn" data-sort="cheaptest">cheaptest</button>
+      </div>
+
+      <div id="route-results"></div>
+    </div>
+
+    <main id="map-area">
+      <div id="map-container">
+        <!-- layar pertama -->
+        <img
+          src="/assets/indonesia.svg"
+          id="map-img"
+          draggable="false"
+          alt="Map Indonesia"
+        />
+
+        <!-- layar kedua -->
+        <svg id="lines-layer"></svg>
+
+        <!-- layer untuk pin -->
+
+        <div id="pinpoints-layer"></div>
+      </div>
+    </main>
+
+    <div id="popup-add" class="popup hidden">
+      <div class="popup-header">
+        <span>Add point</span>
+        <img
+          src="/assets/BiXLg.svg"
+          class="popup-close"
+          id="close-add"
+          alt="close"
+        />
+      </div>
+      <form id="form-add">
+        <input
+          type="text"
+          id="input-name"
+          placeholder="enter location name"
+          required
+          autocomplete="off"
+        />
+      </form>
+    </div>
+
+    <div id="popup-connect" class="popup hidden">
+      <div class="popup-header">
+        <span>Connect</span>
+        <img
+          src="assets/BiXLg.svg"
+          class="popup-close"
+          alt="close"
+          id="close-connect"
+        />
+      </div>
+      <form id="form-connect">
+        <input
+          type="number"
+          id="input-distance"
+          placeholder="distance (km)"
+          required
+          min="1"
+          autocomplete="off"
+        />
+        <select name="input-mode" id="input-mode">
+          <option value="">Select Trasport</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
+        </select>
+        <button type="submit">Connect</button>
+      </form>
+    </div>
+
+    <script src="./js/view.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>

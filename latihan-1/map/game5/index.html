@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peta Interaktif Indonesia</title>
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+
+  <!-- Tombol ngapung untuk buka/tutup panel -->
+  <button id="toggle-panel" class="floating-btn">Route</button>
+
+  <!-- Panel route jadi overlay, bukan menggeser map -->
+  <aside id="route-panel" class="hidden-panel">
+    <h2>Find Route</h2>
+
+    <div class="input-group">
+      <img src="assets/MaterialSymbolsLocationOn.svg" alt="from">
+      <input type="text" id="input-from" placeholder="From" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+      <img src="assets/MaterialSymbolsLocationOnOutline.svg" alt="to">
+      <input type="text" id="input-to" placeholder="To" autocomplete="off">
+    </div>
+
+    <button id="btn-search" disabled>Search</button>
+
+    <div id="sort-controls" class="hidden">
+      <span>Sort by:</span>
+      <button class="sort-btn active" data-sort="fastest">Fastest</button>
+      <button class="sort-btn" data-sort="cheapest">Cheapest</button>
+    </div>
+
+    <div id="route-results"></div>
+  </aside>
+
+  <!-- MAP FULLSCREEN -->
+  <main id="map-area">
+    <div id="map-container">
+      <img id="map-img" src="assets/indonesia.svg" draggable="false" alt="Peta Indonesia">
+      <svg id="lines-layer" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="pinpoints-layer"></div>
+    </div>
+  </main>
+
+  <div id="popup-add" class="popup hidden">
+    <div class="popup-header">
+      <span>Add pinpoint</span>
+      <img src="assets/BiXLg.svg" class="popup-close" id="close-add" alt="close">
+    </div>
+    <form id="form-add">
+      <input type="text" id="input-name" placeholder="Enter location name" required autocomplete="off">
+    </form>
+  </div>
+
+  <div id="popup-connect" class="popup hidden">
+    <div class="popup-header">
+      <span>Connect</span>
+      <img src="assets/BiXLg.svg" class="popup-close" id="close-connect" alt="close">
+    </div>
+    <form id="form-connect">
+      <input type="number" id="input-distance" placeholder="Distance (km)" required min="1" autocomplete="off">
+      <select id="input-mode" required>
+        <option value="">Select transport</option>
+        <option value="train">Train</option>
+        <option value="bus">Bus</option>
+        <option value="airplane">Airplane</option>
+      </select>
+      <button type="submit">Connect</button>
+    </form>
+  </div>
+
+  <script src="js/MapView.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

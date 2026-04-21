@@ -7,7 +7,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -170,8 +171,8 @@ html, body {
     cursor: grabbing;
 }
 
-/* Container yang di-transform (zoom + pan) */  
-#map-container { 
+/* Container yang di-transform (zoom + pan) */
+#map-container {
     position: absolute;
     transform-origin: 0 0;
 }
@@ -189,7 +190,8 @@ html, body {
     top: 0;
     left: 0;
     overflow: visible;
-    pointer-events: none; /* Klik garis dihandle via JS, bukan SVG */
+    pointer-events: none;
+    /* Klik garis dihandle via JS, bukan SVG */
 }
 
 /* Garis terlihat */
@@ -216,7 +218,8 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: none; /* Layer tembus klik */
+    pointer-events: none;
+    /* Layer tembus klik */
 }
 
 /* ============================================ */
@@ -231,7 +234,8 @@ html, body {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    pointer-events: auto; /* Pinpoint bisa diklik */
+    pointer-events: auto;
+    /* Pinpoint bisa diklik */
 }
 
 /* Label: kotak putih berisi nama + tombol */
@@ -260,8 +264,13 @@ html, body {
 }
 
 @keyframes glow {
-    from { box-shadow: 0 0 4px rgba(123, 47, 242, 0.4); }
-    to   { box-shadow: 0 0 14px rgba(123, 47, 242, 0.9); }
+    from {
+        box-shadow: 0 0 4px rgba(123, 47, 242, 0.4);
+    }
+
+    to {
+        box-shadow: 0 0 14px rgba(123, 47, 242, 0.9);
+    }
 }
 
 /* Tombol icon di label (connect & delete) */

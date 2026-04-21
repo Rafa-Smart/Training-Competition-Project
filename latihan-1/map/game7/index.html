@@ -1,65 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Interaktif Indonesia</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
+
 <body>
 
-    <!-- ============================================ -->
-    <!-- PANEL CARI RUTE - selalu di sisi kiri layar  -->
-    <!-- ============================================ -->
-    <aside id="route-panel">    
+    <!-- TOMBOL TOGGLE PANEL -->
+    <button id="btn-toggle">☰ Route</button>
 
+    <!-- PANEL CARI RUTE (mengapung di atas peta) -->
+    <div id="route-panel" class="open">
         <h2>Find Route</h2>
 
-        <!-- Input kota asal -->
         <div class="input-group">
             <img src="assets/MaterialSymbolsLocationOn.svg" alt="from">
             <input type="text" id="input-from" placeholder="From" autocomplete="off">
         </div>
 
-        <!-- Input kota tujuan -->
         <div class="input-group">
             <img src="assets/MaterialSymbolsLocationOnOutline.svg" alt="to">
             <input type="text" id="input-to" placeholder="To" autocomplete="off">
         </div>
 
-        <!-- Tombol cari -->
         <button id="btn-search" disabled>Search</button>
 
-        <!-- Tombol sortir -->
         <div id="sort-controls" class="hidden">
             <span>Sort by:</span>
             <button class="sort-btn active" data-sort="fastest">Fastest</button>
             <button class="sort-btn" data-sort="cheapest">Cheapest</button>
         </div>
 
-        <!-- Hasil pencarian -->
         <div id="route-results"></div>
-    </aside>
+    </div>
 
-    <!-- ============================================ -->
-    <!-- AREA PETA - tempat peta interaktif           -->
-    <!-- ============================================ -->
+    <!-- AREA PETA (fullscreen) -->
     <main id="map-area">
-        <!-- jadi akna ada tiga layer ya -->
         <div id="map-container">
-            <!-- Gambar peta Indonesia (SVG) -->
             <img id="map-img" src="assets/indonesia.svg" draggable="false" alt="Peta Indonesia">
-            <!-- Layer SVG untuk garis koneksi -->
-            <svg id="lines-layer" xmlns="http://www.w3.org/2000/svg"></svg>
-
-            <!-- Layer untuk pinpoint -->
+            <!-- Canvas untuk gambar garis koneksi -->
+            <canvas id="lines-layer"></canvas>
             <div id="pinpoints-layer"></div>
         </div>
     </main>
 
-    <!-- ============================================ -->
-    <!-- POPUP TAMBAH PINPOINT                        -->
-    <!-- ============================================ -->
+    <!-- POPUP TAMBAH PINPOINT -->
     <div id="popup-add" class="popup hidden">
         <div class="popup-header">
             <span>Add pinpoint</span>
@@ -70,9 +59,7 @@
         </form>
     </div>
 
-    <!-- ============================================ -->
-    <!-- POPUP KONEKSI                                -->
-    <!-- ============================================ -->
+    <!-- POPUP KONEKSI -->
     <div id="popup-connect" class="popup hidden">
         <div class="popup-header">
             <span>Connect</span>
@@ -90,8 +77,7 @@
         </form>
     </div>
 
-    <!-- Load urut: MapView dulu, lalu App -->
-    <script src="js/MapView.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>
