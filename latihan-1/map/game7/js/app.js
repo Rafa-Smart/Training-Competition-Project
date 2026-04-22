@@ -219,6 +219,9 @@ class App {
     var w = this.area.clientWidth;
     var h = this.area.clientHeight;
     this.scale = Math.max(w / App.MW, h / App.MH);
+    // jadi si w da h inni itu seharusnya lebih besar ya dri pada si MW solanya MW ini adalahukuran asli si map ya
+    // jad di sini itu mau ngasih jadi si ukuan map akan di kali dnengan scale ya tadi yang sce itu dapet dari selisih oailing gede antara h map dan h ukuran layar area, da juga w map dan w ukuran lyar area
+    // nah kan jadi gede tuh setelah di kali dengan scale, setelah itu ukuan layar akan di kurangin dnegan si hasil kali ukran map dnegan scale, nah kan kalo miaslnya si map itu lebih gede dri w kan akna minus ya, arrtinya dai akn geser ke kiri untuk x min itu geser kiri ya inget, nah biar ke tengah maka baru bagi ndegn 2 dan giu juga yang oy
     this.ox = (w - App.MW * this.scale) / 2;
     this.oy = (h - App.MH * this.scale) / 2;
   }
@@ -328,7 +331,7 @@ class App {
     // Loop semua EDGE (koneksi)
     for (var i = 0; i < this.conns.length; i++) {
       var c = this.conns[i];
-
+      
       // Cari pin asal dan tujuan
       var a = this.findPin(c.fromId);
       var b = this.findPin(c.toId);
@@ -337,6 +340,7 @@ class App {
       var n = c.transports.length;
 
       // Loop semua transport dalam koneksi ini
+      // 
       for (var j = 0; j < n; j++) {
         var t = c.transports[j];
 
@@ -379,18 +383,30 @@ class App {
   // Hitung offset untuk garis paralel
   // Supaya kalau ada >1 transport, garisnya tidak numpuk
   offset(a, b, i, n) {
+    // tidak perlu geser kalau cuma 1 transport
     if (n <= 1) return { x: 0, y: 0 };
 
-    var dx = b.x - a.x;
-    var dy = b.y - a.y;
-    var len = Math.sqrt(dx * dx + dy * dy) || 1;
-
+    // seberapa jauh digeser
     var s = -(n - 1) * 3 + i * 6;
 
-    return {
-      x: (-dy / len) * s,
-      y: (dx / len) * s,
-    };
+    // CARA PALING SIMPEL:
+    // kita tidak hitung "tegak lurus yang sempurna"
+    // kita cukup lihat: garis ini lebih horizontal atau lebih vertikal?
+
+    var dx = Math.abs(b.x - a.x); // lebar garis
+    var dy = Math.abs(b.y - a.y); // tinggi garis
+
+    // kalau lebih lebar dari tinggi → garis horizontal
+    // → geser ke atas/bawah (ubah y saja)
+    if (dx >= dy) {
+      return { x: 0, y: s };
+    }
+
+    // kalau lebih tinggi dari lebar → garis vertikal
+    // → geser ke kiri/kanan (ubah x saja)
+    else {
+      return { x: s, y: 0 };
+    }
   }
 
   // ========================================
@@ -556,7 +572,7 @@ class App {
   //
   // DFS bekerja dengan cara:
   // 1. Mulai dari titik awal
-  // 2. Tandai sebagai visited
+  // 2. Tandai sebagai visited connectTo
   // 3. Jelajahi semua tetangga yang belum visited
   // 4. Rekursif ke tetangga
   // 5. Kalau sampai tujuan, simpan rute
@@ -657,7 +673,9 @@ class App {
           steps: steps,
         });
 
-        return;
+        return; // langusng keluar dari fungis dfs ini ya
+        // jadi dia akan id panggil pagi pke dfs(fp.id, []);
+        // jadi muali lagi dari awl
       }
 
       // ------------------------------------
@@ -670,6 +688,32 @@ class App {
 
         // 🔵 GRAPH TRAVERSAL (dua arah / undirected)
         // Cek apakah edge ini terhubung ke node saat ini
+
+        // jadi gini pas kita cari jakarta ke serang
+        // ternyata pas nyari yang form id nyajakarta maka ketemunya itu adalh to nya adalh abndung
+        // lalu di cek kan tuh bandung mah belumm visited kan maka buat dia visite dulu setelah itu kita masukin rute dari jakarta ke bandung
+
+        // lalu next lagi kan ya ekarang nextny adalah abndung nah pas di pandung dia di loop lagi apakah ada yang form bandung  atau to bandung, nah kalo to nya bandung berati yang tadi kan si jakarta tuh ya
+        // nah di karena dapet berati si jaarta jadi next
+        // lalu di cek deh jakarta pernah di kunjuigin belum kalo belum maka dia ga akna masuk ke if jdi ga ak ulang lagi
+        // tapi dia akan ulangi lagi loopnyaaaa GITU
+        // terus di cari kan ya yang pokoknya ada hubungannya sama bandung, nah ternyata pas di cek di sini ada yang from bandung tapi to nya itu semarang, NAHHH BARU NIh, jadi karean ketemu maka semrang jadi next lalu akan di cek apakah dia udah di kunjungin kalo dah kan tadi ulang lagi yaa loopnya, tapi kelo beum maka idia akn masuk ke if, jadi sekarang semarang jadi next ya, terus da juga belum visited, nah maka rute dari bandung ke smrang in akna di push ke path dan nanti akan di loop di atas
+
+        // setlah itu kan lanut lagi ya sekarang tapi bukan di for loop, tpi panggil lagi fungsi dfsnya
+        // nah di cek kalo semarang sama kaya id yang lagi di cari maka hitung aja total seluruh dari yang kjakarta sampe ke semarang ini tuh  dari path nya ya dan smeua itu di taruh di routes
+        // nah setelah itu dia akn return, llu masuk lagi explore nya dan inga ya setelah dia return diaa akna menjalankan perintah path.pop jadi dari yang tadi kan yang dapet itu ada di semrang ya karean pathnya di pop (ingat gapapa di pop juga soalnya udah ad adi routs ya hasilnya) dan juga untk semrang itu visitednya di delete jadi visited hnya punya jakartadan bandung ya
+        // jadi ke bandung lagi ya karean ketika kita lagi di bandung lalu ke semrang ternyata semarng ketemu ingat curr masihbandung dan belum ganti, maka dia iba tiba return kan
+        // dan dia aakn jalanin ini ya path.pop(); delete vis[next];
+
+        // nah ingat ya curr kan msaih yang bandung, ya gaa, nah baru deh lanjut lagi ke aas dan di cek apkah bandung adalh yang di cari ternyata bukan brati dia explore lagi tuh
+        // setelah itu dia akna cari lagi kan ya apa an gberkaitn dnenga bandun, ternyata hanya semrang, nah ini kennapa malah loop, kalo gini kan dia kan masuk lagi if yang path.push karena visited dari semanrng udha di hapus dan sma juga nantii ketika sudah sampe jakarta lagi ya nah akn terus di ualng lagi tuh dan ternyata dia malah ketemu lagi sama badung dong ? soalnya kan visied dari bandung udha di hapus jadi gimaana ini ? nanti jadi bandung semarnag lagi dan muer aja terus ngulang lgi tolog jelai lengkap
+
+        // ah jawabanya itu adalah INGET INI KAN ADA DIDALAM FOR LOOP DAN GINI COBA MIKIRNYA TUH SI FUNGSI DFS INI ITU AAL FUNGSI TERPISAH YA, JADI MISALNYA KETIKA KITA UDAH SAMPE SEMRANG ALU RETURN KN OTOMATIS DIA KE BANDUNG LAGI TUH I CURR NYA KAREANA KITA MASIH ADA DI DFS YANG CURRNYA SI BANDUNGG YAH
+        // NAHHHH INI DIA JADI PAS DIA UDAH SAMPE BANDUNG, INGET KITA AKN MASUK DI LOOP JADI GA AKAN MASUK KE SEMARNAG LAGI KAREAN SUDAH BERTAMBAH NILAI DARI I NYA
+        // DAN INAT UNTUK INI  dfs(fp.id, []); ITU HANYA DI PANGGI SEKLI AJA
+
+        // Setiap pemanggilan dfs() punya "dunianya sendiri" — cur-nya sendiri, tidak berubah selama dia hidup.
+
         if (c.fromId === cur) next = c.toId;
         else if (c.toId === cur) next = c.fromId;
 
@@ -686,7 +730,12 @@ class App {
           });
 
           // 🔁 REKURSI - masuk lebih dalam
+
+          // jaid ini
           dfs(next, path);
+
+          // nh gini misalnya  udah  ENGGA KETEMU MAKA DIA AKAN JALANKAN FNGSI POP DAN DELETE INI DAN PUNCAKNYA ITU SAMPE SI NEXT INI SAMA KAYA FROMID YA
+          // NAH KALO UDH GA ADA
 
           // ------------------------------------
           // 🔙 BACKTRACKING
@@ -697,6 +746,28 @@ class App {
           path.pop();
           delete vis[next];
         }
+
+        //         var dfs = function(cur, path) {
+
+        //     if (cur === tp.id) {
+        //         // ... push routes ...
+        //         return   // ← return dari sini kalau KETEMU
+        //     }
+
+        //     for (...) {
+        //         // explore tetangga
+        //     }
+
+        //     // ← kalau sampai sini, berarti loop habis
+        //     //   tidak ketemu tujuan dari sini
+        //     //   fungsi otomatis return (tidak perlu nulis return)
+
+        // NAH INGAT KAN GINI ALUNRYA UTH PAS LOOP YANG CURR NYA JAKARTA
+        // ITU AKN DI LOOP I PERTMA LANGSUNG KETEMU BANDUNG, NAHH MASUK DEH THU BADNTUNG YA DIDALAM FUNGSI JAKARTA
+        // SETLAH TIU DI FUNGSI BANDUNG INI DI LOOP KE 3 KETEMU LAGI SAMA SEMARANG, NAH MASUK LAH TUH YA KE SEMARANG NAH PS SEMRANG ITU UDAHKETEMU SAMA TARGET MAKA UDAH TUH JADI PATH DARI JAKARTA KE BANDUNG, BANDUNG KE SEMARANG, SEMARANG KE SURABBAYA ITU ADA DI PATH DAN LANGSUNG MASUK KE ROUTES  (UDAHDI KALKULASIKAN JUGA)
+
+        // SETELAH ITUKAN PAS DI SURABAYA ITU KAN DIA RETURN, NAH MAKA BALIK LAGI KE FUNGSI SEMARANG, DI SEMARANG INI DAI CAI CARI GA KETEMU ALHASIL HABIS TUH LOOPNYA KAN, TERUS DIA JALANIN  DELETE VISITED DA POP, NAH TERUS KARNA UDAH HABIS LOOPNYA INGAT YAA BERATI BERES KAN FUNGSINA, ALU BALIK LAGI KE FUNGSI BANDUNG, TAPI KAN BANDUNG ITU KETEMU SEMARNG DI LOOP KE TIGA KAREANA DI LOOP KETIAK FUNGIS SEMARANGNYA HABIS MAKA LANJUT LAGI DI LOOP KE 4 NAH KALO GA KETEMU MAKA DAI KAYA SEMARANG TAD LOPNYA HABIS LALU BERS AJA RETURN GITU, NAHH BARU DEH KARENA SEBELUM FUNGSINYA HABIS DAI KAN AKAN JALANKN POP DAN DLETE VISITED LALU SEKARANG BSLIK LAGI KE FUNGSI JAKARTA NAH UDAH DEH TADI KAN JAKARTA KETEMU BANDUNG DI LOOP KE 0 MKA SEKARANG LANJUT AJ LAGI DI LOOP KE 1 GITU TERUS
+        // }
       }
     };
 
@@ -730,19 +801,41 @@ class App {
     var h = "";
     for (var i = 0; i < sorted.length; i++) {
       var r = sorted[i];
-      var hh = Math.floor(r.dur);
-      var mm = Math.round((r.dur - hh) * 60);
+      var hh = Math.floor(r.dur); // NHAJADIFUNGSI DARI FLOOR ITU ADALAH
+      var mm = Math.round((r.dur - hh) * 60); // NAH JADI FUNGSI DRI ROUND ADALAH
       var waktu = hh ? hh + "h " + mm + "min" : mm + "min";
+      // r.dur = 2.25 jam
 
-      h += '<div class="route-card"><div class="steps">';
-      for (var j = 0; j < r.steps.length; j++) {
-        h += "<div>" + (j + 1) + ". " + r.steps[j] + "</div>";
-      }
-      h += '</div><div class="info"><span>' + waktu + "</span>";
-      h += "<span>Rp" + r.cost.toLocaleString("id-ID") + "</span></div></div>";
+      // hh = Math.floor(2.25) = 2           // ambil bagian jamnya: 2
+      // mm = Math.round((2.25 - 2) * 60)
+      //    = Math.round(0.25 * 60)
+      //    = Math.round(15)
+      //    = 15                              // ambil bagian menitnya: 15
+
+      // waktu = hh ? "2h 15min" : "15min"
+      //    = "2h 15min"                   // karena hh=2 (truthy)
+
+      h += `
+    <div class="route-card">
+        <div class="steps">
+            ${r.steps
+              .map(
+                (step, j) => `
+                <div>${j + 1}. ${step}</div>
+            `,
+              )
+              .join("")}
+        </div>
+        <div class="info">
+            <span>${waktu}</span>
+            <span>Rp${r.cost.toLocaleString("id-ID")}</span>
+        </div>
+    </div>
+`;
     }
 
     this.results.innerHTML = h;
+    // INGAT YA RESULTS INI ADALH DIV UNTUK HASIL ROUTES YA
   }
 
   // ========================================
@@ -764,7 +857,22 @@ class App {
   // ========================================
   // Ini mengatur semua interaksi user
 
+// 1.  Toggle panel buka/tutup
+// 2.  Zoom: Ctrl + scroll
+// 3.  Zoom: Ctrl + / -
+// 4.  Pan: drag peta
+// 5.  Double click: tambah pin
+// 6.  Event delegation: klik pin
+// 7.  Form tambah pin
+// 8.  Form koneksi
+// 9.  Close popup
+// 10. Keyboard: Delete & Escape
+// 11. Click map: select line
+// 12. Route search
+// 13. Sort buttons
+
   setup() {
+    // INGAT YA DINIS KITA PEK ELF AJA OANYA KALO PAKE ARROW FUNCTION ITU DAI GA AKAN DAPE PARAMETER E
     var self = this;
 
     // ------------------------------------
@@ -782,6 +890,9 @@ class App {
       function (e) {
         if (!e.ctrlKey) return;
         e.preventDefault();
+        // jadi deltaY itu artiny ketika kita wheel atu gerkin ynag tengah mouse itu ke atas (zoom in)
+        // atau ke bawah (zoom out)
+        // jadi kalo lebih kecil dri 0 artinya dia scoll atas maka akna zoom
         self.zoom(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 0.85);
       },
       { passive: false },
