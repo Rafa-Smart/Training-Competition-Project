@@ -1,7 +1,25 @@
-// ========================================
-// PETA INTERAKTIF INDONESIA
-// ========================================
-//
+// RUMUS DASAR (hafal ini):
+//   layar = peta × scale + ox    → "peta ke layar"
+//   peta  = (layar - ox) / scale → "layar ke peta" (dibalik)
+
+// ZOOM:
+//   1. Cari px,py = titik peta di bawah cursor     → (mx - ox) / scale
+//   2. Update scale baru
+//   3. Hitung ox baru supaya px tetap di mx        → ox = mx - px × scale_baru
+
+// DRAG:
+//   mousedown → simpan sox (ox awal) dan dragX (mouse awal)
+//   mousemove → ox = sox + (mouse_sekarang - dragX)
+//   mouseup   → selesai
+
+// KENAPA DIKALI SCALE?
+//   → Karena saat peta diperbesar, semua jarak dari pojok ikut membesar
+
+// KENAPA DIBAGI SCALE?
+//   → Karena kita membalik rumus perkalian untuk dapat koordinat peta
+
+// KENAPA TAMBAH ox?
+//   → Karena peta mungkin sudah digeser, harus dikompensasi
 // STRUKTUR UTAMA:
 // ----------------
 // 🔵 GRAPH    = this.pins (node) + this.conns (edge)
@@ -169,7 +187,7 @@ class App {
     // ============================
     // Untuk demo, kita skip load dari localStorage
     // dan langsung pakai dummy data di atas
-    // this.load();
+    this.load();
 
     this.fit();
     this.render();
@@ -234,7 +252,11 @@ class App {
     var mx = cx - r.left;
     var my = cy - r.top;
 
-    // Hitung posisi di peta sebelum zoom
+    //     Ini adalah rumus balik dari transform CSS. Ingat CSS-nya:
+    // css transform: translate(ox, oy) scale(scale)
+    // Artinya: titik peta di koordinat (px, py) → muncul di layar di koordinat (px * scale + ox, py * scale + oy).
+
+    // Kita mau balik: dari koordinat layar (mx, my) → cari koordinat peta (px, py):
     var px = (mx - this.ox) / this.scale;
     var py = (my - this.oy) / this.scale;
 
@@ -242,11 +264,66 @@ class App {
     this.scale = Math.max(0.3, Math.min(15, this.scale * f));
 
     // Hitung offset baru supaya zoom ke arah cursor
-    this.ox = mx - px * this.scale;
-    this.oy = my - py * this.scale;
+
+    // ah jadi setelah ita mendapatkan koordinat peta yaitu px dan py,
+
+    // nah jadi fungisny itu adalh ketiak kita udha update scale itu kan yang posisi titik awal di layer 200 kan kalo di scale nanti akna berubah ya, nah oleh karena itu biar titik di bawah cursor itu engga hilang maka
+    // this.ox = mx - px * this.scale;
+    // this.oy = my - py * this.scale;
+    // SEKARANG: Kenapa zoom() Perlu Hitung Ulang ox?
+    // Kita sudah punya rumus:
+    // layar_x = peta_x × scale + ox
+    // Saat zoom, scale berubah. Kalau ox tidak ikut berubah, maka titik peta yang tadinya ada di bawah cursor akan pindah.
+    // Visualisasi masalahnya:
+    // SEBELUM ZOOM:
+    //   scale=1, ox=0
+    //   Jakarta di peta = (200, 280)
+    //   Jakarta di layar = 200×1 + 0 = 200  ← cursor ada di sini
+
+    // SETELAH ZOOM (scale jadi 2, ox tetap 0):
+    //   Jakarta di layar = 200×2 + 0 = 400  ← JAKARTA PINDAH! Cursor ketinggalan
+    // Layar:
+    // SEBELUM: (200)
+    // SESUDAH:       (400)
+    // Cursor:  (200)  ← cursor tidak ikut, Jakarta kabur ke kanan!
+    // Solusinya: setelah scale berubah, hitung ox baru supaya titik yang sama tetap di posisi layar yang sama.
+    // Kita punya 3 variabel:
+
+    // mx = posisi cursor di layar → TIDAK BERUBAH (cursor tidak pindah)
+    // px = posisi titik di peta → TIDAK BERUBAH (titik di peta tidak pindah)
+    // scale → BERUBAH
+    // ox → harus kita hitung ulang
+
+    // Pakai rumus layar_x = peta_x × scale + ox, kita cari ox:
+    // mx = px × scale_baru + ox_baru
+    // ox_baru = mx - px × scale_baru
+    // Ini persis baris ini di kode:
+    // javascriptthis.ox = mx - px * this.scale;  // (scale sudah diupdate)
 
     this.apply();
   }
+  //   SEBELUM ZOOM:
+  //   scale = 1.55, ox = -161, oy = 1.5
+  //   Mouse di layar: mx = 500, my = 300
+
+  //   Step 1: Titik peta di bawah mouse:
+  //     px = (500 - (-161)) / 1.55 = 426
+  //     py = (300 - 1.5)    / 1.55 = 192
+
+  //   Step 2: Scale baru (zoom in 1.15x):
+  //     scale = 1.55 × 1.15 = 1.7825
+
+  //   Step 3: Offset baru supaya px=426 tetap di mx=500:
+  //     ox = 500 - 426 × 1.7825 = 500 - 759.3 = -259.3
+  //     oy = 300 - 192 × 1.7825 = 300 - 342.2 = -42.2
+
+  // SETELAH ZOOM:
+  //   scale = 1.7825, ox = -259.3, oy = -42.2
+
+  //   Verifikasi: titik px=426 sekarang ada di layar:
+  //     layar_x = 426 × 1.7825 + (-259.3) = 759.3 - 259.3 = 500 ✅
+  //     layar_y = 192 × 1.7825 + (-42.2)  = 342.2 - 42.2  = 300 ✅
+  //   → Titik yang sama tetap di posisi mx=500, my=300 di layar!
 
   // Konversi koordinat layar ke koordinat peta
   toMap(cx, cy) {
@@ -331,7 +408,7 @@ class App {
     // Loop semua EDGE (koneksi)
     for (var i = 0; i < this.conns.length; i++) {
       var c = this.conns[i];
-      
+
       // Cari pin asal dan tujuan
       var a = this.findPin(c.fromId);
       var b = this.findPin(c.toId);
@@ -340,7 +417,7 @@ class App {
       var n = c.transports.length;
 
       // Loop semua transport dalam koneksi ini
-      // 
+      //
       for (var j = 0; j < n; j++) {
         var t = c.transports[j];
 
@@ -388,7 +465,50 @@ class App {
 
     // seberapa jauh digeser
     var s = -(n - 1) * 3 + i * 6;
+// Ini yang paling membingungkan. Mari kita bedah pelan-pelan.
+// Tujuannya: kita mau semua garis tersebar simetris di tengah.
+// Bayangkan kamu punya beberapa orang yang mau berdiri berjajar, dan kamu mau mereka berpusat di tengah:
+// 1 orang:    [  A  ]          → A di posisi 0
+// 2 orang:    [ A B ]          → A di -3, B di +3
+// 3 orang:    [ A B C ]        → A di -6, B di 0, C di +6
+// Itulah yang dihitung s. Mari kita buktikan dengan angka:
+// Kasus n=2 (2 transport):
+// i=0: s = -(2-1) × 3 + 0 × 6 = -1×3 + 0 = -3
+// i=1: s = -(2-1) × 3 + 1 × 6 = -1×3 + 6 = +3
 
+// Hasil: garis 0 geser -3px, garis 1 geser +3px
+// Visualisasi:
+//   ─────────────────  (i=0, s=-3, di atas)
+//   ─────────────────  (i=1, s=+3, di bawah)
+// Kasus n=3 (3 transport):
+// i=0: s = -(3-1) × 3 + 0 × 6 = -2×3 + 0  = -6
+// i=1: s = -(3-1) × 3 + 1 × 6 = -2×3 + 6  =  0
+// i=2: s = -(3-1) × 3 + 2 × 6 = -2×3 + 12 = +6
+
+// Hasil: garis 0 geser -6px, garis 1 tetap di tengah, garis 2 geser +6px
+// Visualisasi:
+//   ─────────────────  (i=0, s=-6)
+//   ─────────────────  (i=1, s= 0)
+//   ─────────────────  (i=2, s=+6)
+// Kenapa rumusnya -(n-1) × 3 + i × 6?
+// -(n-1) × 3  →  ini adalah TITIK MULAI (garis paling kiri/atas)
+//                semakin banyak garis, semakin jauh titik mulainya ke kiri
+
+// i × 6       →  ini adalah LANGKAH per garis (tiap garis +6px dari sebelumnya)
+
+// Kenapa 6? Karena jarak antar garis = 6px
+// Kenapa -(n-1)×3? Karena titik mulai = -(jumlah_jarak / 2)
+//   = -(  (n-1) × 6  / 2  )
+//   = -(n-1) × 3
+// Visualisasi dengan garis bantu:
+// n=3:
+//         ← 6px → ← 6px →
+//   ──────────────────────  (i=0, s=-6)
+//   ──────────────────────  (i=1, s= 0)  ← tengah
+//   ──────────────────────  (i=2, s=+6)
+
+// Pusat = 0  
+// Jarak antar garis = 6px  
     // CARA PALING SIMPEL:
     // kita tidak hitung "tegak lurus yang sempurna"
     // kita cukup lihat: garis ini lebih horizontal atau lebih vertikal?
@@ -729,7 +849,7 @@ class App {
             conn: c,
           });
 
-          // 🔁 REKURSI - masuk lebih dalam
+          //  REKURSI - masuk lebih dalam
 
           // jaid ini
           dfs(next, path);
@@ -857,19 +977,19 @@ class App {
   // ========================================
   // Ini mengatur semua interaksi user
 
-// 1.  Toggle panel buka/tutup
-// 2.  Zoom: Ctrl + scroll
-// 3.  Zoom: Ctrl + / -
-// 4.  Pan: drag peta
-// 5.  Double click: tambah pin
-// 6.  Event delegation: klik pin
-// 7.  Form tambah pin
-// 8.  Form koneksi
-// 9.  Close popup
-// 10. Keyboard: Delete & Escape
-// 11. Click map: select line
-// 12. Route search
-// 13. Sort buttons
+  // 1.  Toggle panel buka/tutup
+  // 2.  Zoom: Ctrl + scroll
+  // 3.  Zoom: Ctrl + / -
+  // 4.  Pan: drag peta
+  // 5.  Double click: tambah pin
+  // 6.  Event delegation: klik pin
+  // 7.  Form tambah pin
+  // 8.  Form koneksi
+  // 9.  Close popup
+  // 10. Keyboard: Delete & Escape
+  // 11. Click map: select line
+  // 12. Route search
+  // 13. Sort buttons
 
   setup() {
     // INGAT YA DINIS KITA PEK ELF AJA OANYA KALO PAKE ARROW FUNCTION ITU DAI GA AKAN DAPE PARAMETER E
@@ -907,6 +1027,8 @@ class App {
 
       if (e.key === "+" || e.key === "=") {
         e.preventDefault();
+        // nah jadi gini kalo misalnya dia hnaya klik ctrl dn + / - maka akna
+        // kita buat dia zoom ke arah tengah
         self.zoom(r.left + r.width / 2, r.top + r.height / 2, 1.15);
       }
       if (e.key === "-") {
@@ -919,22 +1041,43 @@ class App {
     // 🖐️ PAN: Drag peta
     // ------------------------------------
     this.area.addEventListener("mousedown", function (e) {
+      // jadi ini tuh kalo misalnya kita mouse down lallu ken ke .pinpoint dan .popup
+      // atau engga kena itu tapi klik
+      // jadi mosedown itu fnginya untuk ngecek ketika kita klik kiri di mouse
+      // nah jadi ketika  saya klik kanan di mouse maka kna masuknya itudaah e.button nyafalse nah kalo giut brati di return ja
       if (e.target.closest(".pinpoint,.popup") || e.button !== 0) return;
-      self.dragging = true;
-      self.dragX = e.clientX;
-      self.dragY = e.clientY;
-      self.sox = self.ox;
-      self.soy = self.oy;
+      self.dragging = true; // tandai sedang drag
+      self.dragX = e.clientX; // posisi mouse saat mulai drag: x
+      self.dragY = e.clientY; // posisi mouse saat mulai drag: y
+      self.sox = self.ox; // offset peta saat mulai drag: x
+      self.soy = self.oy; // offset peta saat mulai drag: y
     });
 
     document.addEventListener("mousemove", function (e) {
+      // nah ini tuh ketika di dragging baru deh jalanin
       if (!self.dragging) return;
+
+      // jadi kita ak perbarui si niali ox dan oy
+
+      // nah ini tuh si event listenernya di pasang di document karna kalo pasang di mapaja
+      // /nanti pas kita klik di luar map malah ga bisa ya
+
+      // jaid sox adalh nilai offset setelah digeser / offset awal
+
+      // coba aa balik blaik nih
       self.ox = self.sox + (e.clientX - self.dragX);
+      // self.ox = self.sox + (self.dragX - e.clientX);
+
+      // jadi self.dragX itu adalah posisi ketika si user mulai drag ya pas ditaruh di layar si cursornya
+      // nah baru e.clientX itu adalah lokasi usr setealh drag
+
+      // jadi clientX itu di kurang sama si drag ya
       self.oy = self.soy + (e.clientY - self.dragY);
       self.apply();
     });
 
     document.addEventListener("mouseup", function () {
+      // nh ini kalo misalnya udah angkat mouse ya
       self.dragging = false;
     });
 
@@ -942,7 +1085,13 @@ class App {
     // 👆 DOUBLE CLICK: Tambah pinpoint
     // ------------------------------------
     this.area.addEventListener("dblclick", function (e) {
+      // ini taruh di area biar hanya are aja yangngaruh kalo di klik
       if (e.target.closest(".pinpoint,.popup")) return;
+      // nah liat kalo misalnya kalo kita double clickbnya itu di
+      // pinpoint atau popup maka ga akna ngaruh
+
+      // nah ini tuh clickPos nya harus ita toMa dulu
+      // soalnya dari clickPos ini si koordinanta akan kita jadikan patokan jadi haruas di uabh dulu ke koordinat map
       self.clickPos = self.toMap(e.clientX, e.clientY);
       self.showPop(self.popAdd, e);
       self.inName.value = "";
@@ -954,6 +1103,12 @@ class App {
     // ------------------------------------
     this.pinsEl.addEventListener("click", function (e) {
       e.stopPropagation();
+      // e.stopPropagation() = hentikan event supaya tidak "naik" ke elemen parent.
+      //       Tanpa stopPropagation:
+      // Klik pin → event naik ke pinsEl → naik ke area → cancelConnect() terpanggil!
+
+      // Dengan stopPropagation:
+      // Klik pin → event berhenti di pinsEl → area tidak tahu
 
       // Klik tombol Connect
       var btnC = e.target.closest(".btn-connect");
@@ -979,9 +1134,10 @@ class App {
         self.inDist.focus();
       }
     });
+    //
 
     // ------------------------------------
-    // 📝 FORM: Tambah pinpoint
+    //   FORM: Tambah pinpoint
     // ------------------------------------
     document.getElementById("form-add").onsubmit = function (e) {
       e.preventDefault();
@@ -1018,6 +1174,16 @@ class App {
     // ⌨️ KEYBOARD: Delete & Escape
     // ------------------------------------
     document.addEventListener("keydown", function (e) {
+      // jadi fungsinya adlah
+      //       var inp = e.target.matches("input,select,textarea") = cek apakah user sedang fokus di input
+      // Kenapa perlu cek ini?
+      // javascript// Tanpa cek:
+      // // User lagi ketik nama kota "Surabaya"
+      // // Tekan Backspace untuk hapus huruf
+      // // → deleteLine() terpanggil! (tidak diinginkan)
+
+      // // Dengan cek:
+      // // inp = true → !inp = false → deleteLine() tidak jalan
       var inp = e.target.matches("input,select,textarea");
 
       if (
