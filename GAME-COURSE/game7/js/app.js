@@ -41,7 +41,7 @@ class App {
 
   // Konfigurasi transportasi (untuk hitung waktu & biaya)
   static TR = {
-    train: { color: "#33E339", speed: 120, cost: 500, label: "Train" },
+    train: { color: "#33E339", speed: 120, cost: 500, label: "Train" }, 
     bus: { color: "#A83BE8", speed: 80, cost: 100, label: "Bus" },
     airplane: { color: "#000000", speed: 800, cost: 1000, label: "Airplane" },
   };
@@ -204,6 +204,7 @@ class App {
   // ========================================
   // Fungsi ini untuk menyimpan graph ke browser
   // supaya tidak hilang saat refresh
+
 
   save() {
     localStorage.setItem("pins", JSON.stringify(this.pins));
@@ -516,6 +517,12 @@ class App {
     var dx = Math.abs(b.x - a.x); // lebar garis
     var dy = Math.abs(b.y - a.y); // tinggi garis
 
+
+    // simple aja gitu jadi klao mislanya in lebih lebar dari pada tingi si x nya
+    // arinya kna lagi lebar atau garis horizontanl
+
+    // nah makany kita ubha si y nya aja, jadi kebaliakn gitu
+
     // kalau lebih lebar dari tinggi → garis horizontal
     // → geser ke atas/bawah (ubah y saja)
     if (dx >= dy) {
@@ -542,7 +549,7 @@ class App {
   }
 
   // ========================================
-  // 📍 PINPOINT (tambah, hapus)
+  //  ` PINPOINT (tambah, hapus)
   // ========================================
   // Ini adalah operasi pada NODE di graph
 

@@ -209,7 +209,7 @@ body {
     -webkit-user-drag: none;
 }
 
-/* Canvas garis koneksi */
+/* Canvas garis koneksi pinpoint */ 
 #lines-layer {
     position: absolute;
     top: 0;
@@ -226,7 +226,7 @@ body {
 }
 
 /* ============================================ */
-/* PINPOINT                                     */
+/* PINPOINT        connecting                       */
 /* ============================================ */
 .pinpoint {
     position: absolute;
@@ -254,8 +254,9 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     user-select: none;
 }
-
-.pinpoint-label.connecting {
+/* pinpoint
+pinpoint */
+.pinpoint-label.connecting {    
     border-color: #7B2FF2;
     background: #EDE7F6;
     box-shadow: 0 0 8px rgba(123, 47, 242, 0.5);

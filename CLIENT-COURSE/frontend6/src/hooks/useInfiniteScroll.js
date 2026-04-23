@@ -7,63 +7,59 @@ export const useInFiniteScroll = (
 ) => {
   const [size, setSize] = useState(size);
   const [page, setPage] = useState(initialPage);
-    const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [hasMore, setHashMore] = useState(true);
 
   const [posts, setPosts] = useState([]);
 
-  const loadMore = useCallback( async()=>{
-
+  const loadMore = useCallback(async () => {
     // jadi stop kalo loaidng dna ga ada data lagi
-    if(isLoadingPosts || !hasMore){
-        return ;
+    if (isLoadingPosts || !hasMore) {
+      return;
     }
 
     setIsLoadingPosts(true);
-    setHashMore(true)
+    setHashMore(true);
 
-    try{
-        const response = await fetchFunction(size, page);
+    try {
+      const response = await fetchFunction(size, page);
 
-        if(response.length == 0){
-            hasMore(false)
-        }else {
-            setPosts((posts) => [...posts, ...response])
-            setPage((page) => page + 1)
-        }
-    }catch(e){
-        setErrors(e || {})
-            setHashMore(false)
-    }finally{
-        setIsLoadingPosts(false)
+      if (response.length == 0) {
+        hasMore(false);
+      } else {
+        setPosts((posts) => [...posts, ...response]);
+        setPage((page) => page + 1);
+      }
+    } catch (e) {
+      setErrors(e || {});
+      setHashMore(false);
+    } finally {
+      setIsLoadingPosts(false);
     }
-
-  },     [isLoadingPosts, posts, hasMore, page, fetchFunction])
-
+  }, [isLoadingPosts, posts, hasMore, page, fetchFunction]);
 
   useEffect(() => {
     const handleScroll = () => {
-        const cekScroll = window.innerHeight + window.scrollY >= document.body.offsetHeight -100;
+      const cekScroll =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
 
-        if(cekScroll){
-            loadMore()
-        }
+      if (cekScroll) {
+        loadMore();
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
 
-    }
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [loadMore,hasMore, isLoadingPosts])
-
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loadMore, hasMore, isLoadingPosts]);
 
   const reset = () => {
     setPosts([]);
     setErrors({});
     setHashMore(false);
     setIsLoadingPosts(false);
-    setPage(initialPage)
-  }
+    setPage(initialPage);
+  };
 
-  return {posts, isLoadingPosts, reset, hasMore, errors}
+  return { posts, isLoadingPosts, reset, hasMore, errors };
 };

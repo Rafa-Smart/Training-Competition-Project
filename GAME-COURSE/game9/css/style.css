@@ -1,0 +1,110 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: aquamarine;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#toggle-search {
+  padding: 12px;
+  background-color: bisque;
+  color: blue;
+  border-radius: 12px;
+  position: fixed;
+  top: 20px;
+  left: 100px;
+  z-index: 300;
+  border: none;
+  cursor: pointer;
+}
+
+#route-panel {
+  z-index: 200;
+  border-radius: 12px;
+  max-height: calc(100vh - 70px);
+  width: 280px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: fixed;
+  top: 50px;
+  left: 100px;
+  background-color: beige;
+}
+
+#map-area {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+#map-container {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+#map-img {
+  user-select: none;
+}
+
+.pin {
+  z-index: 666;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+#lines-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+#pinpoints-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.pin-action {
+  display: flex;
+  border: 1px solid rgb(0, 77, 128);
+  border-radius: 12px;
+  padding: 3px;
+  justify-content: space-around;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.pin-action div img {
+  width: 15px;
+  height: 15px;
+}
+
+.pin-img {
+  width: 50px;
+  height: 40px;
+  filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.pin-action.connecting {
+  border-color: purple;
+}

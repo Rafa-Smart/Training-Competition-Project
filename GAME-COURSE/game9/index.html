@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>game</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <button id="toggle-search">Route</button>
+    <div id="route-panel">
+      <h2>Panel Search</h2>
+      <form class="route-input">
+        <div class="input-group">
+          <label for="from" class="from">Form</label>
+          <input type="text" id="from" class="from" />
+        </div>
+        <div class="input-group">
+          <label for="to" class="to">Form</label>
+          <input type="text" id="to" class="to" />
+        </div>
+        <button id="btn-search">Search</button>
+      </form>
+      <div id="sort-control" class="hidden">
+        <p>Sort By:</p>
+        <button class="sort-btn active" data-sort="fastest">Fastest</button>
+        <button class="sort-btn" data-sort="cheaptest">Cheaptest</button>
+      </div>
+      <div id="route-results"></div>
+    </div>
+
+    <div id="map-area">
+      <div id="container-map">
+        <img
+          src="/assets//indonesia.svg"
+          draggable="false"
+          id="map-img"
+          alt="peta indonesia"
+        />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </div>
+
+    <div id="popup-add" class="popup hidden">
+      <div class="popup-header">
+        <span>Add pinpoint</span>
+        <img
+          src="assets/BiXLg.svg"
+          alt="close"
+          class="popup-close"
+          id="close-add"
+        />
+      </div>
+      <form id="form-add">
+        <input
+          type="text"
+          id="input-name"
+          placeholder="enter location name"
+          required
+          autocapitalize="off"
+        />
+      </form>
+    </div>
+
+    <div id="popup-connect" class="popup hidden">
+      <div class="popup-header">
+        <span>Connect</span>
+        <img
+          src="assets/BiXLg.svg"
+          alt="close"
+          class="popup-close"
+          id="close-connect"
+        />
+      </div>
+      <form id="connect">
+        <input
+          type="number"
+          placeholder="distance (km)"
+          id="input-distance"
+          required
+          min="1"
+          autocomplete="off"
+        />
+        <select name="input-mode" id="input-mode">
+          <option value="">Select Transport</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
+        </select>
+        <button type="submit">select</button>
+      </form>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
