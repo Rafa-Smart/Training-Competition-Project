@@ -12,11 +12,11 @@
       <h2>Panel Search</h2>
       <form class="route-input">
         <div class="input-group">
-          <label for="from" class="from">Form</label>
+          <label for="from" class="from">From</label>
           <input type="text" id="from" class="from" />
         </div>
         <div class="input-group">
-          <label for="to" class="to">Form</label>
+          <label for="to" class="to">To</label>
           <input type="text" id="to" class="to" />
         </div>
         <button id="btn-search">Search</button>
@@ -32,7 +32,7 @@
     <div id="map-area">
       <div id="container-map">
         <img
-          src="/assets//indonesia.svg"
+          src="/assets/indonesia.svg"
           draggable="false"
           id="map-img"
           alt="peta indonesia"
@@ -41,6 +41,8 @@
         <div id="pinpoints-layer"></div>
       </div>
     </div>
+
+    
 
     <div id="popup-add" class="popup hidden">
       <div class="popup-header">
@@ -73,7 +75,7 @@
           id="close-connect"
         />
       </div>
-      <form id="connect">
+      <form id="form-connect">
         <input
           type="number"
           placeholder="distance (km)"
@@ -91,6 +93,8 @@
         <button type="submit">select</button>
       </form>
     </div>
+
+    
 
     <script src="js/script.js"></script>
   </body>

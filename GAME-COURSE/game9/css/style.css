@@ -5,7 +5,7 @@
 }
 
 body {
-  background-color: aquamarine;
+  background-color: #c8ebff;
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -45,6 +45,10 @@ body {
   display: none;
 }
 
+#route-panel .open{
+  display: flex;
+}
+
 #map-area {
   position: fixed;
   top: 0;
@@ -72,16 +76,15 @@ body {
   justify-content: center;
   pointer-events: auto;
   /* ini wajib ya */
-  /* Jadi misalnya pin Jakarta di x:100, y:200 — tanpa transform, pojok kiri atas pin ada di titik (100, 200), tapi garis menuju ke (100, 200) yang harusnya jadi ujung bawah tengah pin.
+  /* Jadi misalnya pin Jakarta di x:100, y:200 — tanpa transform, pojok kiri atas pin ada di titik (100, 200), tapi garis menuju ke (100, 200) yang harusnya jadi ujung bawah tengah pin. 
 Dengan translate(-50%, -100%), pin akan naik ke atas dan geser ke kiri supaya ujung bawah tengahnya tepat di titik (100, 200), sama persis dengan titik garis. */
-transform: translate(-20%, -100%);
+  transform: translate(-20%, -100%);
 
-/* JDI INI MAH DI SESUAIKAN AJA YA NANTI PAKE PERSEN YA */
+  /* JDI INI MAH DI SESUAIKAN AJA YA NANTI PAKE PERSEN YA */
 
   /* ENGGA YA INI THU RELATIVE TERNYATA */
   /* JAD MISALNYA KALO ADA TITIK X 100 DAN Y 300 MAKA KAN TITIK AWAL DARI PIN ADALH POJOK KIRI ATAS AKN
   YAITU DI TITIK X 200 DAN Y 300 NAH  */
-
 }
 
 #lines-layer {
@@ -114,9 +117,9 @@ transform: translate(-20%, -100%);
   height: 15px;
 }
 
-.pin-img { 
+.pin-img {
   /* PENTING */
-  
+
   display: block;
   filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
     brightness(100%);
@@ -124,4 +127,8 @@ transform: translate(-20%, -100%);
 
 .pin-action.connecting {
   border-color: purple;
+}
+
+.popup.hidden {
+  display: none;
 }

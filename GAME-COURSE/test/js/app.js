@@ -321,8 +321,8 @@ class App {
   //   scale = 1.7825, ox = -259.3, oy = -42.2
 
   //   Verifikasi: titik px=426 sekarang ada di layar:
-  //     layar_x = 426 × 1.7825 + (-259.3) = 759.3 - 259.3 = 500
-  //     layar_y = 192 × 1.7825 + (-42.2)  = 342.2 - 42.2  = 300
+  //     layar_x = 426 × 1.7825 + (-259.3) = 759.3 - 259.3 = 500 
+  //     layar_y = 192 × 1.7825 + (-42.2)  = 342.2 - 42.2  = 300 
   //   → Titik yang sama tetap di posisi mx=500, my=300 di layar!
 
   // Konversi koordinat layar ke koordinat peta
@@ -416,7 +416,7 @@ class App {
 
       var n = c.transports.length;
 
-      // Loop semua transport dalam koneksi ini
+      // Loop semua transport dalam koneksi ini 
 
       for (var j = 0; j < n; j++) {
         var t = c.transports[j];
@@ -424,7 +424,7 @@ class App {
         // Hitung offset supaya garis paralel tidak numpuk
 
         var off = this.offset(a, b, j, n);
-        var x1 = a.x + off.x;
+        var x1 = a.x + off.x  ;
         var y1 = a.y + off.y;
         var x2 = b.x + off.x;
         var y2 = b.y + off.y;
@@ -448,12 +448,12 @@ class App {
         ctx.stroke();
 
         // Tulis jarak di tengah garis
-        ctx.shadowColor = "transparent";
+        ctx.shadowColor = "transparent";  
         ctx.shadowBlur = 0;
         ctx.fillStyle = App.TR[t.mode].color;
         ctx.font = "bold 11px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(t.distance, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
+        ctx.fillText(t.distance, (x1 + x2) / 2, (y1 + y2) / 2 - 5);       
       }
     }
   }
@@ -636,6 +636,7 @@ class App {
       });
     }
 
+    this.hidePop(this.popConn);
     this.cancelConnect();
     this.save();
     this.render();
@@ -667,7 +668,7 @@ class App {
 
   // Cek apakah klik mengenai garis
   // Pakai canvas isPointInStroke (built-in)
-  findClickedLine(e) {
+  findClickedLine(e) {  
     var pos = this.toMap(e.clientX, e.clientY);
     var ctx = this.ctx;
 
@@ -730,7 +731,7 @@ class App {
     var fp = null; // from pin
     var tp = null; // to pin
 
-    for (var i = 0; i < this.pins.length; i++) {
+    for (var i = 0; i < this.pins.length; i++) {    
       if (this.pins[i].name === this.inFrom.value.trim()) fp = this.pins[i];
       if (this.pins[i].name === this.inTo.value.trim()) tp = this.pins[i];
     }
@@ -940,7 +941,7 @@ class App {
       // waktu = hh ? "2h 15min" : "15min"
       //    = "2h 15min"                   // karena hh=2 (truthy)
 
-      h += `  
+      h += `
     <div class="route-card">
         <div class="steps">
             ${r.steps
@@ -968,7 +969,7 @@ class App {
   // ========================================
 
   showPop(el, e) {
-    el.style.left = e.clientX + 10 + "px";
+    el.style.left =  e.clientX + 10 + "px";
     el.style.top = e.clientY - 10 + "px";
     el.classList.remove("hidden");
   }
@@ -1161,13 +1162,12 @@ class App {
       var d = parseInt(self.inDist.value);
       var m = self.inMode.value;
       if (d && m) self.submitConnect(d, m);
-      this.hidePop(self.popConn);
     };
 
     // ------------------------------------
     // ❌ CLOSE POPUPS
     // ------------------------------------
-    document.getElementById("close-add").onclick = function () {  
+    document.getElementById("close-add").onclick = function () {
       self.hidePop(self.popAdd);
     };
 
@@ -1177,7 +1177,6 @@ class App {
     };
 
     // ------------------------------------
-
     // ⌨️ KEYBOARD: Delete & Escape
     // ------------------------------------
     document.addEventListener("keydown", function (e) {
@@ -1223,11 +1222,10 @@ class App {
         return;
       }
 
-      if (self.connectFrom) self.cancelConnect(); 
+      if (self.connectFrom) self.cancelConnect();
       if (self.selectedLine) {
         self.selectedLine = null;
         self.render();
-
       }
     });
 
