@@ -41,7 +41,7 @@ class App {
 
   // Konfigurasi transportasi (untuk hitung waktu & biaya)
   static TR = {
-    train: { color: "#33E339", speed: 120, cost: 500, label: "Train" }, 
+    train: { color: "#33E339", speed: 120, cost: 500, label: "Train" },
     bus: { color: "#A83BE8", speed: 80, cost: 100, label: "Bus" },
     airplane: { color: "#000000", speed: 800, cost: 1000, label: "Airplane" },
   };
@@ -205,7 +205,6 @@ class App {
   // Fungsi ini untuk menyimpan graph ke browser
   // supaya tidak hilang saat refresh
 
-
   save() {
     localStorage.setItem("pins", JSON.stringify(this.pins));
     localStorage.setItem("conns", JSON.stringify(this.conns));
@@ -322,8 +321,8 @@ class App {
   //   scale = 1.7825, ox = -259.3, oy = -42.2
 
   //   Verifikasi: titik px=426 sekarang ada di layar:
-  //     layar_x = 426 × 1.7825 + (-259.3) = 759.3 - 259.3 = 500 ✅
-  //     layar_y = 192 × 1.7825 + (-42.2)  = 342.2 - 42.2  = 300 ✅
+  //     layar_x = 426 × 1.7825 + (-259.3) = 759.3 - 259.3 = 500 
+  //     layar_y = 192 × 1.7825 + (-42.2)  = 342.2 - 42.2  = 300 
   //   → Titik yang sama tetap di posisi mx=500, my=300 di layar!
 
   // Konversi koordinat layar ke koordinat peta
@@ -417,14 +416,15 @@ class App {
 
       var n = c.transports.length;
 
-      // Loop semua transport dalam koneksi ini
-      //
+      // Loop semua transport dalam koneksi ini 
+
       for (var j = 0; j < n; j++) {
         var t = c.transports[j];
 
         // Hitung offset supaya garis paralel tidak numpuk
+
         var off = this.offset(a, b, j, n);
-        var x1 = a.x + off.x;
+        var x1 = a.x + off.x  ;
         var y1 = a.y + off.y;
         var x2 = b.x + off.x;
         var y2 = b.y + off.y;
@@ -440,7 +440,7 @@ class App {
           ctx.lineWidth = 3;
         }
 
-        // 🎨 GAMBAR GARIS
+        // GAMBAR GARIS
         ctx.beginPath();
         ctx.moveTo(x1, y1); // Titik awal
         ctx.lineTo(x2, y2); // Titik akhir
@@ -448,12 +448,12 @@ class App {
         ctx.stroke();
 
         // Tulis jarak di tengah garis
-        ctx.shadowColor = "transparent";
+        ctx.shadowColor = "transparent";  
         ctx.shadowBlur = 0;
         ctx.fillStyle = App.TR[t.mode].color;
         ctx.font = "bold 11px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(t.distance, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
+        ctx.fillText(t.distance, (x1 + x2) / 2, (y1 + y2) / 2 - 5);       
       }
     }
   }
@@ -466,57 +466,56 @@ class App {
 
     // seberapa jauh digeser
     var s = -(n - 1) * 3 + i * 6;
-// Ini yang paling membingungkan. Mari kita bedah pelan-pelan.
-// Tujuannya: kita mau semua garis tersebar simetris di tengah.
-// Bayangkan kamu punya beberapa orang yang mau berdiri berjajar, dan kamu mau mereka berpusat di tengah:
-// 1 orang:    [  A  ]          → A di posisi 0
-// 2 orang:    [ A B ]          → A di -3, B di +3
-// 3 orang:    [ A B C ]        → A di -6, B di 0, C di +6
-// Itulah yang dihitung s. Mari kita buktikan dengan angka:
-// Kasus n=2 (2 transport):
-// i=0: s = -(2-1) × 3 + 0 × 6 = -1×3 + 0 = -3
-// i=1: s = -(2-1) × 3 + 1 × 6 = -1×3 + 6 = +3
+    // Ini yang paling membingungkan. Mari kita bedah pelan-pelan.
+    // Tujuannya: kita mau semua garis tersebar simetris di tengah.
+    // Bayangkan kamu punya beberapa orang yang mau berdiri berjajar, dan kamu mau mereka berpusat di tengah:
+    // 1 orang:    [  A  ]          → A di posisi 0
+    // 2 orang:    [ A B ]          → A di -3, B di +3
+    // 3 orang:    [ A B C ]        → A di -6, B di 0, C di +6
+    // Itulah yang dihitung s. Mari kita buktikan dengan angka:
+    // Kasus n=2 (2 transport):
+    // i=0: s = -(2-1) × 3 + 0 × 6 = -1×3 + 0 = -3
+    // i=1: s = -(2-1) × 3 + 1 × 6 = -1×3 + 6 = +3
 
-// Hasil: garis 0 geser -3px, garis 1 geser +3px
-// Visualisasi:
-//   ─────────────────  (i=0, s=-3, di atas)
-//   ─────────────────  (i=1, s=+3, di bawah)
-// Kasus n=3 (3 transport):
-// i=0: s = -(3-1) × 3 + 0 × 6 = -2×3 + 0  = -6
-// i=1: s = -(3-1) × 3 + 1 × 6 = -2×3 + 6  =  0
-// i=2: s = -(3-1) × 3 + 2 × 6 = -2×3 + 12 = +6
+    // Hasil: garis 0 geser -3px, garis 1 geser +3px
+    // Visualisasi:
+    //   ─────────────────  (i=0, s=-3, di atas)
+    //   ─────────────────  (i=1, s=+3, di bawah)
+    // Kasus n=3 (3 transport):
+    // i=0: s = -(3-1) × 3 + 0 × 6 = -2×3 + 0  = -6
+    // i=1: s = -(3-1) × 3 + 1 × 6 = -2×3 + 6  =  0
+    // i=2: s = -(3-1) × 3 + 2 × 6 = -2×3 + 12 = +6
 
-// Hasil: garis 0 geser -6px, garis 1 tetap di tengah, garis 2 geser +6px
-// Visualisasi:
-//   ─────────────────  (i=0, s=-6)
-//   ─────────────────  (i=1, s= 0)
-//   ─────────────────  (i=2, s=+6)
-// Kenapa rumusnya -(n-1) × 3 + i × 6?
-// -(n-1) × 3  →  ini adalah TITIK MULAI (garis paling kiri/atas)
-//                semakin banyak garis, semakin jauh titik mulainya ke kiri
+    // Hasil: garis 0 geser -6px, garis 1 tetap di tengah, garis 2 geser +6px
+    // Visualisasi:
+    //   ─────────────────  (i=0, s=-6)
+    //   ─────────────────  (i=1, s= 0)
+    //   ─────────────────  (i=2, s=+6)
+    // Kenapa rumusnya -(n-1) × 3 + i × 6?
+    // -(n-1) × 3  →  ini adalah TITIK MULAI (garis paling kiri/atas)
+    //                semakin banyak garis, semakin jauh titik mulainya ke kiri
 
-// i × 6       →  ini adalah LANGKAH per garis (tiap garis +6px dari sebelumnya)
+    // i × 6       →  ini adalah LANGKAH per garis (tiap garis +6px dari sebelumnya)
 
-// Kenapa 6? Karena jarak antar garis = 6px
-// Kenapa -(n-1)×3? Karena titik mulai = -(jumlah_jarak / 2)
-//   = -(  (n-1) × 6  / 2  )
-//   = -(n-1) × 3
-// Visualisasi dengan garis bantu:
-// n=3:
-//         ← 6px → ← 6px →
-//   ──────────────────────  (i=0, s=-6)
-//   ──────────────────────  (i=1, s= 0)  ← tengah
-//   ──────────────────────  (i=2, s=+6)
+    // Kenapa 6? Karena jarak antar garis = 6px
+    // Kenapa -(n-1)×3? Karena titik mulai = -(jumlah_jarak / 2)
+    //   = -(  (n-1) × 6  / 2  )
+    //   = -(n-1) × 3
+    // Visualisasi dengan garis bantu:
+    // n=3:
+    //         ← 6px → ← 6px →
+    //   ──────────────────────  (i=0, s=-6)
+    //   ──────────────────────  (i=1, s= 0)  ← tengah
+    //   ──────────────────────  (i=2, s=+6)
 
-// Pusat = 0  
-// Jarak antar garis = 6px  
+    // Pusat = 0
+    // Jarak antar garis = 6px
     // CARA PALING SIMPEL:
     // kita tidak hitung "tegak lurus yang sempurna"
     // kita cukup lihat: garis ini lebih horizontal atau lebih vertikal?
 
     var dx = Math.abs(b.x - a.x); // lebar garis
     var dy = Math.abs(b.y - a.y); // tinggi garis
-
 
     // simple aja gitu jadi klao mislanya in lebih lebar dari pada tingi si x nya
     // arinya kna lagi lebar atau garis horizontanl

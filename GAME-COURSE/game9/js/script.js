@@ -17,26 +17,23 @@ class App {
   // ○ Speed: 800 km/h
   // ○ Cost: Rp1.000/km
 
-  static Trasportasi = [
-    {
-      name: "Train",
+  static Trasportasi = {
+    Train: {
       color: "#33E339",
       speed: 120,
       cost: 500,
     },
-    {
-      name: "Bus",
+    Bus: {
       color: "#A83BE8",
       speed: 80,
       cost: 100,
     },
-    {
-      name: "Airplane",
+    Airplane: {
       color: "#000000",
       speed: 800,
       cost: 1000,
     },
-  ];
+  };
 
   constructor() {
     this.scale = 1;
@@ -95,7 +92,7 @@ class App {
     ];
 
     this.fit();
-    this.renderPins();
+    this.render();
   }
 
   save() {
@@ -115,7 +112,7 @@ class App {
 
     this.scale = Math.max(
       widthMapArea / App.lebarMap,
-      heightMapArea / App.heightMap,
+      heightMapArea / App.tinggiMap,
     );
     this.ox = (widthMapArea - App.lebarMap * this.scale) / 2;
     this.oy = (heightMapArea - App.tinggiMap * this.scale) / 2;
@@ -135,7 +132,7 @@ class App {
     const petaY = (ukuranTinggiLayar - this.oy) / this.scale;
 
     // hitung lagi scalenya
-    this.scale = Math.min(0.3, Math.max(15, factor * this.scale));
+    this.scale = Math.max(0.3, Math.min(15, factor * this.scale));
     this.apply();
   }
 
@@ -144,8 +141,8 @@ class App {
     const ukuranLebarLayar = clientX - relative.left;
     const ukuranTinggiLayar = clientY - relative.top;
     return {
-      x: ukuranLebarLayar - App.lebarMap / this.scale,
-      y: ukuranTinggiLayar - App.tinggiMap / this.scale,
+      x: (ukuranLebarLayar - this.ox) / this.scale,
+      y: (ukuranTinggiLayar - this.oy) / this.scale,
     };
   }
 
@@ -188,6 +185,12 @@ class App {
     </div>`;
   }
 
+  render() {
+    this.renderPins();
+    this.renderLines();
+    this.apply();
+  }
+
   renderPins() {
     var html = "";
     for (let i = 0; i < this.pins.length; i++) {
@@ -197,8 +200,6 @@ class App {
   }
 
   renderLines() {
-    var ctx = this.ctx;
-
     // kita reset canvaas ya pake cara ini
     this.canvas.width = App.lebarMap;
     this.canvas.height = App.tinggiMap;
@@ -207,17 +208,66 @@ class App {
 
     for (let i = 0; i < this.connection.length; i++) {
       let conn = this.connection[i];
+      const fromPin = this.findPin(conn.fromId);
+      const toPin = this.findPin(conn.toId);
+      console.log(toPin);
+      if (!fromPin || !toPin) continue; // lewat aja sekarang
+
+      const jumlahTransportasi = conn.trasportasi.length;
+      for (let i = 0; i < jumlahTransportasi; i++) {
+        console.log('satu kali ', i)
+        let transportasiLoop = conn.trasportasi[i];
+
+        // kita buat ofset nya
+        let off = this.offset(fromPin, toPin, i, jumlahTransportasi);
+        let fromPinX = fromPin.x + off.x;
+        let toPinX = toPin.x + off.x;
+        let fromPinY = fromPin.y + off.y;
+        let toPinY = toPin.y + off.y;
+
+        // disni kita cek duu apkaah ada satu line di sini yang lagi di seleect
+
+        // selectline adalah id ya dan ini tuh bukan id per pin api id dari connectionnya
+        if (this.selectedLine == conn.id) {
+          this.ctx.shadowColor = "rgb(223, 223, 13)";
+          this.ctx.shadowBlur = 6;
+          this.ctx.lineWidth = 5;
+        } else {
+          this.ctx.shadowColor = "transparent";
+          this.ctx.shadowBlur = 0;
+          this.ctx.lineWidth = 3;
+        }
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(fromPinX, fromPinY);
+        this.ctx.lineTo(toPinX, toPinY);
+        this.ctx.strokeStyle = App.Trasportasi[transportasiLoop.mode].color;
+        this.ctx.stroke();
+
+        // sekalian tulis istance di tengh
+        this.ctx.shadowColor = "transparent";
+        this.ctx.shadowBlur = 0;
+        this.ctx.fillStyle = App.Trasportasi[transportasiLoop.mode].color
+        this.ctx.font = "bold 11px sans-serif"; 
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(
+          transportasiLoop.distance + "km",
+          (fromPinX + toPinX) / 2,
+          (toPinY+ fromPinY) / 2,
+        );
+      }
     }
   }
 
   offset(fromPin, toPin, index, jumlah) {
-    if (index <= 1) return { x: 0, y: o };
-    const s = -(n - 1) * 3 + index * 6;
+    if (jumlah <= 1) return { x: 0, y: 0 };
+    const s = -(jumlah - 1) * 3 + index * 6;
 
+    // ini uth cuma pengen dapetin data lebar dan tingginya ja dan ga peduli kalo dia min atau plus
     const dx = Math.abs(toPin.x - fromPin.x);
-    const dy = Math.abs(toPin.y - toPin.y);
+    const dy = Math.abs(toPin.y - fromPin.y);
 
-    if (dx > dy) {
+    if (dx >= dy) {
       // ini pengecekan jika dia itu
       // horizontal
       return {
@@ -233,15 +283,25 @@ class App {
   }
 
   findPin(id) {
-    return this.pins.filter((pin) => {
-      return pin.id == id;
-    });
+    //  return this.pins.filter((pin) => {
+    //     return pin.id == id
+    //   });
+
+    // jangan pake ini soalnya kan return array jadi pae ini aja
+    let hasil;
+    for (let i = 0; i < this.pins.length; i++) {
+      if (this.pins[i].id == id) {
+        hasil = this.pins[i];
+      }
+    }
+    // console.log('inipin', hasil)
+    return hasil;
   }
 
   addPin(x, y, name) {
     this.pins.push({
       name: name,
-      id: Date.datetime(),
+      id: Date.now(),
       x: x,
       y: y,
     });
