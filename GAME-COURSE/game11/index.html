@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map Indonesia</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <button id="btn-toggle">Route</button>
+
+    <div id="popup-add" class="popup hidden">
+      <div id="popup-header">
+        <span>Add Pinpoint</span>
+        <img src="/assets/BiXLg.svg" alt="close button" id="close-add" />
+      </div>
+      <form id="form-add">
+        <input
+          type="text"
+          placeholder="enter name location"
+          required
+          id="input-name"
+          autocomplete="off"
+        />
+      </form>
+    </div>
+
+    <div id="popup-connect" class="popup hidden">
+      <div id="popup-header">
+        <span>Connect</span>
+        <img src="/assets/BiXLg.svg" alt="close connect" id="close-connect" />
+      </div>
+
+      <form id="form-connect">
+        <input
+          type="number"
+          placeholder="enter distance"
+          autocomplete="off"
+          min="1"
+          required
+          id="input-distance"
+        />
+        <select name="input-mode" id="input-mode">
+            <option value="">Select Transport</option>
+            <option value="Train">Train</option>
+            <option value="Bus">Bus</option>
+            <option value="Airplane">Airplane</option>
+        </select>
+        <button type="submit">Connect</button>
+      </form>
+    </div>
+
+    <main id="map-area">
+      <div id="map-container">
+        <img src="/assets/indonesia.svg" alt="map indonesia" id="map-img" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </main>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

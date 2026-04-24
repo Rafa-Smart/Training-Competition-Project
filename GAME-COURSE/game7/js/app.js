@@ -811,7 +811,7 @@ class App {
         var c = self.conns[i];
         var next = null;
 
-        // 🔵 GRAPH TRAVERSAL (dua arah / undirected)
+        // 🔵 GRAPH TRAVERSAL (dua arah / undirected) 
         // Cek apakah edge ini terhubung ke node saat ini
 
         // jadi gini pas kita cari jakarta ke serang
@@ -971,6 +971,7 @@ class App {
     el.style.left = e.clientX + 10 + "px";
     el.style.top = e.clientY - 10 + "px";
     el.classList.remove("hidden");
+    
   }
 
   hidePop(el) {

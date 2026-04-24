@@ -226,11 +226,11 @@ class App {
       const toPin = this.findPin(conn.toId);
       console.log(toPin);
       if (!fromPin || !toPin) continue; // lewat aja sekarang
-
-      const jumlahTransportasi = conn.Transportasi.length;
+      // console.log(conn)
+      const jumlahTransportasi = conn.transportasi.length;
       for (let i = 0; i < jumlahTransportasi; i++) {
         console.log("satu kali ", i);
-        let transportasiLoop = conn.Transportasi[i];
+        let transportasiLoop = conn.transportasi[i];
 
         // kita buat ofset nya
         let off = this.offset(fromPin, toPin, i, jumlahTransportasi);
@@ -449,9 +449,11 @@ class App {
     }
 
     // sekarang kita cek
+    // alh ya ini
     if (!(dapetFrom != DapetTo && dapetFrom && DapetTo)) {
       this.btnSearch.disable = true;
     }
+    // this.btnSearch.disabled = !(dapetFrom && dapetTo);
   }
 
   searchRoute() {
@@ -459,8 +461,8 @@ class App {
     let toPin;
 
     for (let i = 0; i < this.pins.length; i++) {
-      if (fromPin.id == this.pins[i].id) fromPin = this.pins[i];
-      if (toPin.id == this.pins[i].id) toPin = this.pins[i];
+      if (this.inFrom.value.trim() == this.pins[i].name) fromPin = this.pins[i];
+      if (this.inTo.value.trim() == this.pins[i].name) toPin = this.pins[i];
     }
 
     this.routes = [];
@@ -497,11 +499,11 @@ class App {
               best = transports[j];
             }
           }
-
+// best.distance / config.cost
           var config = App.Transportasi[best.mode];
           duration += best.distance / config.speed;
-          cost += best.distance / config.cost;
-          steps += `(${fromPin} -> (${toPin}) (${duration}) (${cost}))`;
+          cost += best.distance * config.cost;
+          steps.push(`(${fromPin} -> (${toPin}) (${duration}) (${cost}))`);
         }
 
         this.routes.push({
@@ -530,7 +532,7 @@ class App {
       }
     };
 
-    this.showRoutes.classList.remove("hidden");
+    document.getElementById("sort-control").classList.remove("hidden");
     this.showRoutes();
   }
 

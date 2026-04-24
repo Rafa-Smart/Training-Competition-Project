@@ -1,0 +1,138 @@
+/* TAHAP PERTAMA MAP FUNCTIONALITY */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #c8ebff;
+}
+
+#map-area {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #c8ebff;
+  cursor: grab;
+}
+
+#map-area.dragging {
+  cursor: grabbing;
+}
+
+#map-container {
+  transform-origin: 0 0;
+  position: absolute;
+}
+
+#map-img {
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#lines-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* none biar kalo di klik maka yang kena itu adalah layer nya si map-img */
+  pointer-events: none;
+}
+
+#pinpoints-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  /* none biar kalo di klik maka yang kena itu adalah layer nya si map-img */
+}
+
+/* TAHAP KEDUA PIN POINS CONTROL */
+
+#btn-toggle {
+  position: fixed;
+  z-index: 100;
+  top: 50px;
+  left: 90px;
+  border-radius: 8px;
+  border: none;
+  padding: 7px;
+  color: brown;
+  background-color: blanchedalmond;
+}
+
+.popup {
+  width: fit-content;
+
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
+  
+  border-radius: 9px;
+  background-color: blanchedalmond;
+  color: brown; 
+  background-color: #ccc;
+  z-index: 600;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+/* pinpoint */
+
+/* kare kita pake pint point ini akna di pke berulang ulang
+jadinya ga boleh pake id ya */
+.pinpoint {
+  position: absolute;
+  transform: translate(-37%, -100%);
+  /* Kenapa .pinpoint pakai transform: translate(-50%, -100%)?
+Koordinat pin (x, y) menunjuk ke titik ujung bawah marker, bukan pojok kiri atas elemen. Dengan translate ini, elemen bergeser ke kiri setengah lebarnya dan ke atas penuh tingginya, sehingga ujung bawah marker tepat di koordinat yang dimaksud. */
+  z-index: 222;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  pointer-events: auto;
+  /* Kenapa pointer-events: none di #pinpoints-layer tapi pointer-events: auto di .pinpoint?
+Layer pembungkusnya transparan terhadap klik, tapi tiap pin individual bisa diklik. Ini supaya klik di area kosong peta tetap bisa memicu drag, bukan tertangkap layer-nya. */
+}
+.pinpoint-label {
+  background-color: #ccc;
+  padding: 5px;
+  z-index: 900;
+  border: 1px solid purple;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-around;
+  gap: 3px;
+  align-items: center;
+  font-size: 10px;
+  cursor: pointer;
+}
+.btn-connect,
+.btn-delete {
+  width: 15px;
+}
+
+.marker {
+  filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.pinpoint-label.connecting {
+  border: 2px solid pink;
+}
