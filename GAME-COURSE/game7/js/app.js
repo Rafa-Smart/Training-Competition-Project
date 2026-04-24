@@ -1253,7 +1253,7 @@ class App {
       sBtns[i].onclick = function () {
         for (var j = 0; j < sBtns.length; j++) {
           sBtns[j].classList.remove("active");
-        }
+        } 
         this.classList.add("active");
         self.sortMode = this.getAttribute("data-sort");
         self.showRoutes();

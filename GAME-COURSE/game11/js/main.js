@@ -22,7 +22,7 @@ class App {
     // tahap 2
     this.connectFrom = null;
     this.connectTo = null;
-    this.selectedLine - null;
+    this.selectedLine = null;
     this.clickPositionInMap = {};
     this.sortMode = "fastest";
     this.routes = [];
@@ -49,7 +49,7 @@ class App {
     this.inputMode = $("input-mode");
 
     // keempat
-    this.inputFromSearh = $("input-from");
+    this.inputFromSearch = $("input-from");
     this.inputToSearch = $("input-to");
     this.btnSearch = $("btn-search");
     this.sortSearch = "fastest";
@@ -435,6 +435,168 @@ class App {
     return null;
   }
 
+  checkSearch() {
+    let fromInput = this.inputFromSearch.value;
+    let toInput = this.inputToSearch.value;
+
+    let isAdaFrom;
+    let isAdaTo;
+
+    for (let i = 0; i < this.pins.length; i++) {
+      let pin = this.pins[i];
+      if (pin.name == fromInput) isAdaFrom = true;
+      if (pin.name == toInput) isAdaTo = true;
+    }
+
+    this.btnSearch.disabled = !(isAdaFrom && isAdaTo && isAdaFrom != isAdaTo);
+  }
+
+  searchRoute() {
+    let pinFrom;
+    let pinTo;
+    console.log({ pinFrom });
+    console.log({ pinTo });
+
+    for (let i = 0; i < this.pins.length; i++) {
+      let pin = this.pins[i];
+      if (
+        pin.name.toLowerCase().trim() ==
+        this.inputFromSearch.value.toLowerCase().trim()
+      )
+        pinFrom = pin;
+      if (
+        pin.name.toLowerCase().trim() ==
+        this.inputToSearch.value.toLowerCase().trim()
+      )
+        pinTo = pin;
+    }
+
+    if (!pinFrom || !pinTo) {
+      return;
+    }
+    this.routes = [];
+    let visited = {};
+    visited[pinFrom.id] = true;
+
+    const dfs = (current, path) => {
+      console.log("masuk dfs");
+      if (current == pinTo.id) {
+        console.log("masuk if");
+        let duration = 0;
+        let cost = 0;
+        let steps = [];
+
+        for (let i = 0; i < path.length; i++) {
+          let objekPath = path[i];
+          let trasportasi = objekPath.conn.transportasi;
+          //   ktia siapi juga fromname sama toname untuk kasih nama si steps
+          // dan jgua siapin bestvalur sana best ya
+          var from = this.findPin(objekPath.fromId).name;
+          var to = this.findPin(objekPath.toId).name;
+          let best = trasportasi[0]; // ini untuk awal aja
+          let bestValue = Infinity;
+
+          for (let j = 0; j < trasportasi.length; j++) {
+            let tran = trasportasi[j];
+            let config = App.Transports[tran.mode];
+
+            let value =
+              this.sortMode == "fastest"
+                ? tran.distance / config.speed
+                : tran.distance * config.cost;
+
+            if (value < bestValue) {
+              // ini untuk pertama kali pasti true ya
+              bestValue = value;
+              best = tran; // isinya adalh objek tran ya bukan hasil perhitauganya
+            }
+          }
+
+          let config = App.Transports[best.mode]; // ingat best adalh objek tran
+          duration += best.distance / config.speed;
+          cost += best.distance * config.cost;
+          steps.push(
+            `(${from}) -> (${to}) cost:${cost} | duration:${duration}`,
+          );
+        }
+        // nah ketika udah di cari yang paling bagus di path ini maka
+        // daia kan taruh ke routes llau return
+        // nah nanit kan pas rturn dia ka lagi di surabaya si next dfsnya
+        // nanti dia akn pop si path surabaya dan hapus visited surabaya
+        // nah nanti mialnya dia di semarnag ya sbeleum dapet surabaya tuh nanit mislanya dia ketemu surabaya itu di loop ke 2 maka nanti lanjut lagi ke loop 3 sampai seterusnya klo ga dapet maka setelah loopnya selesa maka akna return sendiri / beres sendri kan dan nanit jgua akan langsung jalaanin si pop dna visited delete
+
+        this.routes.push({ duration: duration, cost: cost, steps: steps });
+        return;
+      }
+
+      for (let i = 0; i < this.connection.length; i++) {
+        console.log("masuk explore");
+        let next = null;
+        let conn = this.connection[i];
+
+        if (current == conn.fromId) next = conn.toId;
+        if (current == conn.toId) next = conn.fromId;
+
+        if (next && !visited[next]) {
+          visited[next] = true;
+          path.push({
+            fromId: current,
+            toId: next,
+            conn: conn,
+          });
+
+          dfs(next, path);
+          delete visited[next];
+          path.pop();
+        }
+      }
+    };
+
+    dfs(pinFrom.id, []);
+    this.showRoutes();
+    this.btnSearch.classList.remove("hidden");
+  }
+
+  showRoutes() {
+    console.log("ini routes", this.routes);
+    let sorted = this.routes
+      .slice()
+      .sort((a, b) => {
+        if (this.sortMode == "fastest") {
+          return a.dur - b.dur;
+        } else {
+          // JNANGAN LUPA RETURN
+          return a.cost - b.cost;
+        }
+      })
+      .slice(0, 10);
+    console.log(sorted);
+
+    if (sorted.length <= 0) {
+      return `<p>belum ada route di sini</p>`;
+    }
+
+    let html = ``;
+
+    for (let i = 0; i < sorted.length; i++) {
+      let sort = sorted[i];
+      //   console.log(sort) selectedLine
+      html += `
+    <div class="route-card">
+      <div class="steps">
+        ${sort.steps.map((step, index) => `<div>${index + 1}. ${step}</div>`).join("")}
+      </div>
+      <div class="info">
+        <span>duration: ${sort.duration}</span>
+        <span>cost: ${sort.cost}</span>
+      </div>
+    </div>
+        `;
+    }
+
+    this.results.innerHTML = html;
+  }
+
   showPop(element, e) {
     // console.log('masuk')
     element.style.left = e.clientX + 10 + "px";
@@ -671,6 +833,48 @@ class App {
       }
       if (self.connectFrom) self.cancelConnection();
     });
+
+    // tahap 4
+
+    this.inputFromSearch.oninput = function (e) {
+      self.checkSearch();
+    };
+
+    this.inputToSearch.oninput = function (e) {
+      self.checkSearch();
+    };
+
+    this.btnSearch.onclick = function (e) {
+      self.searchRoute();
+    };
+
+    this.btnToggle.onclick = function () {
+      self.panel.classList.toggle("open");
+    };
+
+    // ini untuk yang pindah pindah route
+
+    let buttons = document.querySelectorAll(".sort-btn");
+    if (buttons) {
+      for (let i = 0; i < buttons.length; i++) {
+        let btn = buttons[i];
+        btn.onclick = function (e) {
+          // nah pokoknya kita ilangin dulu class activenya baru ktia tambahin oke
+          for (let j = 0; j < buttons.length; j++) {
+            btn.classList.remove("active");
+          }
+
+          //   nah setlah di hapus maka untuk buto yang lagi di lik sekarn akan di tabahin oke
+          btn.classList.add("active");
+          // self.sortMode = btn.dataset.sort
+          // ga bisa ya soalnya keyword sort itu adalah fugnsi tpai kita bisa pak eini
+
+          self.sortMode = btn.getAttribute("data-sort");
+          // self.sortMode = this.getAttribute('data-sort') // gini juga bia
+          self.searchRoute();
+        };
+      }
+    }
   }
 }
 
