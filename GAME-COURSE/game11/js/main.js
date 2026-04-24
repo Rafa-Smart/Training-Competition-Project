@@ -517,6 +517,12 @@ class App {
       console.log("aaaaaa");
       e.stopPropagation();
       //   ITU PERHATIKAN STOP PROPAGATION
+      // karena kita itu mau klik yang ada didalam pin, sedangkan nanti itu ada pengecekan kalo misalnya ada klik di pinpoint
+      // maka akan connect
+
+      // tapi ini kan kita hnya mau klik agian kecil dan spesifik dari si pindpoinnya yaitu delete dan connect
+      // makanya pek propagtion biar engga bubble engga menyebar lah si event kliknya
+
       // gausah di cek misalnya if closest di .pinpoint karean ini kita hanya listener di elemen ini aja
 
       // paling kita harus pake cosest untuk elmne elemn yang ada di dalam elemen si pinpointslayer ini
@@ -532,6 +538,25 @@ class App {
       const buttonConnect = e.target.closest(".btn-connect");
       if (buttonConnect) {
         // nah nanti ya,nah sekarang
+        self.startConnect(buttonConnect.dataset.id);
+        return;
+      }
+
+      // nah sekrnag untuk kita cek kalo user yang sudha pilih pin pertama
+      // lalu dia klik hanya di pin tapi di pin mana aja asal buka pin yang udah di klik tadi / pin / connectFrom
+      // dan ga melulu harus tepat di button connectnya
+      // maka akan di anggap ingin membuat koneksi
+
+      const pilihPin = e.target.closest(".pinpoint");
+      if (
+        pilihPin &&
+        self.connectFrom != pilihPin.dataset.id &&
+        self.connectFrom
+      ) {
+        self.showPop(self.popConnect, e);
+        self.inputDistance.value = "";
+        self.inputMode.value = "";
+        self.inputDistance.focus();
       }
     });
 
@@ -552,9 +577,23 @@ class App {
       }
     };
 
+    self.formConnect.onsubmit = function (e) {
+      e.preventDefault();
+      const distance = self.inputDistance.value;
+      const mode = self.inputMode.value;
+      if (mode && distance) {
+        self.submitConnect(distance, mode);
+        self.hiddenPop(self.popConnect);
+      }
+    };
+
     // ini ketika kita klik tombol close add
     document.getElementById("close-add").onclick = function (e) {
       self.hiddenPop(self.popAdd);
+    };
+
+    document.getElementById("close-connect").onclick = function (e) {
+      self.hiddenPop(self.popConnect);
     };
 
     // ini ketika kta klik escape maka ak tutup semuanya
@@ -563,16 +602,45 @@ class App {
       // ini untk klik escape / delete ketika kita lagi ada di input name, search atau input maka fugnsi deleteline gaakn jalan gtu
 
       const input = e.target.closest("input,textarea,select");
+      //   ini buat delete line
+      if (
+        (e.key == "Backspace" || e.key == "Delete") &&
+        !input && // jadi dia ga lagi di inputan
+        self.selectedLine
+      ) {
+        e.preventDefault();
+        self.deleteLine();
+      }
+
       if (e.key == "Escape") {
         self.hiddenPop(self.popAdd);
+        self.hiddenPop(self.popConnect);
+        self.cancelConnection();
+        self.selectedLine = null;
+        self.render();
       }
     });
 
-    // ini untuk klik cancel / delete
+    // NAH INI TUH KALO MISALNYA USER LAGI KLIK MAP ASAL GITU,
+    // JADI KALO DIA LAGI MILIH CONECFROM ATAU SELECTED LNE MAKA AKA DINULL AJA JADI KAYA GA JADI GITU
 
     self.mapArea.addEventListener("click", function (e) {
       if (e.target.closest(".pinpoint,.popup")) return;
+      //   INI PENING YA jadi kalo dia klik appan selain pinpoint / popup maka akan jalainn nulllin si slectedline dll
       //   jadi ii tuh funginys kita akn bisa klik apa aja tapi bukan pinpoint/popup, maka kalo dia udah klik connectform / selectedline mka akna null lagi ini keren
+
+      self.selectedLine = null;
+      self.cancelConnection();
+      render();
+
+      //   bisa juga gini ya
+      // // kalau klik area kosong (bukan pin, bukan popup, bukan garis)
+      //   // maka cancel semua state aktif
+      //   if (self.connectFrom) self.cancelConnect();
+      //   if (self.selectedLine) {
+      //     self.selectedLine = null;
+      //     self.render();
+      //   }
     });
   }
 }
