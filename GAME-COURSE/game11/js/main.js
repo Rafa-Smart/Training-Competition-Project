@@ -49,13 +49,13 @@ class App {
     this.inputMode = $("input-mode");
 
     // keempat
-    this.inputFromSearh = null;
-    this.inputToSearch = null;
-    this.btnSearch = null;
-    this.sortSearch = null;
-    this.results = null;
-    this.panel = null;
-    this.btnToggle = null;
+    this.inputFromSearh = $("input-from");
+    this.inputToSearch = $("input-to");
+    this.btnSearch = $("btn-search");
+    this.sortSearch = "fastest";
+    this.results = $("route-results");
+    this.panel = $("route-panel");
+    this.btnToggle = $("btn-toggle");
 
     // tahap satu
     this.load();
@@ -171,8 +171,11 @@ class App {
     this.canvas.height = App.TINGGIMAP;
 
     this.connection.forEach((conn, index) => {
+      // console.log(conn)
       let pinFrom = this.findPin(conn.fromId);
       let pinTo = this.findPin(conn.toId);
+      //   console.log(pinTo)
+      //   console.log(pinFrom)
 
       let transports = conn.transportasi;
       transports.forEach((tran, index) => {
@@ -184,8 +187,8 @@ class App {
         );
         let x1 = pinFrom.x + offset.x;
         let x2 = pinTo.x + offset.x;
-        let y1 = pinFrom + offset.y;
-        let y2 = pinTo + offset.y;
+        let y1 = pinFrom.y + offset.y;
+        let y2 = pinTo.y + offset.y;
 
         // cek dulu apakah dia lagi di select apa engga
 
@@ -202,7 +205,12 @@ class App {
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
         this.ctx.lineTo(x2, y2);
-        this.ctx.strokeStyle = App.Transports[tran[mode]].color;
+        this.ctx.strokeStyle = App.Transports[tran.mode].color;
+        this.ctx.stroke(); // jangna lupa ya
+
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowColor = "transparent";
+        this.ctx.fillColor = App.Transports[tran.mode].color;
         this.ctx.font = "bold 11px sans-serif";
         this.ctx.textAlign = "center";
         this.ctx.fillText(tran.distance, (x1 + x2) / 2, (y1 + y2) / 2);
@@ -222,7 +230,7 @@ class App {
       Kenapa 6? Karena jarak antar garis = 6px
       Kenapa -(total-1)*3? Karena titik mulai = -(total jarak / 2)
     */
-    let s = 1(n - 1) * 3 + index * 6;
+    let s = -(total - 1) * 3 + index * 6;
     // cari apkah garisnya horizontal atau vertikal
     const dx = Math.abs(pinFrom.x - pinTo.x);
     const dy = Math.abs(pinFrom.y - pinTo.y);
@@ -341,7 +349,7 @@ class App {
         // ini connectFrom sama to ini pasti akan ada ya soalnya kita udha cek di atas pake &&
         fromId: this.connectFrom,
         toId: this.connectTo,
-        transports: [{ mode: mode, distance: distance }],
+        transportasi: [{ mode: mode, distance: distance }],
       });
     }
 
@@ -364,7 +372,11 @@ class App {
   deleteLine() {
     // ini gausha pake id ya
     if (!this.selectedLine) return; // kalo ga ada yang di select maka ga usah
-    this.connection = this.connection.map(
+
+    // SALAH - pakai .map() bukan .filter()
+    // .map() itu untuk MENGUBAH nilai, bukan menghapus
+    // hasilnya array berisi true/false, bukan array koneksi
+    this.connection = this.connection.filter(
       (conn, index) => conn.id != this.selectedLine,
     );
     this.selectedLine = null;
@@ -410,6 +422,7 @@ class App {
       let pinTo = this.findPin(conn.toId);
       if (!pinFrom || !pinTo) continue;
 
+      //   ini ga diwarnin ya biar bisa enak liatnya
       this.ctx.beginPath();
       this.ctx.lineWidth = 8 / this.scale;
       this.ctx.moveTo(pinFrom.x, pinFrom.y);
@@ -554,6 +567,8 @@ class App {
         self.connectFrom
       ) {
         self.showPop(self.popConnect, e);
+        // jangan lupa disni kita kasihsi conectTo nya
+        self.connectTo = pilihPin.dataset.id;
         self.inputDistance.value = "";
         self.inputMode.value = "";
         self.inputDistance.focus();
@@ -629,18 +644,32 @@ class App {
       //   INI PENING YA jadi kalo dia klik appan selain pinpoint / popup maka akan jalainn nulllin si slectedline dll
       //   jadi ii tuh funginys kita akn bisa klik apa aja tapi bukan pinpoint/popup, maka kalo dia udah klik connectform / selectedline mka akna null lagi ini keren
 
-      self.selectedLine = null;
-      self.cancelConnection();
-      render();
+      // GINI SALAH YA
+      //   self.selectedLine = null;
+      //   self.cancelConnection();
+      //   self.render();
 
+      //   WAJIB KYA GINI YA
       //   bisa juga gini ya
-      // // kalau klik area kosong (bukan pin, bukan popup, bukan garis)
-      //   // maka cancel semua state aktif
-      //   if (self.connectFrom) self.cancelConnect();
-      //   if (self.selectedLine) {
-      //     self.selectedLine = null;
-      //     self.render();
-      //   }
+      // kalau klik area kosong (bukan pin, bukan popup, bukan garis)
+      // maka cancel semua state aktif
+
+      const lineSelectId = self.findClickedLine(e);
+
+      if (lineSelectId) {
+        self.selectLine(lineSelectId);
+        return;
+      }
+
+      //   nah dinsi kalo misalnya
+      // engga kena garis maka akan di baut null aja semuanya tapi cek juga dulu
+
+      if (self.selectedLine) {
+        console.log("masksini");
+        self.selectedLine = null;
+        self.render();
+      }
+      if (self.connectFrom) self.cancelConnection();
     });
   }
 }

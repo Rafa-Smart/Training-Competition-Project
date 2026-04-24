@@ -81,10 +81,10 @@ body {
   justify-content: center;
   align-items: center;
   align-content: space-around;
-  
+
   border-radius: 9px;
   background-color: blanchedalmond;
-  color: brown; 
+  color: brown;
   background-color: #ccc;
   z-index: 600;
 }
@@ -99,7 +99,7 @@ body {
 jadinya ga boleh pake id ya */
 .pinpoint {
   position: absolute;
-  transform: translate(-37%, -100%);
+  transform: translate(-27%, -80%);
   /* Kenapa .pinpoint pakai transform: translate(-50%, -100%)?
 Koordinat pin (x, y) menunjuk ke titik ujung bawah marker, bukan pojok kiri atas elemen. Dengan translate ini, elemen bergeser ke kiri setengah lebarnya dan ke atas penuh tingginya, sehingga ujung bawah marker tepat di koordinat yang dimaksud. */
   z-index: 222;
@@ -135,4 +135,21 @@ Layer pembungkusnya transparan terhadap klik, tapi tiap pin individual bisa dikl
 
 .pinpoint-label.connecting {
   border: 2px solid pink;
+}
+
+
+#route-panel {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 100px;
+    left: 70px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid brown;
+    z-index: 900;
+    background-color: bisque;
+}
+#route-panel.open{
+    display: flex;
 }

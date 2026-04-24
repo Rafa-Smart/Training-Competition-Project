@@ -41,13 +41,39 @@
           id="input-distance"
         />
         <select name="input-mode" id="input-mode">
-            <option value="">Select Transport</option>
-            <option value="Train">Train</option>
-            <option value="Bus">Bus</option>
-            <option value="Airplane">Airplane</option>
+          <option value="">Select Transport</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
         </select>
         <button type="submit">Connect</button>
       </form>
+    </div>
+
+    <!-- tahap 4 -->
+    <div id="route-panel">
+      <h2>Find Route</h2>
+      <div class="input-group">
+        <img
+          src="/assets/MaterialSymbolsLocationOn.svg"
+          alt="gambar pin from"
+        />
+        <input type="text" id="input-from" placeholder="input from location" />
+      </div>
+      <div class="input-group">
+        <img
+          src="/assets/MaterialSymbolsLocationOnOutline.svg"
+          alt="gambar pin to"
+        />
+        <input type="text" placeholder="input to location" id="input-to" />
+      </div>
+      <button id="btn-search">Search</button>
+      <div id="sort-control" class="hidden">
+        <span>Sort By:</span>
+        <button class="sort-btn active" data-sort="fastest">fastest</button>
+        <button class="sort-btn"data-sort="cheaptest">cheaptest</button>
+      </div>
+      <div id="route-results"></div>
     </div>
 
     <main id="map-area">
