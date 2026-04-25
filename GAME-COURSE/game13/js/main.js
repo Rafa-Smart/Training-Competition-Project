@@ -115,7 +115,7 @@ class App {
     </div>       
     </div>   
     `;
-  }
+  }//
 
   renderPins() {
     let html = ``;
