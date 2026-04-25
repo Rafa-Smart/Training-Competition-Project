@@ -1,0 +1,105 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+    /* ini yang background colornya wajib di sii ya */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #c8ebff;
+  width: 100%;
+  height: 100vh;
+}
+
+#map-area {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #c8ebff;
+  cursor: grab;
+}
+
+#map-area.grabbing {
+  cursor: grabbing;
+}
+
+#map-container {
+  transform-origin: 0 0;
+  position: absolute;
+}
+
+#map-img {
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#lines-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+#pinpoints-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.popup {
+  display: flex;
+  z-index: 200;
+  flex-direction: column;
+  position: absolute;
+  width: min-content;
+  padding: 9px;
+  border: 1px solid purple;
+  border-radius: 9px;
+  background-color: antiquewhite;
+  color: brown;
+  cursor: pointer;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.marker {
+  filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.pinpoint {
+  position: absolute;
+  transform: translate(-20%, -100%);
+  z-index: 600;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pinpoint.connecting {
+    border: 2px solid pink;
+}
+
+.header {
+  display: flex;
+  padding: 6px;
+  justify-content: space-around;
+  align-items: center;
+  border: 1px solid #800080;
+  border-radius: 8px; 
+  gap: 4px;
+  cursor: pointer;
+}
+
+.btn {
+  width: 12px;
+  height: 12px;
+}

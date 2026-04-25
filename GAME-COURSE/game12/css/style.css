@@ -1,0 +1,127 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: #c8ebff;
+  width: 100%;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#map-area {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  cursor: grab;
+}
+
+#map-area.grabbing {
+  cursor: grabbing;
+}
+
+#map-container {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+#lines-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+#map-img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#pinpoints-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.popup {
+  display: flex;
+  /* PENTIGGGG FIXEDDD KAREAN KALO GA PAKE INI NANTI GA BERGUNA SI SHOWpOP NYA */
+  position: fixed;
+  flex-direction: column;
+  width: min-content;
+  border: 2px solid purple;
+  border-radius: 9px;
+  padding: 5px;
+  z-index: 700;
+  cursor: pointer;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.marker {
+  /* INGAT YA URUTAN PENTING BANGET */
+  filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.pinpoint-label {
+  display: flex;
+  border: 1px solid purple;
+  border-radius: 9px;
+  padding: 2px;
+  width: min-content;
+  justify-content: space-between;
+  align-items: center;
+}
+.pinpoint-label.connecting {
+    border: 2px solid pink;
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 5px; 
+}
+
+.pinpoint {
+  position: absolute;
+  transform: translate(-15%, -90%);
+  pointer-events: auto;
+  z-index: 200;
+  cursor: pointer;
+}
+
+
+#btn-route {
+    position: fixed;
+    padding: 5px;
+    border: 1px solid purple;
+    border-radius: 8px;
+    color: brown;
+    top: 50px;
+    left: 100px;
+    z-index: 3000;
+    cursor: pointer;
+}
+
+
+#panel-route {
+    display: none;
+    position: fixed;
+    top: 120px;
+    left: 90px;
+    padding: 12px;
+    background-color: antiquewhite;
+}
+
+#panel-route.open {
+    display: flex;
+}

@@ -436,16 +436,16 @@ class App {
   }
 
   checkSearch() {
-    let fromInput = this.inputFromSearch.value;
-    let toInput = this.inputToSearch.value;
+    let fromInput = this.inputFromSearch.value.toLowerCase().trim();
+    let toInput = this.inputToSearch.value.toLowerCase().trim();
 
     let isAdaFrom;
     let isAdaTo;
 
     for (let i = 0; i < this.pins.length; i++) {
       let pin = this.pins[i];
-      if (pin.name == fromInput) isAdaFrom = true;
-      if (pin.name == toInput) isAdaTo = true;
+      if (pin.name.toLowerCase().trim() == fromInput) isAdaFrom = true;
+      if (pin.name.toLowerCase().trim() == toInput) isAdaTo = true;
     }
 
     this.btnSearch.disabled = !(isAdaFrom && isAdaTo && isAdaFrom != isAdaTo);
@@ -554,7 +554,7 @@ class App {
 
     dfs(pinFrom.id, []);
     this.showRoutes();
-    this.btnSearch.classList.remove("hidden");
+    this.results.classList.remove("hidden");
   }
 
   showRoutes() {
@@ -693,7 +693,7 @@ class App {
       e.stopPropagation();
       //   ITU PERHATIKAN STOP PROPAGATION
       // karena kita itu mau klik yang ada didalam pin, sedangkan nanti itu ada pengecekan kalo misalnya ada klik di pinpoint
-      // maka akan connect
+      // maka akan connect isPointInStroke
 
       // tapi ini kan kita hnya mau klik agian kecil dan spesifik dari si pindpoinnya yaitu delete dan connect
       // makanya pek propagtion biar engga bubble engga menyebar lah si event kliknya

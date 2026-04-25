@@ -41,16 +41,16 @@ body {
 
 #lines-layer {
   position: absolute;
-  top: 0;
   left: 0;
+  top: 0;
   /* none biar kalo di klik maka yang kena itu adalah layer nya si map-img */
   pointer-events: none;
 }
 
 #pinpoints-layer {
   position: absolute;
-  top: 0;
   left: 0;
+  top: 0;
   pointer-events: none;
   /* none biar kalo di klik maka yang kena itu adalah layer nya si map-img */
 }
@@ -72,7 +72,8 @@ body {
 .popup {
   width: fit-content;
 
-  position: fixed;
+  position: fixed; 
+
   display: flex;
   flex-direction: column;
   padding: 6px;
