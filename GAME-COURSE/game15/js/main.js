@@ -399,6 +399,11 @@ class App {
     self.mapArea.addEventListener("click", function (e) {
       if (e.target.closest(".pinpoint,popup")) return;
 
+        let lineId = self.findClickedLine(e)
+        if(lineId){
+            
+        }
+
       if (self.selectedLine) {
         self.selectedLine = null;
         self.render();
