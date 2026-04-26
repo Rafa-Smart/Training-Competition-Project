@@ -115,7 +115,7 @@ class App {
     </div>       
     </div>   
     `;
-  }//
+  } //
 
   renderPins() {
     let html = ``;
@@ -399,13 +399,17 @@ class App {
     self.pinpointsLayer.addEventListener("click", function (e) {
       e.stopPropagation(); // ini wajib ya
       let buttonDelete = e.target.closest(".btn-delete");
+    //   console.log(buttonDelete);
       if (buttonDelete) {
         self.deletePin(buttonDelete.dataset.id);
         return;
       }
+      console.log(e.target)
 
       let buttonConnect = e.target.closest(".btn-connect");
+      console.log(buttonConnect);
       if (buttonConnect) {
+        console.log("masih sini connect");
         self.startConnect(buttonConnect.dataset.id);
         return;
       }

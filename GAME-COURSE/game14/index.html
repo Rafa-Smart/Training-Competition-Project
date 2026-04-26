@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map Indonesia</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <main id="map-area">
+      <div id="map-container">
+        <img src="/assets/indonesia.svg" alt="indonesia" id="map-img" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </main>
+
+    <div id="popup-add" class="popup hidden">
+      <div id="popup-header">
+        <span>Add Pinpoint</span>
+        <img src="/assets/BiXLg.svg" alt="btnclose" id="close-add" />
+      </div>
+      <form id="form-add">
+        <input type="text" id="input-name" required />
+      </form>
+    </div>
+
+    <div id="popup-connect" class="popup hidden">
+      <div id="popup-header">
+        <span>Add Connection</span>
+        <img src="/assets/BiXLg.svg" alt="btn close" id="close-connect" />
+      </div>
+      <form id="form-connect">
+        <input type="text" id="input-distance" required />
+        <select name="input-mode" id="input-mode">
+          <option value="Select Mode">Select Mode</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
+        </select>
+        <button id="btn-connect" type="submit">Connect</button>
+      </form>
+    </div>
+
+    <button id="btn-route">Route</button>
+    <div id="panel-route" class="popup">
+      <div id="popup-header">
+        <span>Search Routes</span>
+        <div class="input-group">
+            <img
+            src="/assets/MaterialSymbolsLocationOnOutline.svg"
+            alt="iocn pin"
+            />
+            <input type="text" required id="input-from" />
+        </div>
+        <div class="input-group">
+            <img src="/assets/MaterialSymbolsLocationOn.svg" alt="icon pin" />
+          <input type="text" required id="input-to" />
+        </div>
+        <button id="btn-search">search</button>
+      </div>
+      <div id="sort-control">
+        <button class="btn-sort " data-sort="fastest">fastest</button>
+        <button class="btn-sort " data-sort="cheaptest">cheaptest</button>
+      </div>
+      <div id="results-route"></div>
+    </div>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>

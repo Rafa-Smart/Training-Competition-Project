@@ -1,4 +1,4 @@
-class App {
+-class App {
   static LEBAR_MAP = 982;
   static TINGGIMAP = 450;
 
@@ -377,7 +377,7 @@ class App {
     // .map() itu untuk MENGUBAH nilai, bukan menghapus
     // hasilnya array berisi true/false, bukan array koneksi
     this.connection = this.connection.filter(
-      (conn, index) => conn.id != this.selectedLine,
+      (conn, index) => conn.id != this.selectedLine,  
     );
     this.selectedLine = null;
     this.save();
