@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map Indonesia</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div id="map-area">
+      <div id="map-container">
+        <img src="assets/indonesia.svg" alt="map img" id="map-img" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </div>
+
+    <div id="popup-add" class="popup hidden">
+      <div id="popup-header">
+        <span>Add Pinpoint</span>
+        <img src="/assets/BiXLg.svg" alt="btnclose" id="close-add" />
+      </div>
+      <form id="form-add">
+        <input type="text" required id="input-name" />
+      </form>
+    </div>
+
+    <div id="popup-connect" class="popup hidden">
+      <div id="popup-header">
+        <span>Add Pinpoint</span>
+        <img src="/assets/BiXLg.svg" alt="btnclose" id="close-connect" />
+      </div>
+      <form id="form-connect">
+        <input type="number" required id="input-distance" />
+        <select name="input-mode" id="input-mode">
+          <option value="select">select</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
+        </select><button id="btn-submit-connect">connect</button>
+      </form>
+    </div>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>
