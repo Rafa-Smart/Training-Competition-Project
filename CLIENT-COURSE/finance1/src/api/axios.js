@@ -4,7 +4,7 @@
 //
 // KONSEP PENTING - INTERCEPTOR:
 // Interceptor itu seperti "pintu masuk dan pintu keluar" untuk setiap request.
-// - Request Interceptor: Sebelum request dikirim ke server, kita sisipkan
+// - Request : InterceptorSebelum request dikirim ke server, kita sisipkan
 //   token otomatis ke header Authorization. Jadi kamu tidak perlu
 //   menulis `Authorization: Bearer xxx` secara manual di setiap file.
 // - Response Interceptor: Setelah response datang, jika statusnya 401
