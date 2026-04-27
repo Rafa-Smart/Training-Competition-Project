@@ -265,6 +265,18 @@ class App {
     element.classList.add("hidden");
   }
 
+  searchRoute(){
+    let pinFrom = this.findPin(this.connectFrom);
+    let pinTo = this.findPin(this.connectTo);
+
+    this.routes = [];
+    let visited = {};
+    visited[pinFrom.id] = true;
+
+    
+
+  }
+
   setup() {
     const self = this;
 
