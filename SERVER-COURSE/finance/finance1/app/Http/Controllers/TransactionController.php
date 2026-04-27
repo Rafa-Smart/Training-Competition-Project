@@ -150,6 +150,13 @@ class TransactionController extends Controller
             ->orderBy('date', 'desc');
 
         // Filter bulan
+        // ini ga papa ya soalnya nanti itu kit hnya ambil perhari ajah jai engga per bulan atau per thun
+        // Only show the date once per group;
+        // hide if it's the same as the previous
+        // transaction’s date.
+        // tuh lihat perdate ya artinya prehari atua pertanggal
+        
+
         if ($request->filled('month')) {
             $query->whereMonth('date', $request->month);
         }

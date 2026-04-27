@@ -97,6 +97,7 @@ class ReportController extends Controller
         $categories = Category::where('type', $type)->get();
 
         // Untuk setiap kategori, hitung total transaksinya
+        // use ($request, $type) ini itu agar si viable nya bisa dikases secara closure di dalam map()
         $summary = $categories->map(function ($category) use ($request, $type) {
 
             // Bangun query untuk menghitung total transaksi kategori ini
@@ -129,6 +130,19 @@ class ReportController extends Controller
             return $item['amount'] > 0;
         })
         // Reset key array agar mulai dari 0 lagi
+
+        // nah jadi gini kenapa disini itu kita rapihin lagi arraynya
+        // karena lit disini kita itu filter, jadi misalnya ada index 0,1,2,3,4,5 n ternyata selteah fildter ituhanya ada
+        // 0,3,5 nah 2 dan 1 nya kan hilang
+        // nah seharunya kaloada tiga item gini itu akn berati ada 3 ya panjangnya berati harus di ubah lagi jadi
+        // 0,1,2 bukan 0,3,5
+
+        // makanya kita pake values agar bisa rapih lagi
+
+        // lalu kita pake toArray karena sebelumnya itu adlah laravel/collection dan bukan array
+        // makanya ubah lagi ek array
+        
+
         ->values()
         ->toArray();
 
