@@ -155,25 +155,66 @@ class TransactionController extends Controller
         // hide if it's the same as the previous
         // transaction’s date.
         // tuh lihat perdate ya artinya prehari atua pertanggal
-        
 
         if ($request->filled('month')) {
             $query->whereMonth('date', $request->month);
         }
 
         // Filter tahun
+        // ini fungsinya adalah ini Cek apakah input month ADA dan TIDAK KOSONG
+        // ntuk filled
         if ($request->filled('year')) {
             $query->whereYear('date', $request->year);
         }
 
         //  WAJIB (biar WalletDetail clean)
+        // ini yang dari wallet detail ya, karean dari walet detail itu dia akn kirim wallet_id
+        //         const {
+        //     transactions,
+        //     loading: txLoading,
+        //     hasMore,
+        //     loadMore,
+        //     fetchPage,
+        // } = useInfiniteTransactions({
+        //     wallet_id: walletId,
+        //     month: selectedMonth,
+        //     year: selectedYear,
+        // });
         if ($request->filled('wallet_id')) {
             $query->where('wallet_id', $request->wallet_id);
         }
+
+        // nah ini yang dari overview ya jadi dia ga ngirim  parameter apa apa gitu
+        //   const { transactions, loading, hasMore, loadMore, reload, fetchPage } =
+        // useInfiniteTransactions({});
+
+        // kalo ga ngirim apa apa berati kan dia engga akan di filter gara gara wallet_id
+        // jadi nanti smeua transksi di seua wallet akan terlihat gituu
+        // makanya yang dari walletDetil butuh walletId (dan disni juga filternya itu kalo ada)
+
+        // tapi kalo dari overview, itu itu dia ga perlu walet_id kan solanya
+        // dia akan ngambil seluruh transaksi dan ga perlu filter wallet
+        // dna in juga waletnya itu duah di filter di atas ya jadi hanya milikuser id ini saja
 
         return response()->json(
             $query->paginate($perPage),
             200
         );
+
+        // $query->paginate($perPage)
+        // Ini bukan sekadar ambil data tapi:
+        // Ambil data + bagi jadi halaman (pagination)
+        // Misalnya:
+        // $perPage = 10;
+        // Artinya:
+        // Halaman 1 → data ke 1–10
+        // Halaman 2 → data ke 11–20
+        // dst
+        // Laravel otomatis handle:
+        // limit
+        // offset
+        // total data
+        // halaman sekarang
+
     }
 }

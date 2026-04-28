@@ -14,7 +14,7 @@ namespace App\Http\Controllers;
  * 2. Tidak ada validasi input karena ini endpoint GET tanpa parameter
  * 3. Tidak ada logika bisnis rumit — tinggal ambil semua data dan kembalikan
  *
- * Ini adalah pola paling sederhana dalam project ini. Hapalkan dulu ini
+ * Ini adalah pola paling sederhana dalam project ini. Hapalkan dulu ini 
  * sebagai "template dasar" controller, lalu controller lain tinggal ditambah logika.
  */
 
