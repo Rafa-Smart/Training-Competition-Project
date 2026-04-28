@@ -18,7 +18,7 @@ export const getTransactions = (params = {}) => api.get("/transactions", { param
 // data: { wallet_id, category_id, amount, date, note (opsional) }
 export const addTransaction = (data) => api.post("/transactions", data);
 
-// Hapus transaksi berdasarkan ID
+// Hapus transaksi berdasarkan ID 
 export const deleteTransaction = (transactionId) => api.delete(`/transactions/${transactionId}`);
 
 // Transfer uang antar wallet (sebenarnya membuat 2 transaksi sekaligus)
