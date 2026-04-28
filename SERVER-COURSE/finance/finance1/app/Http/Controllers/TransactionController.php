@@ -157,7 +157,7 @@ class TransactionController extends Controller
         // tuh lihat perdate ya artinya prehari atua pertanggal
 
         if ($request->filled('month')) {
-            $query->whereMonth('date', $request->month);
+            $query->whereMonth('date', $request->month);            
         }
 
         // Filter tahun

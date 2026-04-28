@@ -6,8 +6,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\Transaction;
 use Exception;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
@@ -18,45 +17,80 @@ class TransactionController extends Controller
     {
         try {
 
-        // oh jadi gini ya kalo param / url segmetnitu yang ada diurl nya 
-        // kaya products/4
-        // 4 adlah segment
-        // dan dia akan masuk sebagai parameter di dalam si fungsi controllernya
+            // oh jadi gini ya kalo param / url segmetnitu yang ada diurl nya
+            // kaya products/4
+            // 4 adlah segment
+            // dan dia akan masuk sebagai parameter di dalam si fungsi controllernya
 
-        // nah tapi query parameter itu yang di ul juga
-        // TPAI DIA PAKE ?
-        // MISALNYA WALLET?PAGE=2
+            // nah tapi query parameter itu yang di ul juga
+            // TPAI DIA PAKE ?
+            // MISALNYA WALLET?PAGE=2
 
-        // NAH INI TUH DIAMBILNYA PAKE REQUEST->QUERY
+            // NAH INI TUH DIAMBILNYA PAKE REQUEST->QUERY
 
+            // nah jadi nanti akan di kirim dari frontenya itu pake cara Request Parameters
+            // jadi nanti di bjek ke dua di oaxios ake {params}
+            // ini pake cara kirim pake params
+            // export const getTransactions = (params = {}) => api.get("/transactions", { params });
 
-        // nah jadi nanti akan di kirim dari frontenya itu pake cara Request Parameters
-        // jadi nanti di bjek ke dua di oaxios ake {params}
-        // ini pake cara kirim pake params
-        // export const getTransactions = (params = {}) => api.get("/transactions", { params });
+            // NAHHHHHHH INGATT INI AKNA JADI QUERY ARAMETER YAH
+            // JADI /transactions?month=5&page=2
 
-        // nah ini baru yang pake data body ya
-        // data: { wallet_id, category_id, amount, date, note (opsional) }
-        // export const addTransaction = (data) => api.post("/transactions", data);
+            // nah ini baru yang pake data body ya
+            // data: { wallet_id, category_id, amount, date, note (opsional) }
+            // export const addTransaction = (data) => api.post("/transactions", data);
 
-        $per_page = $request->query('per_page', 25); // nah ini tuh jdainya defaulntya adalah 25
+            $per_page = $request->query('per_page', 25); // nah ini tuh jdainya defaulntya adalah 25
 
-        // pertama kita buat dulu transaksinya pake category dan juga alletnya
+            // pertama kita buat dulu transaksinya pake category dan juga alletnya
 
-        // nah ini kita masuk ke wallet lalu di walletnya kita cari user idnya sama dnegan auth()->id
-        $query = Transaction::with(['category', 'wallet'])->whereHas('wallet', function($wallet){
-            $wallet->where('user_id', auth()->id);
-        })->orderBy('date', 'desc');
+            // nah ini kita masuk ke wallet lalu di walletnya kita cari user idnya sama dnegan auth()->id
+            $query = Transaction::with(['category', 'wallet'])->whereHas('wallet', function ($wallet) {
+                $wallet->where('user_id', auth()->id);
+            })->orderBy('date', 'desc');
 
+            // jadi whereHas itu maksunya adalalh kita akn cari transaksi yang punya wallet dan juga walletnya itu punya si user
+            // ini dia sqlnya
+            // SELECT * FROM transactions
+            // WHERE EXISTS (
+            // SELECT * FROM wallets
+            // WHERE wallets.id = transactions.wallet_id
+            // AND wallets.user_id = current_user
+            // )
 
-        if(!$query->id != auth()->id ){
-            return response()->json([
-                'status'
-            ]);
-        }
+            // baca aja di keep
 
-        return response()->json([]);
-        }catch(Exception $e){
+            // jadi kita filter filter aja ya
+
+            if ($request->filled('month')) {
+                // jadi ini tuh
+                $query->whereMonth('date', $request->month);
+
+                // INGAT JADI KALO PAKE REQUEST->MONTH BERATI
+                // Laravel akan cari:
+                //     body (POST)
+                //     query (?month=5)
+                //     route param YAG PAKE :ID  DAN NANIT AKNA AD ADI DALAM PARAMETER DI FUNGSI DI CONTROLERNYA
+                // Kalau ketemu → ambil
+            }
+
+            if ($request->filled('year')) {
+                $query->whereYear('date', $request->year);
+            }
+
+            // nah ini juga ya penting karena kalo kita panggil dari overview maka kita ga akna ke filter si wallet_id nya
+
+            // tapi kalo misalakn di paggil dari wallet detail maka akan nirim si wallet_id kan
+            // jadnya nanti akan di perlukan
+            if ($request->filled('wallet_id')) {
+                $query->where('wallet_id', $request->wallet_id);
+            }
+
+            return response()->json(
+                $query->paginate($per_page), 200
+            );
+
+        } catch (Exception $e) {
             throw $e;
         }
     }
