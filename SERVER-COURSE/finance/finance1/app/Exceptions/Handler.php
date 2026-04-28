@@ -47,6 +47,20 @@ class Handler extends ExceptionHandler
      *
      * Return: HTTP response yang sesuai
      */
+
+
+    // SEKARANG ADANYA ITU DI SINI YA
+    // bootstrap/app.php
+    // ->withExceptions(function (Exceptions $exceptions) {
+    //     $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Unauthenticated.',
+    //         ], 401);
+    //     });
+    // })
+
+
     public function render($request, Throwable $exception)
     {
         // Tangkap exception khusus dari Sanctum (token tidak ada / tidak valid)

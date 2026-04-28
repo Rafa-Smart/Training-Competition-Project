@@ -38,6 +38,10 @@ class StoreTransactionRequest extends FormRequest
             'category_id' => ['required', 'exists:categories,id'],
             'amount'      => ['required', 'integer', 'min:1'],
             'date'        => ['required', 'date_format:Y-m-d'],
+            // nanti pkae ini ya dari frontendnya
+            // export function getTodayDate() {
+            //   return new Date().toISOString().split("T")[0];             
+            // }
             'note'        => ['nullable', 'string'],
         ];
     }
