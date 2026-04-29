@@ -56,6 +56,7 @@ class ReportController extends Controller
      * incomeSummary() → GET /api/reports/summary-by-category/income
      *
      * Sama persis, tapi dengan tipe 'INCOME'.
+     * 
      */
     public function incomeSummary(Request $request)
     {
@@ -107,7 +108,7 @@ class ReportController extends Controller
                     $q->where('user_id', auth()->id());
                 });
 
-            // Tambahkan filter bulan jika dikirim
+            // Tambahkan filter bulan jika dikiri           m
             if ($request->has('month')) {
                 $query->whereMonth('date', $request->query('month'));
             }
@@ -143,7 +144,7 @@ class ReportController extends Controller
         // makanya ubah lagi ek array
         
 
-        ->values()
+        ->values()      
         ->toArray();
 
         return $summary;

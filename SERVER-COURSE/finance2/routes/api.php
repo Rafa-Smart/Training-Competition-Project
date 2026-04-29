@@ -30,4 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/transactions', [Transaction::class, 'create']);
     Route::delete('/transactions', [Transaction::class, 'destroy']);
     Route::get('/transactions', [Transaction::class,'index']);
+
+
+    // report
 });
