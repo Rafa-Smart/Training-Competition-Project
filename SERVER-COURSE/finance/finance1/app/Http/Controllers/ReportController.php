@@ -97,6 +97,8 @@ class ReportController extends Controller
         // Ambil semua kategori dengan tipe yang diminta
         $categories = Category::where('type', $type)->get();
         // sdasd
+        // sdasd
+        // sdasd
 
         // Untuk setiap kategori, hitung total transaksinya
         // use ($request, $type) ini itu agar si viable nya bisa dikases secara closure di dalam map()
