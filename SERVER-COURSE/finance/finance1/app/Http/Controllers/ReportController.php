@@ -99,6 +99,7 @@ class ReportController extends Controller
         // sdasd
         // sdasd
         // sdasd
+        // sdasd
 
         // Untuk setiap kategori, hitung total transaksinya
         // use ($request, $type) ini itu agar si viable nya bisa dikases secara closure di dalam map()
