@@ -836,7 +836,7 @@ input[type=number] {
 @property --tw-inset-ring-shadow {
   syntax: "*";
   inherits: false;
-  initial-value: 0 0 #0000; 
+  initial-value: 0 0 #0000;
 }
 @property --tw-ring-inset {
   syntax: "*";

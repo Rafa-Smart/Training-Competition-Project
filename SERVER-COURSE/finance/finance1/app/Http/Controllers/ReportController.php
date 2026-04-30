@@ -44,9 +44,9 @@ class ReportController extends Controller
         $summary = $this->getSummaryByType($request, 'EXPENSE');
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Get summary by expense category successful',
-            'data'    => [
+            'data' => [
                 'summary' => $summary,
             ],
         ], 200);
@@ -56,16 +56,15 @@ class ReportController extends Controller
      * incomeSummary() → GET /api/reports/summary-by-category/income
      *
      * Sama persis, tapi dengan tipe 'INCOME'.
-     * 
      */
     public function incomeSummary(Request $request)
     {
         $summary = $this->getSummaryByType($request, 'INCOME');
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Get summary by income category successful',
-            'data'    => [
+            'data' => [
                 'summary' => $summary,
             ],
         ], 200);
@@ -103,7 +102,10 @@ class ReportController extends Controller
 
         // Untuk setiap kategori, hitung total transaksinya
         // use ($request, $type) ini itu agar si viable nya bisa dikases secara closure di dalam map()
-        $summary = $categories->map(function ($category) use ($request, $type) {
+        $summary = $categories->map(function ($category) use ($request) {
+
+            // INAT SETIAP ITERASI bikin QUERY BARU dari nol
+            // JAID BUKAN REPLACE YA DAN INI KAN MAP JADI DIA AKAN RETURN
 
             // Bangun query untuk menghitung total transaksi kategori ini
             $query = Transaction::where('category_id', $category->id)
@@ -112,7 +114,9 @@ class ReportController extends Controller
                     $q->where('user_id', auth()->id());
                 });
 
-            // Tambahkan filter bulan jika dikiri           m
+            // Tambahkan filter bulan jika dikiri m
+            // INGAT YA INI TUH SI MONTHNYA AKNA DI QUERY DI TRANSAKSI YA
+            // BUKAN DI WALLET NYA
             if ($request->has('month')) {
                 $query->whereMonth('date', $request->query('month'));
             }
@@ -123,17 +127,23 @@ class ReportController extends Controller
             }
 
             // Hitung total amount untuk kategori ini
+            // KARAN KAN SI QUERY INI ITU ISINYA ADALAH ARRAY YA HASIL DARI WHERE DI TRANSAKSI INI, MAKA DARI ARRAY ITU KITA HITUNG AMOUNTNYA
             $totalAmount = $query->sum('amount');
 
+            // NAH COBA INI LIHAT, JADI DISNI KITA ITU AKAN RETURN NYA DISINI KARENA DIA MAP YA
             return [
                 'category' => $category,
-                'amount'   => $totalAmount,
+                'amount' => $totalAmount,
             ];
+
         })
+
+        // NAH BARU KETIKA SEMUA NYA UDAH DI LOPP MAKA AKAN MASUK KE FILTER SINI YAAAAAA
+        // DAN MASUK KE VALUES LALU TOARRAY
         // Hanya tampilkan kategori yang ada transaksinya (amount > 0)
-        ->filter(function ($item) {
-            return $item['amount'] > 0;
-        })
+            ->filter(function ($item) {
+                return $item['amount'] > 0;
+            })
         // Reset key array agar mulai dari 0 lagi
 
         // nah jadi gini kenapa disini itu kita rapihin lagi arraynya
@@ -146,10 +156,44 @@ class ReportController extends Controller
 
         // lalu kita pake toArray karena sebelumnya itu adlah laravel/collection dan bukan array
         // makanya ubah lagi ek array
-        
+            ->values()
+            ->toArray();
 
-        ->values()      
-        ->toArray();
+        return $summary;
+    }
+
+    // bisa juga kaya gini ya
+    private function getSummaryByType2(Request $request, string $type)
+    {
+        $query = Transaction::with('category')
+            ->whereHas('wallet', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->whereHas('category', function ($q) use ($type) {
+                $q->where('type', $type);
+            });
+
+        // filter bulan
+        if ($request->filled('month')) {
+            $query->whereMonth('date', $request->month);
+        }
+
+        // filter tahun
+        if ($request->filled('year')) {
+            $query->whereYear('date', $request->year);
+        }
+
+        //  INI INTI PERBEDAAN
+        $summary = $query
+            ->selectRaw('category_id, SUM(amount) as total')
+            ->groupBy('category_id')
+            ->get();
+
+            // >selectRaw('category_id, SUM(amount) as total')
+            // Ini berarti:
+            // “Saya mau ambil:
+            // category_id
+            // total amount (hasil penjumlahan)”
 
         return $summary;
     }
