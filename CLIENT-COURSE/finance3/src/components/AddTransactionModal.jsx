@@ -51,9 +51,13 @@ export default AddTransactionModal = ({
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault()
     setLoading(true);
     setErrors([]);
     try {
+
+      
+
       // nah disni jangna lupa ya karea laravel ita itu mintanya si amount adalh integer maka kit aubah aa dulu ke integer
       await transactionApi.store({ ...form, amount: parseInt(form.amount) });
       onSuccess();
