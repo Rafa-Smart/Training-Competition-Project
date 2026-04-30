@@ -95,7 +95,7 @@ export default function AddWalletModal({ isOpen, onClose, onSuccess }) {
               className="form-input"
               required
             >
-              <option value="" disabled>Select Currency</option>
+              <option value={FormData.currency_code} disabled>Select Currency</option>
               {currencies.map((c) => (
                 <option key={c.id} value={c.code}>
                   {c.code} - {c.name}

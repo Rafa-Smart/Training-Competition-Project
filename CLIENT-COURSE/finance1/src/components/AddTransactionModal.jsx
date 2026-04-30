@@ -114,7 +114,7 @@ export default function AddTransactionModal({ isOpen, onClose, onSuccess, defaul
 
             {/* Pilih Category */}
             <select name="category_id" value={form.category_id} onChange={handleChange} className="form-input form-input-lg" required>
-              <option value="" disabled>Select Category</option>
+              <option value="" disabled>Select Category</option>  
               {/* Kelompokkan kategori berdasarkan tipe supaya mudah dibaca */}
               <optgroup label="INCOME">
                 {categories.filter((c) => c.type === "INCOME").map((c) => (

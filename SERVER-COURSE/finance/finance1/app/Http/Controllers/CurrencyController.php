@@ -36,7 +36,7 @@ class CurrencyController extends Controller
 
         return response()->json([
             'message' => 'Get all currencies successful',
-            'data'    => [
+                'data'    => [
                 'currencies' => $currencies,
             ],
         ], 200);

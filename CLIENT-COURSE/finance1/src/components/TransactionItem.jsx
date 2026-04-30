@@ -27,7 +27,7 @@ import { deleteTransaction } from "../api/transactions";
 import { formatCurrency, formatDate } from "../utils/format";
 
 export default function TransactionItem({ transaction, onDelete, showDate }) {
-  const isExpense = transaction.category?.type === "EXPENSE";
+  const isExpense = transaction.category?.type === "EXPENSE";   
 
   // Double-click → konfirmasi → hapus
   const handleDoubleClick = async () => {
