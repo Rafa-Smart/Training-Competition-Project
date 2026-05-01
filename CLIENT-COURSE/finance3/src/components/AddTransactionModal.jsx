@@ -86,7 +86,7 @@ export default AddTransactionModal = ({
         </div>
         <div className="modal-body">
 
-          <form action method="POST" className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          <form action method="POST" className="flex fl-ex-col gap-6" onSubmit={handleSubmit}>
         <Alert messages={errors}></Alert>
             <div className="rounded-xl overflow-hidden">
             <select name="wallet_id" onChange={handleChange} className="form-input">
