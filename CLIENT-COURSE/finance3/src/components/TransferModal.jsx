@@ -90,6 +90,23 @@ export default TransferModal = ({
             onSubmit={handleSubmit}
           >
             <div className="mt-5">
+              <input
+                onChange={handleChange}
+                type="number"
+                id="name"
+                value={form.amount}
+                name="amount"
+                className="form-input"
+                placeholder="amount"
+              />
+              <input
+                value={form.date}
+                type="date"
+                onChange={handleChange}
+                id="name"
+                name="date"
+                className="form-input"
+              />
               <h3>FROM:</h3>
               <Alert messages={errors}></Alert>
               <div className="rounded-xl overflow-hidden">
@@ -133,34 +150,15 @@ export default TransferModal = ({
                     })}
                   </optgroup>
                 </select>
-                <input
-                  onChange={handleChange}
-                  type="number"
-                  id="name"
-                  value={form.amount}
-                  name="amount"
-                  className="form-input"
-                  placeholder="amount"
-                />
-                <input
-                  value={form.date}
-                  type="date"
-                  onChange={handleChange}
-                  id="name"
-                  name="date"
-                  className="form-input"
-                />
+
                 <textarea
                   onChange={handleChange}
-                  name="note"
-                  value={form.note}
+                  name="from_note"
+                  value={form.from_note}
                   rows={3}
                   className="form-input"
                 ></textarea>
               </div>
-              <button type="submit" className="btn btn-lg w-full mt-4">
-                {loading ? "submiting" : "submit"}
-              </button>
             </div>
             <div className="mt-5">
               <h3>To:</h3>
@@ -168,7 +166,8 @@ export default TransferModal = ({
               <Alert messages={errors}></Alert>
               <div className="rounded-xl overflow-hidden">
                 <select
-                  name="wallet_id"
+                  name="to_wallet_id"
+                  value={form.to_wallet_id}
                   onChange={handleChange}
                   className="form-input"
                 >
@@ -183,14 +182,14 @@ export default TransferModal = ({
                 </select>
 
                 <select
-                  name="category_id"
-                  value={form.category_id}
+                  name="to_category_id"
+                  value={form.to_category_id}
                   onChange={handleChange}
-                  id="category_id"
+                  id="to_category_id"
                   className="form-input"
                 >
                   <option value={""} disabled>
-                    Select categories
+                    Select to categories
                   </option>
 
                   {/* nah ini dia yang kerenya */}
@@ -218,27 +217,11 @@ export default TransferModal = ({
                     })}
                   </optgroup>
                 </select>
-                <input
-                  onChange={handleChange}
-                  type="number"
-                  id="name"
-                  value={form.amount}
-                  name="amount"
-                  className="form-input"
-                  placeholder="amount"
-                />
-                <input
-                  value={form.date}
-                  type="date"
-                  onChange={handleChange}
-                  id="name"
-                  name="date"
-                  className="form-input"
-                />
+               
                 <textarea
                   onChange={handleChange}
-                  name="note"
-                  value={form.note}
+                  name="to_note"
+                  value={form.to_note}
                   rows={3}
                   className="form-input"
                 ></textarea>
