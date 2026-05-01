@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { categoryApi } from "../api/category";
 import { walletApi } from "../api/wallet";
 import { transactionApi } from "../api/transaction";
-import { parseErrors } from "../utils/format";
+import { getTodayDate, parseErrors } from "../utils/format";
 import Alert from "../utils/Alert";
 
 // KITA KLIK BUTTON TRANSAKSI LEWAT WALLET MAKA KNA ADA ALNGSUNG WALLET ID NYA DARI SI WALLET INI, DAN KALO KITA KLIK TRANSAKSI DARI OVERVIEW ITU AKN GA ARI WALET BERATI NATI WALLET DEFAULT IDNYA OSONG DAN HAUS ISI AJA MANUAL
@@ -40,7 +40,7 @@ export default AddTransactionModal = ({
       wallet_id: defaultWalletId || "", // Auto-select wallet jika dari WalletDetail
       category_id: "",
       amount: "sad",
-      date: "",
+      date: getTodayDate(),
       note: "",
     });
     setErrors([]);
