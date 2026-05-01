@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { parseErrors } from "../utils/format";
 import { authApi } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import Alert from "../utils/Alert";
 
 export default Register = () => {
 
@@ -49,6 +50,7 @@ export default Register = () => {
     <>
       <main className="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
   <form onSubmit={handleSubmit} action method="POST" className="max-w-[500px] mx-auto w-full flex flex-col gap-5">
+  <Alert messages={errors}></Alert>
     <h2 className="text-2xl font-semibold text-center">Register</h2>
     <div className="rounded-xl overflow-hidden">
       <input id="name" onChange={handleChange} type="text" placeholder="Name" className="form-input" name="name" />

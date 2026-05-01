@@ -39,7 +39,7 @@ import AddTransactionModal from "../components/AddTransactionModal";
 export default function Overview() {
   const { user } = useAuth();
   const [wallets, setWallets] = useState([]);
-  const [showAddWallet, setShowAddWallet] = useState(false);
+  const [showAddWallet, setShowAddWallet  ] = useState(false);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
 
   // Hook infinite scroll untuk transaksi (tanpa filter wallet tertentu)
