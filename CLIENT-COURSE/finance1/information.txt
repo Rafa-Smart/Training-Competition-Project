@@ -1,0 +1,311 @@
+╔══════════════════════════════════════════════════════════════════╗
+║          CREATE — WEBSITE PRODUCTION SYSTEM v1.0               ║
+║          Referensi Teknis & Standar Desain                      ║
+╚══════════════════════════════════════════════════════════════════╝
+
+TENTANG PERUSAHAAN
+──────────────────
+Nama         : Create
+Produk       : Jasa produksi website profesional untuk bisnis lokal & UMKM
+Model Bisnis : Buat demo website → outreach ke bisnis → closing → maintenance
+Target Klien : UMKM, toko lokal, klinik, sekolah, resto, salon, bengkel, dll
+
+════════════════════════════════════════════════════════════════════
+REFERENSI TEMPLATE & INSPIRASI DESAIN
+════════════════════════════════════════════════════════════════════
+
+SUMBER TEMPLATE GRATIS (GITHUB & OPEN SOURCE):
+───────────────────────────────────────────────
+
+1. Next.js Landing Page Starter (ixartz)
+   GitHub  : github.com/ixartz/Next-JS-Landing-Page-Starter-Template
+   Stack   : Next.js 14, TypeScript, Tailwind CSS
+   Cocok   : Template dasar landing page, clean dan cepat
+
+2. Precedent (Steven Tey / Dub.co)
+   GitHub  : github.com/steven-tey/precedent
+   Stack   : Next.js, TypeScript, Tailwind, Radix UI, Framer Motion
+   Cocok   : Developer toolkit, animasi polished, custom hooks
+
+3. shadcn-landing-page
+   GitHub  : github.com/leoMirandaa/shadcn-landing-page
+   Stack   : Vite + React, shadcn/ui, 16+ sections siap pakai
+   Sections: Hero, Sponsors, Stats, Features, Testimonials, 
+             Team, Pricing, FAQ, CTA, Newsletter
+
+4. Magic UI (Free Startup Template)
+   Website : magicui.design
+   GitHub  : github.com/magicui/magicui
+   Stack   : Next.js, Tailwind, Framer Motion (Motion)
+   Fitur   : 150+ animated components, particle effects, 
+             text animations, interactive cards
+
+5. Aceternity UI
+   Website : ui.aceternity.com
+   Stack   : Next.js 15, Tailwind CSS v4, Motion, TypeScript
+   Fitur   : Rich micro-interactions, 200+ free animated components
+   Premium : $199 lifetime (30+ templates dengan auth + Stripe)
+
+6. HTMLrev Free Next.js Templates
+   Website : htmlrev.com/free-nextjs-templates.html
+   Variasi : Portfolio, Agency, SaaS, Startup, Educational, Real Estate
+
+7. Themefisher Next.js Templates
+   Website : themefisher.com/best-nextjs-templates
+   Variasi : Agency, SaaS, AI product, Interior design, Portfolio
+
+════════════════════════════════════════════════════════════════════
+LIBRARY ANIMASI YANG DIGUNAKAN
+════════════════════════════════════════════════════════════════════
+
+FRAMER MOTION (Pilihan Utama Create)
+──────────────────────────────────────
+Install  : npm install framer-motion
+Docs     : motion.dev/docs
+
+Hook-hook penting:
+- useScroll        → track posisi scroll (0-1)
+- useTransform     → ubah nilai scroll jadi nilai animasi lain
+- useInView        → deteksi elemen masuk viewport
+- whileInView      → trigger animasi saat masuk viewport
+- AnimatePresence  → animasi mount/unmount komponen
+- staggerChildren  → delay bertahap antar child
+
+Teknik animasi utama:
+1. Scroll Reveal  → whileInView + viewport: {once:true}
+2. Parallax       → useScroll + useTransform → translateY
+3. Stagger Cards  → variants + staggerChildren: 0.1
+4. Counter Anim   → useInView + useState + useEffect
+5. Text Reveal    → split string per kata/char + stagger
+6. Page Transition→ AnimatePresence + motion.div
+
+Contoh scroll reveal:
+<motion.div
+  initial={{ y: 50, opacity: 0 }}
+  whileInView={{ y: 0, opacity: 1 }}
+  viewport={{ once: true, margin: "-100px" }}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+>
+
+Contoh parallax hero:
+const { scrollY } = useScroll()
+const y = useTransform(scrollY, [0, 500], [0, -150])
+<motion.div style={{ y }}>Background Element</motion.div>
+
+LENIS SMOOTH SCROLL
+──────────────────────────────────────
+Install  : npm install @studio-freight/lenis
+Fungsi   : Membuat scroll native menjadi ultra-smooth
+Cara pakai di Next.js:
+1. Buat providers/LenisProvider.tsx
+2. useEffect → init Lenis → requestAnimationFrame loop
+3. Wrap app di layout.tsx dengan <LenisProvider>
+
+════════════════════════════════════════════════════════════════════
+GOOGLE MAPS — CARA EMBED
+════════════════════════════════════════════════════════════════════
+
+CARA TERMUDAH (Tanpa API Key — Gratis):
+1. Buka maps.google.com
+2. Cari nama bisnis / alamat
+3. Klik Share (ikon share/bagikan)
+4. Pilih tab "Embed a map"
+5. Klik "Copy HTML"
+6. Paste iframe ke komponen Location.tsx
+
+Format iframe:
+<iframe
+  src="https://www.google.com/maps/embed?pb=!1m18!..."
+  width="100%"
+  height="400"
+  style="border:0;"
+  allowfullscreen=""
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+
+CARA DENGAN API KEY (Lebih Fleksibel):
+1. Buka Google Cloud Console → Maps Embed API
+2. Buat API key
+3. Simpan di .env.local sebagai NEXT_PUBLIC_GOOGLE_MAPS_KEY
+4. Format URL:
+   https://www.google.com/maps/embed/v1/place
+   ?key=YOUR_KEY&q=NAMA+BISNIS+KOTA&zoom=16
+
+CATATAN: Maps Embed API gratis dengan unlimited request 
+(perlu billing account tapi tidak dicharge untuk embed biasa)
+
+Referensi resmi: developers.google.com/maps/documentation/embed
+
+════════════════════════════════════════════════════════════════════
+STANDAR TEKNIS CREATE
+════════════════════════════════════════════════════════════════════
+
+TECH STACK WAJIB:
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- Framer Motion (animasi)
+- Lenis (smooth scroll)
+- Lucide React (icons)
+- Google Fonts
+
+TECH STACK KONDISIONAL:
+- Prisma + PostgreSQL  → hanya untuk /toko dan /klinik
+- @react-google-maps   → jika butuh maps interaktif
+- Resend / Nodemailer  → jika ada form email
+
+DEPLOYMENT STANDAR:
+- GitHub repository (1 bisnis = 1 repo)
+- Vercel (deploy gratis, otomatis dari GitHub)
+- Domain: bisa pakai subdomain Vercel dulu untuk demo
+
+STRUKTUR FOLDER STANDAR:
+project-name/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/
+│   ├── Navbar.tsx
+│   ├── Hero.tsx
+│   ├── [section lainnya].tsx
+│   └── Location.tsx     ← SELALU ADA jika ada lokasi fisik
+├── providers/
+│   └── LenisProvider.tsx
+├── lib/
+│   └── utils.ts
+├── public/
+│   └── images/
+├── tailwind.config.ts
+├── package.json
+└── README.md
+
+════════════════════════════════════════════════════════════════════
+STANDAR KUALITAS ANIMASI
+════════════════════════════════════════════════════════════════════
+
+WAJIB ADA DI SETIAP WEBSITE:
+✓ Smooth scroll (Lenis)
+✓ Navbar scroll-aware (transparan → blur backdrop)
+✓ Hero entrance animation (teks + CTA)
+✓ Scroll reveal setiap section
+✓ Hover effect pada semua card dan tombol
+✓ Stagger animation pada list/grid
+✓ WhatsApp button floating (mobile)
+✓ Google Maps embed (jika ada lokasi fisik)
+
+SANGAT DIREKOMENDASIKAN:
+★ Parallax pada hero background
+★ Counter animation untuk statistik
+★ Loading screen singkat
+★ Page transition
+★ Text split animation untuk headline
+★ Cursor custom (untuk brand premium)
+
+HINDARI:
+✗ Animasi yang terlalu cepat (< 200ms) atau lambat (> 1000ms)
+✗ Terlalu banyak animasi bersamaan (max 3 elemen animasi sekaligus)
+✗ Animasi yang menyebabkan layout shift
+✗ Efek yang membuat mual di mobile (parallax berlebihan)
+✗ Animasi yang menghalangi konten penting
+
+PERFORMA TARGET:
+- Google PageSpeed Score: 85+ (mobile), 95+ (desktop)
+- Largest Contentful Paint: < 2.5 detik
+- Cumulative Layout Shift: < 0.1
+- First Input Delay: < 100ms
+
+════════════════════════════════════════════════════════════════════
+REFERENSI DESAIN PER NICHE
+════════════════════════════════════════════════════════════════════
+
+UMKM / TOKO LOKAL:
+- Warna: warm tones (oranye, kuning keemasan, coklat krem)
+- Style: friendly, approachable, tidak terlalu formal
+- Font heading: Poppins atau Plus Jakarta Sans
+- Font body: Inter atau Nunito
+- Inspirasi: desain seperti brand lokal sukses (Fore Coffee, 
+  Kopi Kenangan, Filosofi Kopi)
+
+KLINIK / MEDIS:
+- Warna: putih bersih, biru tenang, hijau mint, atau teal
+- Style: profesional, bersih, menimbulkan kepercayaan
+- Font: Raleway atau Montserrat (heading), Inter (body)
+- Hindari: terlalu banyak merah/gelap
+- Inspirasi: Halodoc website, KlikDokter
+
+SEKOLAH / PENDIDIKAN:
+- Warna: biru + kuning, atau hijau + putih
+- Style: modern tapi ramah, memberi kesan akademik berkualitas
+- Font: Nunito (ramah) atau Merriweather (akademik)
+- Wajib ada: galeri kegiatan, info program, pendaftaran
+
+RESTORAN / KULINER:
+- Warna: merah hangat + krem, atau earth tone gelap
+- Style: menggiurkan, appetizing, konten foto SANGAT penting
+- Font: Playfair Display (elegan) atau Lobster (casual)
+- Wajib ada: menu digital, foto makanan besar
+
+SALON / BARBERSHOP:
+- Warna: hitam + emas (barbershop premium), 
+         rose gold + krem (salon wanita)
+- Style: stylish, trendy, portofolio hasil kerja prominent
+- Font: Cormorant Garamond atau Josefin Sans
+
+BENGKEL:
+- Warna: abu-abu metalik + oranye atau merah
+- Style: maskulin, profesional, menimbulkan kepercayaan
+- Font: Bebas Neue (heading), Roboto (body)
+
+PROPERTI:
+- Warna: navy + putih + gold, atau abu modern + teal
+- Style: prestisius, luas, menampilkan kemewahan
+- Font: Playfair Display atau Cormorant (heading)
+
+HOTEL / VILLA:
+- Warna: krem mewah + coklat tua + gold
+- Style: premium, immersive, banyak foto berkualitas tinggi
+- Font: Cormorant Garamond + Lato
+
+════════════════════════════════════════════════════════════════════
+SUMBER DATA BISNIS UNTUK RISET KLIEN
+════════════════════════════════════════════════════════════════════
+
+1. Google Maps / Google Business Profile
+   - Data: nama, alamat, telp, jam buka, foto, website, rating
+   - Cara: cari nama bisnis di maps.google.com
+
+2. Instagram Bisnis
+   - Data: foto produk/layanan, tone brand, hashtag, caption style
+   - Cara: cari @namabisnis di Instagram
+
+3. Website Lama (jika ada)
+   - Data: struktur, konten, informasi yang perlu diupgrade
+   
+4. Facebook Page Bisnis
+   - Data: deskripsi, ulasan, foto
+
+5. Tokopedia / Shopee Store
+   - Data: produk, harga, deskripsi, foto untuk /toko
+
+6. Grok (x.com/grok) dengan web search
+   - Gunakan untuk riset bisnis terkini
+   - Contoh query: "nama bisnis kota review terbaru"
+
+════════════════════════════════════════════════════════════════════
+CATATAN PENTING
+════════════════════════════════════════════════════════════════════
+
+Dokumen ini adalah referensi internal Create.
+Diperbarui: 2025
+Versi sistem: Create Prompt Engineer v1.0
+
+Tujuan akhir setiap website yang dibuat Create:
+1. Terlihat profesional dan mengesankan
+2. Mudah ditemukan di Google (SEO-ready)
+3. Membuat pengunjung langsung hubungi bisnis via WhatsApp
+4. Bisa diakses dengan nyaman dari HP
+5. Load cepat dan tidak patah saat dibuka
+
+"Setiap bisnis lokal berhak punya website yang indah." — Create

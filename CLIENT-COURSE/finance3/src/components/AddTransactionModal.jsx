@@ -90,7 +90,7 @@ export default AddTransactionModal = ({
         <Alert messages={errors}></Alert>
             <div className="rounded-xl overflow-hidden">
             <select name="wallet_id" onChange={handleChange} className="form-input">
-                <option value={wallet.id}>{wallet.id}</option>
+                <option value={form.wallet_id} disabled></option>
                 {
                     wallets.map((wallet) => {
                         return <option value={wallet.id} key={wallet.id}>{wallet.currency_code} {wallet.name}</option>
@@ -138,7 +138,7 @@ export default AddTransactionModal = ({
               onChange={handleChange}
                 type="number"
                 id="name"
-                value={value.amount}
+                value={form.amount}
                 name="amount"
                 className="form-input"
                 placeholder="amount"
