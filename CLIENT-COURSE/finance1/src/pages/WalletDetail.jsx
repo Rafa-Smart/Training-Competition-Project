@@ -86,10 +86,14 @@ export default function WalletDetail() {
   const [showTransfer, setShowTransfer] = useState(false);
 
   // Ref untuk canvas chart (Chart.js butuh elemen canvas)
-  const expenseChartRef = useRef(null);
-  const incomeChartRef = useRef(null);
+  const expenseChartRef = useRef(null); // jadi ini adalh yang mereferensi ke elemen canvasnya
+  const incomeChartRef = useRef(null); // jadi ini adalh yang mereferensi ke elemen canvasnya
+
+
+  // NAH KALO INI TUH
   const expenseChartInstance = useRef(null);
   const incomeChartInstance = useRef(null);
+  // menyimpan object chart yang sudah dibuat sebelumnya. Ini penting karena kalau user ganti bulan, kita perlu menghancurkan chart lama sebelum membuat yang baru (kalau tidak, chart akan "double" atau conflict).
 
   // Hook transaksi dengan filter wallet + bulan + tahun
   // const { transactions, loading: txLoading, hasMore, loadMore, reload, fetchPage } =
@@ -156,10 +160,12 @@ export default function WalletDetail() {
   // Fungsi render/update chart dengan Chart.js
   const renderChart = (canvasRef, chartInstance, summary, label) => {
     if (!canvasRef.current) return;
+    // Pertama, kita cek: apakah canvasRef.current ada? Artinya, apakah elemen canvas sudah dipasang ke DOM? Jika belum (misalnya karena page masih loading), kita keluar lebih awal.
 
     // Destroy chart lama supaya tidak double
     if (chartInstance.current) {
       chartInstance.current.destroy();
+      // Ini sangat penting! Kalau ada chart lama yang masih hidup di chartInstance.current, kita hancurkan dulu dengan .destroy(). Ini mencegah memory leak dan chart yang bergerak-gerak aneh atau tumpang tindih.
     }
 
     if (!summary || summary.length === 0) return;
@@ -168,10 +174,19 @@ export default function WalletDetail() {
     const data = summary.map((s) => s.amount);
     const colors = summary.map((s) => s.category.color || "#64748b");
 
+    // Kita simpan object chart ke ref, sehingga nanti kalau user ganti bulan, kita bisa akses chart lama dan .destroy() nya.
+    // NAH JADI NNATI TUH SI CHART INSTANCE INI UNTUK PERTAMA KALI DAI AKAN PUNYA DATA DARI CHART YA
+    // DAN DI SIMPAN DI CURRETNYA
+    // /NAH KETIKA DI RENDER SELANJUTNYA ITU KITA CEK APAK SUDAH ADA SI INSTANCE YANG SEBELUMNYA ? JIKA IYA MAKA DESTROY
+    // NAH JADI GITU YA
+    // KITA GA PAKE SI BJE ELEMEN CANVASNYA ANUSNG LARENA INI BESTPRACIVCENYA
+    // https://claude.ai/chat/49733c18-9e8c-4161-ae68-7254b67ff2fa
+
     chartInstance.current = new Chart(canvasRef.current, {
+    //   canvasRef.current — Elemen canvas fisik tempat chart akan digambar. Kita sudah tahu ref ini menunjuk ke <canvas ref={expenseChartRef} /> atau <canvas ref={incomeChartRef} /> di HTML.
       type: "doughnut",
       data: {
-        labels,
+        labels, //  Label yang muncul di legend 
         datasets: [
           {
             data,
@@ -291,7 +306,14 @@ export default function WalletDetail() {
               onKeyDown={handleNameKeyDown}
               onBlur={() => {
                 setIsEditingName(false);
+                // on blur itu ketika cursor kita udah engga lagi menginput si kolom name ini
+                // onBlur terjadi ketika elemen input kehilangan fokus (misalnya user klik ke luar input atau pindah ke elemen lain)
+
                 setEditName(wallet.name);
+                // "Cancel edit"
+
+                // mode edit ditutup
+                // value dikembalikan ke semula
               }}
               className="form-input text-2xl font-semibold bg-transparent border-b border-slate-600 outline-none"
               autoFocus

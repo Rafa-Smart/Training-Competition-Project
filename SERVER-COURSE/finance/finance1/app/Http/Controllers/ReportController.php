@@ -126,6 +126,11 @@ class ReportController extends Controller
                 $query->whereYear('date', $request->query('year'));
             }
 
+            // JAGI GINIYA HARUSNY ITU IDEANYA DARI RONTNY KITA KASOH JUGA FILTER UNTUK SATU WALLET ID INI SAJA TAPI DARI SOAL LKSNYA TU KITA GA DIKASIH UNTUK FILTER
+            // https://chatgpt.com/c/69f7f361-e96c-8320-9ed8-9420f17fe75c
+            // COBA LIA AJA INI
+
+
             // Hitung total amount untuk kategori ini
             // KARAN KAN SI QUERY INI ITU ISINYA ADALAH ARRAY YA HASIL DARI WHERE DI TRANSAKSI INI, MAKA DARI ARRAY ITU KITA HITUNG AMOUNTNYA
             $totalAmount = $query->sum('amount');
@@ -198,3 +203,9 @@ class ReportController extends Controller
         return $summary;
     }
 }
+
+
+// JAID GINI INI PENTING BANGET, JADI DI LARAVEL UNTUK NGAMIBL DATA QUERY ITU BSIA PAKE
+// INPUT(), QUERY(), ATAU BISA LANGSUNG AJA REQUEST->NAMA
+
+// NAH TAPI KALO SAYA MAU NGECEK qury itu bsia pake has atau filled

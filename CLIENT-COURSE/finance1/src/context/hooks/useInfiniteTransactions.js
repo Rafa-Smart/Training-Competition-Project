@@ -47,6 +47,8 @@ export function useInfiniteTransactions(params = {}) {
 
         const data = res.data; // { current_page, data: [...], last_page, total }
         // console.log(data);
+
+        
         if (reset) {
           // Jika reload dari awal, buang semua data lama
           setTransactions(data.data);
