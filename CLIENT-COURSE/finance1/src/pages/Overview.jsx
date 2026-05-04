@@ -163,7 +163,7 @@ export default function Overview() {
           {/* Pesan loading */}
           {loading && (
             <div className="text-center text-slate-400 py-4">Loading...</div>
-          )}
+          )}  
 
           {/* Kalau tidak ada transaksi sama sekali */}
           {!loading && transactions.length === 0 && (
