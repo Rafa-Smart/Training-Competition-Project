@@ -76,7 +76,7 @@ export default function AddWalletModal({ isOpen, onClose, onSuccess }) {
 
   return (
     // Overlay gelap di belakang modal
-    <div className="modal is-open" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal is-open" onClick={(e) => (e.target === e.currentTarget) && onClose()}>
       <div className="modal-header">
         <div></div>
         <h3 className="text-lg">Add Wallet</h3>

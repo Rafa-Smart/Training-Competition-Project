@@ -70,7 +70,7 @@ class Wallet extends Model
 
         // disni kita totallin dan hiung pake sum (tambahin) total semuanya ya
 
-        $income  = $transactions->where('category.type', 'INCOME')->sum('amount');-
+        $income  = $transactions->where('category.type', 'INCOME')->sum('amount');
         $expense = $transactions->where('category.type', 'EXPENSE')->sum('amount');
 
         return $income - $expense;

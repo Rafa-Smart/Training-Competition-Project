@@ -55,7 +55,7 @@ export default function Overview() {
 
   useEffect(() => {
     loadWallets();
-    fetchPage(1, true); // Ambil transaksi halaman pertama
+    fetchPage(1, false); // Ambil transaksi halaman pertama
   }, []);
 
   // Keyboard shortcuts: Alt+W, Alt+N, Esc

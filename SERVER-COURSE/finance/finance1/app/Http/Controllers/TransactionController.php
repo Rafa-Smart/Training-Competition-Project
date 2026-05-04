@@ -200,6 +200,11 @@ class TransactionController extends Controller
             $query->paginate($perPage),
             200
         );
+//         paginate($perPage) itu otomatis:
+// Ambil page dari query string (?page=2)
+// Hitung offset → (page - 1) * perPage
+// Tambahin LIMIT dan OFFSET ke query SQL
+        // ini di bagian yang index di transaction,, disini say itu pake mekanisme page giu ya, nah dari frontendnya itukan saya kirim parameter wajib ya yaitu adalah page, dan juga perpage, apaakh annti di laravelnya itu ketika saya udah apke query->paginate($perpage) berati saya udah otomatis handle request parameer page yang dikasih dari frontnyanya
 
         // $query->paginate($perPage)
         // Ini bukan sekadar ambil data tapi:
