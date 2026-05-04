@@ -1,4 +1,7 @@
 import { ArcElement, Chart, DoughnutController, Legend, Tooltip } from "chart.js";
+import { useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 
 
 Chart.register(ArcElement, Tooltip, Legend, DoughnutController);
@@ -8,7 +11,42 @@ Chart.register(ArcElement, Tooltip, Legend, DoughnutController);
 
 
 export default WalletDetail = () => {
+    const {walletId} = useParams();
+    const navigate = useNavigate();
 
+
+    const [walletDetail, setWalletDetail] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    // state untuk bulan dan tahun
+    const now = new Date();
+    const [selectedMonth, setSelectedMonth] = useState(now.getMonth()+1); // 1-12
+    const [selectedYear, setSelectedYear] = useState(now.getFullYear())
+
+    // state untuk edit wallet name
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [editName, setEditName] = useState('');
+
+
+    // state untuk modal
+    const [showAddTransaction, setShowTransaction] = useState(false);
+    const [showTranfer, setShowTransfer] = useState(false);
+
+
+    // state untuk referensi si chartnya, jadi ad arefernsi ke anusng ke canvasnya
+    // ada juga yang ke objek isntance dari si chartnya
+
+    const expenseChartRef = useRef(null);
+    const incomeChartRef = useRef(null);
+    const expenseChartInstance = useRef(null);
+    const incomeChartInstance = useRef(null);
+
+
+    const {transactions, reload, hasMore, loadMore, loading:loadingTrans, page,  } = useInfiniteScroll({
+        wallet_id:walletId,
+        year:selectedYear,
+        month:selectedMonth
+    })
 
   return (
     <>

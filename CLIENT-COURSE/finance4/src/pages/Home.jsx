@@ -30,6 +30,25 @@ export default Home = () => {
     loadWallets();
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.altKey && e.key === "w") {
+        e.preventDefault();
+        setShowAddWallet(true);
+      }
+      if (e.altKey && e.key === "n") {
+        e.preventDefault();
+        setShowAddTransaction(true);
+      }
+      if (e.key === "Escape") {
+        setShowAddWallet(false);
+        setShowAddTransaction(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const shouldShowDate = (index) => {
     if (index == 0) return true;
     return transactions[index] !== transactions[index - 1];
@@ -98,11 +117,17 @@ export default Home = () => {
           {hasMore && !loading && <button onClick={loadMore}>LoadMore</button>}
         </div>
 
-        <AddWalletModal isOpen={showAddWallet} onClose={() => setShowAddWallet(false)}
-            onSuccess={handleDataChange}
+        <AddWalletModal
+          isOpen={showAddWallet}
+          onClose={() => setShowAddWallet(false)}
+          onSuccess={handleDataChange}
         ></AddWalletModal>
 
-        <AddTransactionModal isOpen={showAddTransaction} onClose={() => setShowTrnsaction(false)} onSuccess={handleDataChange}></AddTransactionModal>
+        <AddTransactionModal
+          isOpen={showAddTransaction}
+          onClose={() => setShowTrnsaction(false)}
+          onSuccess={handleDataChange}
+        ></AddTransactionModal>
       </main>
     </>
   );

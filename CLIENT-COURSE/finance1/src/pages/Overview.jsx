@@ -60,23 +60,23 @@ export default function Overview() {
 
   // Keyboard shortcuts: Alt+W, Alt+N, Esc
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.altKey && e.key === "w") {
-        e.preventDefault();
-        setShowAddWallet(true);
-      }
-      if (e.altKey && e.key === "n") {
-        e.preventDefault();
-        setShowAddTransaction(true);
-      }
-      if (e.key === "Escape") {
-        setShowAddWallet(false);
-        setShowAddTransaction(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+      const handleKeyDown = (e) => {
+        if (e.altKey && e.key === "w") {
+          e.preventDefault();
+          setShowAddWallet(true);
+        }
+        if (e.altKey && e.key === "n") {
+          e.preventDefault();
+          setShowAddTransaction(true);
+        }
+        if (e.key === "Escape") {
+          setShowAddWallet(false);
+          setShowAddTransaction(false);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
   // Setelah berhasil tambah/hapus data → refresh wallet dan transaksi
   const handleDataChange = () => {

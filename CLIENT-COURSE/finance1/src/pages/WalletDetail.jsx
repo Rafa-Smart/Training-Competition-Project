@@ -72,7 +72,7 @@ export default function WalletDetail() {
   const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // State untuk filter bulan dan tahun
+  //  
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1); // 1-12
@@ -80,7 +80,7 @@ export default function WalletDetail() {
   // State untuk edit nama wallet
   const [isEditingName, setIsEditingName] = useState(false);
   const [editName, setEditName] = useState("");
-
+  
   // State untuk modal
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [showTransfer, setShowTransfer] = useState(false);
