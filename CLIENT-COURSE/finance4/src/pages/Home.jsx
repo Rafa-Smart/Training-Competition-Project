@@ -64,7 +64,7 @@ export default Home = () => {
                 +
               </a>
               <Link
-                to={"wallet-detail/" + wallet.id}
+                to={"wallets/" + wallet.id}
                 class="p-5 border border-slate-700 rounded-xl inline-block pe-12 whitespace-nowrap hover:bg-slate-800"
               >
                 <div class="font-medium text-slate-400 mb-1.5">
