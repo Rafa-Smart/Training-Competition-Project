@@ -60,7 +60,7 @@ export function useInfiniteTransactions(params = {}) {
         // Cek apakah ini halaman terakhir
         setHasMore(data.current_page < data.last_page);
         setPage(data.current_page);
-      } catch (e) {
+      } catch (e) { 
         console.error("Gagal ambil transaksi:", e);
       } finally {
         setLoading(false);
