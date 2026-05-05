@@ -27,9 +27,9 @@ export default AddTransactionModal = ({
 
   useEffect(async () => {
     const data1 = await walletApi.index();
-    setWallets(data.data.data.wallets);
+    setWallets(data1.data.data.wallets);
     const data2 = await categoryApi.index();
-    setCategories(data.data.data.categories);
+    setCategories(data2.data.data.categories);
   }, [isOpen]);
 
   useEffect(() => {
