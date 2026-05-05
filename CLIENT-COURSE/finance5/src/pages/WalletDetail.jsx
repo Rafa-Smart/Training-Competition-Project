@@ -11,6 +11,10 @@ import {
 import { walletApi } from "../api/wallet";
 import { transactionApi } from "../api/transaction";
 import { reportApi } from "../api/report";
+import { formatCurrency } from "../utils/format";
+import TransactionItem from "../components/TransactionItem";
+import AddTransactionModal from "../components/AddTransactionModal";
+import TransferModal from "../components/TransferModal";
 
 Chart.register(Tooltip, Legend, ArcElement, DoughnutController);
 const MONTH = [
@@ -113,6 +117,8 @@ export default WalletDetail = () => {
     const data = summary.map((s) => s.amount);
     const colors = summary.map((s) => s.category.color || "#64748b");
 
+    // NAH KALO KAM TANY IH YA KENAPA PAKE .CURRENT SIH ? KENPA HAURS PAKE ATRIBUT INI ?
+    // INGATTTTT KITA ITU PAKE USEREF YAN DIMANA DAI IU PASTI AKAN MEMPUNYAI ATRIBUT .CURRENT SEBAGAI TEMPAT MENYIMPAN DATANYA
     chartInstance.current = new Chart(canvasRef, {
       type: "doughnut",
       data: {
@@ -194,26 +200,46 @@ export default WalletDetail = () => {
     setIsEditingName(false);
   };
 
-
-  const handleDataChange = ()=> {
+  const handleDataChange = () => {
     loadWallet();
-    fetchTransaction(1, true)
-  }
-  const showDate = (index) =>{
-    if(index == 0)return ;
-    return transactions[index] != transactions[index-1];
-  }
+    fetchTransaction(1, true);
+  };
+  const showDate = (index) => {
+    if (index == 0) return;
+    return transactions[index] != transactions[index - 1];
+  };
 
   return (
     <>
       <main class="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
         <div class="flex items-center gap-3.5">
-          <Link to='/'
+          <Link
+            to="/"
             class="btn btn text-lg! aspect-[1/1] inline-flex! bg-transparent! p-3.5! border border-slate-700 items-center justify-center leading-[1]"
           >
             ←
           </Link>
-          <h2 class="text-2xl font-semibold">Wallet Name</h2>
+          {isEditingName ? (
+            <input
+              type="text"
+              name=""
+              // nah ini kalo dia lagi ngedit ya tapi di klik yang lain, maka akan di batalin ya pake onblur(ketika udah enggafoxus)
+
+              onBlur={() => {
+                setIsEditingName(false);
+                // disni kita set uang pake wallet name ya
+                setNameEdit(wallet.name);
+              }}
+              autoFocus
+              onChange={(e) => setIsEditingName(e.target.value)}
+              onKeyDown={handleNameKeyDown}
+              class="text-2xl font-semibold"
+            >
+              {wallet.name}
+            </input>
+          ) : (
+            <h2 class="text-2xl font-semibold">{wallet.name}</h2>
+          )}
         </div>
 
         <div class="w-full max-w-[700px] mx-auto">
@@ -223,14 +249,19 @@ export default WalletDetail = () => {
                 Total balance
               </h2>
               <div class="font-semibold line-clamp-1 text-4xl">
-                Rp 2.500.000
+                {formatCurrency(wallet?.balance || 0, wallet?.currency_code)}
               </div>
             </div>
+            {/* test  */}
             <div class="flex items-center gap-3">
-              <a href="" class="btn">
+              <a href="" class="btn" onClick={() => setShowTransfer(true)}>
                 Transfer Money
               </a>
-              <a href="" class="btn">
+              <a
+                href=""
+                class="btn"
+                onClick={() => setShowAddTransaction(true)}
+              >
                 Add Transaction
               </a>
             </div>
@@ -239,90 +270,78 @@ export default WalletDetail = () => {
           <div class="w-full py-2">
             <div class="grid grid-cols-[auto_1fr] items-center mb-5 border-b border-slate-700">
               <div class="overflow-hidden rounded-tl-lg rounded-tr-lg">
-                <select class="form-input">
-                  <option value="2025">2025</option>
+                <select
+                  class="form-input"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                >
+                  {YEAR.map((year) => {
+                    return (
+                      <option value={year} key={year.id}>
+                        {year}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <div class="flex overflow-x-auto h-full">
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Jan
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg bg-slate-800"
-                >
-                  Feb
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Mar
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Jun
-                </a>
+                {MONTH.map((month, index) => {
+                  return (
+                    <a
+                      key={index}
+                      onClick={(e) => setSelectedMonth(index + 1)}
+                      class={`whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg ${selectedMonth === index + 1 ? "opacity-100" : "opacity-50"}`}
+                    >
+                      {month}
+                    </a>
+                  );
+                })}
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-10 py-6">
               <div class="flex flex-col items-center gap-5">
                 <h2 class="text-lg">EXPENSE</h2>
+                <canvas ref={expenseChartRef}></canvas>
               </div>
               <div class="flex flex-col items-center gap-5">
                 <h2 class="text-lg">INCOME</h2>
+                <canvas ref={incomeChartRef}></canvas>
               </div>
             </div>
 
             <div class="flex items-center justify-between mt-7">
               <h3 class="text-xl font-medium">Transactions</h3>
             </div>
-            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
-              <div class="flex lg:items-center gap-3">
-                <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
-                  Icon
-                </div>
-                <div>
-                  <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
-                    <div class="font-medium">Category</div>
-                    <div class="text-slate-400 text-sm lg:text-[1rem]">
-                      Wallet name
-                    </div>
-                  </div>
-                  <div class="text-slate-400 text-xs lg:text-sm">
-                    Note (optional)
-                  </div>
-                </div>
-              </div>
-              <div class="amount font-medium">Rp 250.000</div>
-            </div>
-            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
-              <div class="flex lg:items-center gap-3">
-                <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
-                  Icon
-                </div>
-                <div>
-                  <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
-                    <div class="font-medium">Category</div>
-                    <div class="text-slate-400 text-sm lg:text-[1rem]">
-                      Wallet name
-                    </div>
-                  </div>
-                  <div class="text-slate-400 text-xs lg:text-sm">
-                    Note (optional)
-                  </div>
-                </div>
-              </div>
-              <div class="amount font-medium">-Rp 250.000</div>
-            </div>
+            {transactions.map((transaction) => {
+              <TransactionItem
+                key={transaction.id}
+                onDelete={handleDataChange}
+                showDate={() => showDate(index)}
+                transaction={transaction}
+              ></TransactionItem>;
+            })}
+            {!loading && transactions.length <= 0 && <div>ga ada data</div>}
+            {loading && hasMore && <div>loading..</div>}
+            {!loading && hasMore && (
+              <div onClick={() => loadMore()}>load more</div>
+            )}
           </div>
         </div>
+
+        <AddTransactionModal
+          isOpen={showAddTransaction}
+          defaultWalletId={walletId}
+          onClose={() => setShowAddTransaction(false)}
+          onSucces={handleDataChange}
+        ></AddTransactionModal>
+
+        <TransferModal
+          isOpen={showTransfer}
+          defaultWalletId={walletId}
+          onClose={() => setShowTransfer(false)}
+          onSucces={handleDataChange}
+        ></TransferModal>
       </main>
     </>
   );

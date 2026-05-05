@@ -319,7 +319,7 @@ export default function WalletDetail() {
               autoFocus
             />
           ) : (
-            <h2
+            <h2 
               className="text-2xl font-semibold cursor-pointer hover:text-green-400 transition-colors"
               onClick={handleNameClick}
               title="Klik untuk edit nama. Kosongkan lalu Enter untuk hapus wallet."
@@ -358,7 +358,7 @@ export default function WalletDetail() {
             <div className="grid grid-cols-[auto_1fr] items-center mb-5 border-b border-slate-700">
               {/* Dropdown tahun */}
               <div className="overflow-hidden rounded-tl-lg rounded-tr-lg">
-                <select
+                <select 
                   className="form-input"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
@@ -404,7 +404,7 @@ export default function WalletDetail() {
             {/* === DAFTAR TRANSAKSI === */}
             <div className="flex items-center justify-between mt-7">
               <h3 className="text-xl font-medium">Transactions</h3>
-            </div>
+            </div>  
 
             {filteredTransactions.map((trx, index) => (
               <TransactionItem
