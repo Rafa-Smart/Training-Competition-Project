@@ -65,7 +65,7 @@ export default TranferModal = ({
       setLoading(false);
     }
   };
-
+if(!isOpen)return null
   return (
     <>
       <div

@@ -59,7 +59,7 @@ export default AddTransactionModal = ({
       setLoading(false);
     }
   };
-
+if(!isOpen)return null
   return (
     <>
       <div

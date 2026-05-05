@@ -35,6 +35,8 @@ export default AddWalletModal = ({ isOpen, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
+
+  if(!isOpen)return null
   return (
     <>
       <div
