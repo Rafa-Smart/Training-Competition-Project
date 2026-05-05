@@ -15,6 +15,8 @@ export default Register = () => {
   const { loginUser } = useAuth();
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
+ 
+// tess
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
