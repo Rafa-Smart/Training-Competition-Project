@@ -262,6 +262,7 @@ export default WalletDetail = () => {
                 class="btn"
                 onClick={() => setShowAddTransaction(true)}
               >
+              {/* TEST */}
                 Add Transaction
               </a>
             </div>
