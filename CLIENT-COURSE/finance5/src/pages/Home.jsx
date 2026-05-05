@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatCurrency } from "../utils/format";
 import TransactionItem from "../components/TransactionItem";
 import AddWalletModal from "../components/AddWalletModal";
+import AddTransactionModal from "../components/AddTransactionModal";
 
 export default Home = () => {
   const { user } = useAuth();
@@ -115,7 +116,13 @@ export default Home = () => {
         onClose={() => setShowAddWallet(false)}
         onSuccess={handleChangeData}
       ></AddWalletModal>
-      
+
+      <AddTransactionModal
+        defaultWalletId={null}
+        isOpen={showAddTransaction}
+        onClose={() => setShowAddTransaction(false)}
+        onSucces={handleChangeData}
+      ></AddTransactionModal>
     </>
   );
 };
