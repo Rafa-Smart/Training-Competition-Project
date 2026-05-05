@@ -201,7 +201,7 @@ export default function WalletDetail() {
         plugins: {
           legend: {
             position: "bottom",
-            labels: { color: "#94a3b8", padding: 10, font: { size: 11 } },
+            labels: { color: "  f", padding: 10, font: { size: 11 } },
           },
         },
       },
@@ -230,7 +230,7 @@ export default function WalletDetail() {
 
   // Klik nama wallet → aktifkan mode edit
   const handleNameClick = () => {
-    setIsEditingName(true);
+    setIsEditingName(true); 
   };
 
   // Tekan Enter di input nama wallet
@@ -244,7 +244,7 @@ export default function WalletDetail() {
       const confirmed = window.confirm(
         `Hapus wallet "${wallet.name}"? Semua transaksi di dalamnya juga akan terhapus.`,
       );
-      if (confirmed) {
+      if (confirmed) {  
         try {
           await deleteWallet(walletId);
           navigate("/"); // Balik ke overview setelah hapus
