@@ -78,7 +78,7 @@ class Wallet extends Model
 
     // Relasi: wallet ini milik satu user
     public function user()
-    {
+    {   
         return $this->belongsTo(User::class);
     }
 

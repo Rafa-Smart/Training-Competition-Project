@@ -45,7 +45,7 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request)
     {
         // Cek apakah wallet_id yang dikirim adalah milik user yang login
-        $wallet = Wallet::find($request->wallet_id);
+        $wallet = Wallet::find($request->wallet_id);    
 
         if ($wallet->user_id !== auth()->id()) {
             return response()->json([
