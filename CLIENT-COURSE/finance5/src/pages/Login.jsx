@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
 import { parseErrors } from "../utils/format";
 import { useNavigate } from "react-router-dom";
+import AlertError from "../utils/AlertError";
 
 export default Login = () => {
   const [form, setForm] = useState({ 
@@ -41,6 +42,7 @@ export default Login = () => {
         method="POST"
         className="max-w-[500px] mx-auto w-full flex flex-col gap-5"
       >
+        <AlertError messages={errors}></AlertError>
         <h2 className="text-2xl font-semibold text-center">Login</h2>
         <div className="rounded-xl overflow-hidden">
   

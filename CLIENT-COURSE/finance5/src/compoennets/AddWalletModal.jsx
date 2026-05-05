@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { currencyApi } from "../api/currency";
 import { walletApi } from "../api/wallet";
 import { parseErrors } from "../utils/format";
+import AlertError from "../utils/AlertError";
 
 export default AddWalletModal = ({ isOpen, onClose, onSuccess }) => {
   const [form, setForm] = useState({
@@ -54,6 +55,7 @@ export default AddWalletModal = ({ isOpen, onClose, onSuccess }) => {
             onSubmit={handleSubmit}
             className="flex flex-col gap-6"
           >
+            <AlertError messages={errors}></AlertError>
             <div className="rounded-xl overflow-hidden">
               <select
                 name="currency_code"
@@ -84,9 +86,7 @@ export default AddWalletModal = ({ isOpen, onClose, onSuccess }) => {
               />
             </div>
             <button type="submit" className="btn btn-lg w-full mt-4">
-              {
-                loading ? "saving..." :'save'
-              }
+              {loading ? "saving..." : "save"}
             </button>
           </form>
         </div>
