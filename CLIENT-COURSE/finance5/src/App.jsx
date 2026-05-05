@@ -5,8 +5,8 @@ import heroImg from "./assets/hero.png";
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import GuestRoute from "./compoennets/GuestRoute";
-import Navbar from "./compoennets/Navbar";
+import GuestRoute from "./components/GuestRoute";
+import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 

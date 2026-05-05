@@ -55,9 +55,7 @@ export default TranferModal = ({
     setLoading(true);
     setErrors([]);
     try {
-
         if(form.from_wallet_id == form.to_wallet_id) return;
-
       await transactionApi.tranfer({ ...form, amount: parseInt(form.amount) });
       onClose();
       onSuccess();
