@@ -157,7 +157,7 @@ export default function WalletDetail() {
       .catch(() => {});
   }, [selectedMonth, selectedYear, wallet]);
 
-  // Fungsi render/update chart dengan Chart.js
+  // Fungsi render/update chart dengan Chart.js 
   const renderChart = (canvasRef, chartInstance, summary, label) => {
     if (!canvasRef.current) return;
     // Pertama, kita cek: apakah canvasRef.current ada? Artinya, apakah elemen canvas sudah dipasang ke DOM? Jika belum (misalnya karena page masih loading), kita keluar lebih awal.

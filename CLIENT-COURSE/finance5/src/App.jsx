@@ -9,6 +9,8 @@ import GuestRoute from "./components/GuestRoute";
 import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -27,6 +29,16 @@ function App() {
             <GuestRoute>
               <Login></Login>
             </GuestRoute>
+          </Route>
+          <Route path="/">
+            <ProtectedRoute>
+              <Home></Home>
+            </ProtectedRoute>
+          </Route>
+          <Route path="/wallets/:walletId">
+            <ProtectedRoute>
+              <Home></Home>
+            </ProtectedRoute>
           </Route>
         </Routes>
       </BrowserRouter>
