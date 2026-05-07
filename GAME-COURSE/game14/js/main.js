@@ -246,7 +246,7 @@ class App {
 
   startConnect(id) {
     this.connectFrom = this.connectFrom == id ? null : id;
-    this.render();
+    this.render();  
   }
 
   cancelConnect() {

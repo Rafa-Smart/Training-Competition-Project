@@ -1,0 +1,97 @@
+import { useEffect, useState } from "react";
+import { currencyApi } from "../api/currency";
+import { walletApi } from "../api/wallet";
+import AlertError from "../utils/AlertError";
+
+export default AddModalWallet = ({ isOpen, onClose, onSuccess }) => {
+  const [form, setForm] = useState({
+    name: "",
+    currency_code: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
+
+  useEffect(async () => {
+    if (isOpen) {
+      const data = await currencyApi.index();
+      setCurrencies(data.data.data.currencies);
+    }
+  }, [isOpen]);
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrors([]);
+    try {
+      await walletApi.store(data);
+      onClose();
+      onSuccess();
+    } catch (e) {
+      setErrors(parseErrors(e) || ["terjadi kesalahan"]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div
+        className="modal is-open"
+        onClick={(e) => e.target == e.currentTarget && onClose()}
+      >
+        <div className="modal-header">
+          <div />
+          <h3 className="text-lg">Add Wallet</h3>
+          <button className="modal-close" onClick={() => onClose()}>
+            ×
+          </button>
+        </div>
+        <div className="modal-body">
+          <form
+            action
+            method="POST"
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-6"
+          >
+            <AlertError messages={errors}></AlertError>
+            <div className="rounded-xl overflow-hidden">
+              <select
+                name="currency_code"
+                onChange={handleChange}
+                value={form.currency_code}
+                id="currency_code"
+                className="form-input"
+              >
+                <option value disabled>
+                  Select Currency
+                </option>
+                {currencies.map((currency) => (
+                  <option value={currency.code} key={currency.id}>
+                    {currency.code} - {currency.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                onChange={handleChange}
+                value={form.name}
+                type="text"
+                id="name"
+                name="name"
+                className="form-input"
+                placeholder="Wallet Name"
+              />
+            </div>
+            <button type="submit" className="btn btn-lg w-full mt-4">
+              {loading ? "saving..." : "save"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+};
