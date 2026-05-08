@@ -150,7 +150,6 @@ export default function WalletDetail() {
         renderChart(expenseChartRef, expenseChartInstance, summary, "Expense");
       })
       .catch(() => {});
-
     getIncomeSummary({ month: selectedMonth, year: selectedYear })
       .then((res) => {
         const summary = res.data.data.summary;
@@ -229,7 +228,7 @@ export default function WalletDetail() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-    
+
   // Klik nama wallet → aktifkan mode edit
   const handleNameClick = () => {
     setIsEditingName(true); 

@@ -1,0 +1,136 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100vh;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #c8ebff;
+}
+
+#map-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    cursor: grab;
+
+}
+
+#map-area.grabbing {
+    cursor: grabbing;
+}
+
+#map-container {
+    transform-origin: 0 0;
+    position: absolute;
+}
+
+#map-img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#lines-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+#pinpoints-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+
+.pinpoint {
+    position: absolute;
+    transform: translate(-18%, -89%);
+    pointer-events: auto;
+
+}
+
+.header{
+    cursor: pointer;
+    background-color: rgb(202, 215, 210);
+    display: flex;
+    padding: 4px;
+    border-radius: 5px;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid pink;
+}
+
+.header.connecting {
+    border: 2px solid purple;
+}
+
+.btn {
+    height: 0.8rem;
+    width: 0.8rem;
+}
+
+
+
+.marker {
+    filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.popup {
+    position: absolute;
+    z-index: 200;
+    background-color: antiquewhite;
+    color: brown;
+    max-width: fit-content;
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.panel.hidden {
+    display: none;
+}
+
+.panel{
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    display: flex;
+    background-color: antiquewhite;
+    color: brown;
+    flex-direction: column;
+    max-width: fit-content;
+    padding: 9px;
+    border-radius: 3px;
+    border:1px solid brown;
+}
+
+#btn-route {
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid rgb(93, 10, 3);
+    color: brown;
+}
+
+#route-results.hidden {
+    display: none;
+}
+
+#route-results {
+    display: flex;flex-direction: column;
+}

@@ -246,7 +246,7 @@ class App {
 
   startConnect(id) {
     this.connectFrom = this.connectFrom == id ? null : id;
-    this.render();  
+    this.render();
   }
 
   cancelConnect() {
@@ -340,7 +340,7 @@ class App {
         let steps = [];
 
         path.forEach((ph, index) => {
-            let conn = ph.conn
+          let conn = ph.conn;
           let transports = conn.transportasi;
           let from = this.findPin(conn.fromId).name;
           let to = this.findPin(conn.toId).name;
@@ -397,7 +397,6 @@ class App {
           delete visited[next];
           path.pop();
         }
-
 
         // nah kalo sudh sampe loop ini beres dan tetep ga dapet nanti akan return sendiri dia dan berss aja udah
       });
@@ -618,26 +617,22 @@ class App {
 
     // tahap ke empat;
 
-    this.inputFrom.oninput = () => this.chechSearch()
-    this.inputTo.oninput = () => this.chechSearch()
-    this.search.onclick = () => this.searchRoutes()
+    this.inputFrom.oninput = () => this.chechSearch();
+    this.inputTo.oninput = () => this.chechSearch();
+    this.search.onclick = () => this.searchRoutes();
 
+    let buttons = document.querySelectorAll(".btn-sort");
+    if (buttons) {
+      buttons.forEach((button, index) => {
+        button.onclick = () => {
+          buttons.forEach((btn) => btn.classList.remove("active"));
 
-
-    let buttons = document.querySelectorAll('.btn-sort');
-    if(buttons){
-        buttons.forEach((button, index) => {
-            button.onclick = () => {
-                buttons.forEach(btn => btn.classList.remove('active'))
-                
-                            button.classList.add('active');
-                            this.sortMode = button.getAttribute('data-sort')
-                            this.searchRoutes()
-            }
-        })
+          button.classList.add("active");
+          this.sortMode = button.getAttribute("data-sort");
+          this.searchRoutes();
+        };
+      });
     }
-
-
   }
 }
 

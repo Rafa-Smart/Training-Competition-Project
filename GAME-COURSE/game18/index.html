@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div id="map-area">
+      <div id="map-container">
+        <img src="/assets/indonesia.svg" alt="" id="map-img" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </div>
+
+    <div id="popAdd" class="popup hidden">
+      <div class="header">
+        <span>Add Pin</span>
+        <img src="/assets/BiXLg.svg" alt="" id="close-add" />
+      </div>
+      <form id="formAdd">
+        <input type="text" id="input-name" />
+      </form>
+    </div>
+
+    <div id="popConnect" class="popup hidden">
+      <div class="header">
+        <span>Add Connect</span>
+        <img src="/assets/BiXLg.svg" alt="" id="close-connect" />
+      </div>
+      <form id="formConnect" style="display: flex; flex-direction: column">
+        <input type="number" id="input-distance" />
+        <select name="input-mode" id="input-mode">
+          <option value="" disabled>select mode</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Airplane">Airplane</option>
+        </select>
+        <button type="submit" id="btn-submit-connect">connect</button>
+      </form>
+    </div>
+    <button id="btn-route">Route</button>
+
+    <div id="route-panel" class="panel">
+      <div id="header-panel">
+        <span>Search</span>
+      </div>
+      <form id="search">
+        <div class="input-group">
+          <img src="/assets/MaterialSymbolsLocationOnOutline.svg" alt="" />
+          <input type="text" id="input-from" />
+        </div>
+        <div class="input-group">
+          <img src="/assets/MaterialSymbolsLocationOn.svg" alt="" />
+          <input type="text" id="input-to" />
+        </div>
+        <button type="submit" id="btn-search">search</button>
+      </form>
+      <div class="sort-group">
+        <button id="fastest" class="btn-sort active" data-sort="fastest">fastest</button>
+        <button id="cheaptest" class="btn-sort" data-sort="cheaptest">cheaptest</button>
+      </div>
+      <div id="route-results" class="hidden"></div>
+    </div>
+
+    
+
+    <script src="/main.js"></script>
+  </body>
+</html>
