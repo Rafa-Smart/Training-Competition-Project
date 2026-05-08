@@ -12,6 +12,7 @@ import { walletApi } from "../api/wallet";
 import TransactionItem from "../components/TransactionItem";
 import AddTranferModal from "../components/AddTranferModal";
 import AddTransanctionModal from "../components/AddTransanctionModal";
+import { reportApi } from "../api/report";
 Chart.register(ArcElement, Tooltip, Legend, DoughnutController);
 const Year = Array.from({ length: 16 }, (_, index) => 2015 + index);
 const Month = [
@@ -55,11 +56,16 @@ export default WalletDetail = () => {
   useEffect(() => {
     if (!wallet) return;
     try {
-        const data = r
+        const data = reportApi.expense({month:selectedMonth,year:selectedyear});
+        const summary = data.data.data.summary
+        renderChart(ExpenseRef, instanceExpense, summary, "EXPENSE")
     } catch (e) {
-      alert("gagal ambil data expense summary");
+        alert("gagal ambil data expense summary");
     }
     try {
+        const data = reportApi.income({month:selectedMonth,year:selectedyear});
+        const summary = data.data.data.summary
+        renderChart(ExpenseRef, instanceExpense, summary, "INCOME")
     } catch (e) {
       alert("gagal ambil data income summary");
     }
