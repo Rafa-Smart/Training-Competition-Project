@@ -75,7 +75,9 @@ export default function WalletDetail() {
   //  
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1); // 1-12
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1); // 1-12 
+  // jad gini kalo getMonth itu artinya dia akna dapatkan month kita saat ini
+  // dan kalo misalnya seakrng itu bulna 05, maka ketika kita ketik now.getMonth() => 4, nah maknya kita + 1
 
   // State untuk edit nama wallet
   const [isEditingName, setIsEditingName] = useState(false);
@@ -227,7 +229,7 @@ export default function WalletDetail() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-
+    
   // Klik nama wallet → aktifkan mode edit
   const handleNameClick = () => {
     setIsEditingName(true); 
@@ -268,7 +270,7 @@ export default function WalletDetail() {
   // Setelah add/hapus transaksi → refresh wallet + transaksi
   const handleDataChange = () => {
     loadWallet();
-    fetchPage(1, true);
+    fetchPage(1, true); 
   };
 
   const shouldShowDate = (index) => {
@@ -372,6 +374,7 @@ export default function WalletDetail() {
               </div>
 
               {/* Tab bulan horizontal scrollable */}
+              {/* disini unuk value dari input bulain ini adalah index nya ya bukan nama bulnanya, karen di selectedMonth itu kita juga pake index (angka) */}
               <div className="flex overflow-x-auto h-full">
                 {MONTHS.map((month, idx) => (
                   <button
