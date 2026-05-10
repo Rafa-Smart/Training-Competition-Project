@@ -605,7 +605,3 @@ class App {
 }
 
 window.onload = () => new App();
-// test
-// test
-// test
-// test
