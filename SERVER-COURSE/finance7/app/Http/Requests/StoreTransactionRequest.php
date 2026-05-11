@@ -24,16 +24,22 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'currency_code' => ['required', 'exists:currencies,code'],
+            'wallet_id' => ['required', 'exists:wallets,wid'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'amount' => ['required', 'integer', 'min:1'],
+            'note' => ['string'],
+            'date' => ['required', 'date_format:Y-m-d'],
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'The name field is required.',
-            'currency_code.exists' => 'The selected currency code is invalid.',
+            'wallet_id.required' => 'The wallet_id field is required.',
+            'category_id.required' => 'The v field is required.',
+            'amount.required' => 'The amount field is required.',
+            'note.required' => 'The note field is required.',
+            'date.required' => 'The date field is required.',
         ];
     }
 

@@ -165,15 +165,12 @@ export default WalletDetail = () => {
 
   return (
     <>
-      <main class="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
-        <div class="flex items-center gap-3.5">
-          <a
-            href="index.html"
-            class="btn btn text-lg! aspect-[1/1] inline-flex! bg-transparent! p-3.5! border border-slate-700 items-center justify-center leading-[1]"
-          >
-            ←
-          </a>
-          {isEditName ? (
+      <main className="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
+  <div className="flex items-center gap-3.5">
+    <a href="index.html" className="btn btn text-lg! aspect-[1/1] inline-flex! bg-transparent! p-3.5! border border-slate-700 items-center justify-center leading-[1]">
+      ←
+    </a>
+    {isEditName ? (
             <input
               type="text"
               value={editName}
@@ -183,121 +180,106 @@ export default WalletDetail = () => {
                 setIsEditName(false);
                 setEditName(wallet.name)
               }}
-              class="text-2xl font-semibold"
+              className="text-2xl font-semibold"
             ></input>
           ) : (
-            <h2 onClick={handleNameClick} class="text-2xl font-semibold">{wallet.name}</h2>
+            <h2 onClick={handleNameClick} className="text-2xl font-semibold">{wallet.name}</h2>
           )}
+  </div>
+  <div className="w-full max-w-[700px] mx-auto">
+    <div className="pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+      <div>
+        <h2 className="text-lg text-slate-400 font-medium mb-1">
+          Total balance
+        </h2>
+        <div className="font-semibold line-clamp-1 text-4xl">
+          Rp 2.500.000
         </div>
-
-        <div class="w-full max-w-[700px] mx-auto">
-          <div class="pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-5">
-            <div>
-              <h2 class="text-lg text-slate-400 font-medium mb-1">
-                Total balance
-              </h2>
-              <div class="font-semibold line-clamp-1 text-4xl">
-                Rp 2.500.000
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <a href="" class="btn">
-                Transfer Money
-              </a>
-              <a href="" class="btn">
-                Add Transaction
-              </a>
-            </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <a href className="btn">
+          Transfer Money
+        </a>
+        <a href className="btn">
+          Add Transaction
+        </a>
+      </div>
+    </div>
+    <div className="w-full py-2">
+      <div className="grid grid-cols-[auto_1fr] items-center mb-5 border-b border-slate-700">
+        <div className="overflow-hidden rounded-tl-lg rounded-tr-lg">
+          <select className="form-input">
+            <option value={2025}>2025</option>
+          </select>
+        </div>
+        <div className="flex overflow-x-auto h-full">
+          <a href className="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50">
+            Jan
+          </a>
+          <a href className="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg bg-slate-800">
+            Feb
+          </a>
+          <a href className="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50">
+            Mar
+          </a>
+          <a href className="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50">
+            Jun
+          </a>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-10 py-6">
+        <div className="flex flex-col items-center gap-5">
+          <h2 className="text-lg">EXPENSE</h2>
+        </div>
+        <div className="flex flex-col items-center gap-5">
+          <h2 className="text-lg">INCOME</h2>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-7">
+        <h3 className="text-xl font-medium">Transactions</h3>
+      </div>
+      <div className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
+        <div className="flex lg:items-center gap-3">
+          <div className="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
+            Icon
           </div>
-
-          <div class="w-full py-2">
-            <div class="grid grid-cols-[auto_1fr] items-center mb-5 border-b border-slate-700">
-              <div class="overflow-hidden rounded-tl-lg rounded-tr-lg">
-                <select class="form-input">
-                  <option value="2025">2025</option>
-                </select>
-              </div>
-              <div class="flex overflow-x-auto h-full">
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Jan
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg bg-slate-800"
-                >
-                  Feb
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Mar
-                </a>
-                <a
-                  href=""
-                  class="whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg opacity-50"
-                >
-                  Jun
-                </a>
+          <div>
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-3">
+              <div className="font-medium">Category</div>
+              <div className="text-slate-400 text-sm lg:text-[1rem]">
+                Wallet name
               </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-10 py-6">
-              <div class="flex flex-col items-center gap-5">
-                <h2 class="text-lg">EXPENSE</h2>
-              </div>
-              <div class="flex flex-col items-center gap-5">
-                <h2 class="text-lg">INCOME</h2>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between mt-7">
-              <h3 class="text-xl font-medium">Transactions</h3>
-            </div>
-            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
-              <div class="flex lg:items-center gap-3">
-                <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
-                  Icon
-                </div>
-                <div>
-                  <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
-                    <div class="font-medium">Category</div>
-                    <div class="text-slate-400 text-sm lg:text-[1rem]">
-                      Wallet name
-                    </div>
-                  </div>
-                  <div class="text-slate-400 text-xs lg:text-sm">
-                    Note (optional)
-                  </div>
-                </div>
-              </div>
-              <div class="amount font-medium">Rp 250.000</div>
-            </div>
-            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
-              <div class="flex lg:items-center gap-3">
-                <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
-                  Icon
-                </div>
-                <div>
-                  <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
-                    <div class="font-medium">Category</div>
-                    <div class="text-slate-400 text-sm lg:text-[1rem]">
-                      Wallet name
-                    </div>
-                  </div>
-                  <div class="text-slate-400 text-xs lg:text-sm">
-                    Note (optional)
-                  </div>
-                </div>
-              </div>
-              <div class="amount font-medium">-Rp 250.000</div>
+            <div className="text-slate-400 text-xs lg:text-sm">
+              Note (optional)
             </div>
           </div>
         </div>
-      </main>
+        <div className="amount font-medium">Rp 250.000</div>
+      </div>
+      <div className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
+        <div className="flex lg:items-center gap-3">
+          <div className="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
+            Icon
+          </div>
+          <div>
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-3">
+              <div className="font-medium">Category</div>
+              <div className="text-slate-400 text-sm lg:text-[1rem]">
+                Wallet name
+              </div>
+            </div>
+            <div className="text-slate-400 text-xs lg:text-sm">
+              Note (optional)
+            </div>
+          </div>
+        </div>
+        <div className="amount font-medium">-Rp 250.000</div>
+      </div>
+    </div>
+  </div>
+</main>
+
     </>
   );
 };
