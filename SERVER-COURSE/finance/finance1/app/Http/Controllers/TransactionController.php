@@ -156,14 +156,14 @@ class TransactionController extends Controller
         // transaction’s date.
         // tuh lihat perdate ya artinya prehari atua pertanggal
 
-        if ($request->filled('month')) {
+        if ($request->filled('month')) {// angka biasanya
             $query->whereMonth('date', $request->month);            
         }
 
         // Filter tahun
         // ini fungsinya adalah ini Cek apakah input month ADA dan TIDAK KOSONG
         // ntuk filled
-        if ($request->filled('year')) {
+        if ($request->filled('year')) { // angka biasanya
             $query->whereYear('date', $request->year);
         }
 
