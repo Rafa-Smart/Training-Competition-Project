@@ -32,7 +32,7 @@ class StoreWalletRequest extends FormRequest
     public function messages()
     {
         return [
-            'password.required' => 'The name field is required.',
+            'name.required' => 'The name field is required.',
             'currency_code.exists' => 'The selected currency code is invalid.',
         ];
     }

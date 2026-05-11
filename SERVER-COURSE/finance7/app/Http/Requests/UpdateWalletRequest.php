@@ -24,16 +24,14 @@ class UpdateWalletRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'currency_code' => ['required', 'exists:currencies,code'],
+            'name' => ['required']  
         ];
     }
 
     public function messages()
     {
         return [
-            'password.required' => 'The name field is required.',
-            'currency_code.exists' => 'The selected currency code is invalid.',
+            'name.required' => 'The name field is required.'
         ];
     }
 
