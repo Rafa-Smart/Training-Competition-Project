@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -13,7 +13,15 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+
+        return response()->json([
+            'message' => 'Get all categories successful',
+            'data' => [
+                'categories' => $categories,
+            ],
+
+        ], 200);
     }
 
     /**
