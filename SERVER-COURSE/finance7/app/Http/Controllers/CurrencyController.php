@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Currency;
 use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
+use App\Models\Currency;
 
 class CurrencyController extends Controller
 {
@@ -13,7 +13,14 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        //
+        $currencies = Currency::all();
+
+        return response()->json([
+            'message' => 'Get all currencies successful',
+            'data' => [
+                'currencies' => $currencies,
+            ],
+        ]);
     }
 
     /**
