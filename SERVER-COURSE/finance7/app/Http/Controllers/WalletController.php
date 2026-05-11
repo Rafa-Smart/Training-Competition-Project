@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wallet;
 use App\Http\Requests\StoreWalletRequest;
 use App\Http\Requests\UpdateWalletRequest;
+use App\Models\Wallet;
 
 class WalletController extends Controller
 {
@@ -29,7 +29,19 @@ class WalletController extends Controller
      */
     public function store(StoreWalletRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $wallet = Wallet::create([
+            'user_id' => auth()->id(),
+            'name' => $data['name'],
+            'currency_code' => $data['currency_code'],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Wallet added successful',
+            'data' => $wallet,
+        ]);
     }
 
     /**
@@ -53,7 +65,19 @@ class WalletController extends Controller
      */
     public function update(UpdateWalletRequest $request, Wallet $wallet)
     {
-        //
+        $data = $request->validated();
+
+        $wallet = Wallet::create([
+            'user_id' => auth()->id(),
+            'name' => $data['name'],
+            'currency_code' => $data['currency_code'],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Wallet added successful',
+            'data' => $wallet,
+        ]);
     }
 
     /**

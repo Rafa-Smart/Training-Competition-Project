@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreWalletRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreWalletRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,25 @@ class StoreWalletRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required'],
+            'currency_code' => ['required', 'exists:currencies,code'],
         ];
+    }
+
+    public function messages()
+    {
+        return [
+            'password.required' => 'The name field is required.',
+            'currency_code.exists' => 'The selected currency code is invalid.',
+        ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid field',
+            'errors' => $validator->errors(),
+        ]);
     }
 }
