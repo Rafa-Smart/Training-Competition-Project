@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shooter Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="game">
+      <!-- HUD (muncul saat main) -->
+      <div id="hud" class="hud hidden">
+        <span>Player: <b id="hudName"></b></span>
+        <span>Score: <b id="hudScore">0</b></span>
+        <span>Time: <b id="hudTime">0</b>s</span>
+        <div class="bar"><span id="hudBar"></span></div>
+      </div>
+
+      <!-- Area tembak -->
+      <div id="board" class="board hidden"></div>
+
+      <!-- Sidebar shoot history -->
+      <div id="sidebar" class="sidebar hidden">
+        <div class="side-title">Gun</div>
+        <img id="sideGun" src="Sprites/gun1.png" alt="gun" />
+        <small>Space = ganti senjata</small>
+        <div class="side-title">Shoot History</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 8px">
+          <button id="sortScore">Score</button>
+          <button id="sortLast">Last</button>
+        </div>
+        <div id="shotLog"></div>
+      </div>
+
+      <!-- Pointer & gun (ikut mouse) -->
+      <img
+        id="pointer"
+        class="pointer hidden"
+        src="Sprites/pointer.png"
+        alt=""
+      />
+      <img id="gun" class="gun hidden" src="Sprites/gun1.png" alt="" />
+
+      <!-- WELCOME SCREEN -->
+      <div id="welcome" class="overlay">
+        <div class="panel">
+          <h1>SHOOTER</h1>
+
+          <label
+            >Nama Pemain
+            <input
+              id="playerName"
+              type="text"
+              maxlength="20"
+              placeholder="Masukkan nama"
+            />
+          </label>
+
+          <label
+            >Level
+            <select id="level">
+              <option value="easy">Easy (30s)</option>
+              <option value="medium">Medium (20s)</option>
+              <option value="hard">Hard (15s)</option>
+            </select>
+          </label>
+
+          <div class="group">
+            <p>Senjata</p>
+            <label class="choice"
+              ><input type="radio" name="gun" value="gun1" checked /><img
+                src="Sprites/gun1.png"
+                alt="Gun 1"
+            /></label>
+            <label class="choice"
+              ><input type="radio" name="gun" value="gun2" /><img
+                src="Sprites/gun2.png"
+                alt="Gun 2"
+            /></label>
+          </div>
+
+          <div class="group">
+            <p>Target</p>
+            <label class="choice"
+              ><input type="radio" name="target" value="target1" checked /><img
+                src="Sprites/target1.png"
+                alt="Target 1"
+            /></label>
+            <label class="choice"
+              ><input type="radio" name="target" value="target2" /><img
+                src="Sprites/target2.png"
+                alt="Target 2"
+            /></label>
+            <label class="choice"
+              ><input type="radio" name="target" value="target3" /><img
+                src="Sprites/target3.png"
+                alt="Target 3"
+            /></label>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-top: 16px;
+              justify-content: center;
+            "
+          >
+            <button id="btnInst">Instruksi</button>
+            <button id="btnPlay" class="primary" disabled>Play Game</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- INSTRUKSI -->
+      <div id="instruction" class="overlay hidden">
+        <div class="panel" style="max-width: 360px; position: relative">
+          <button class="close" data-close="instruction">✕</button>
+          <h2>Cara Bermain</h2>
+          <ol style="padding-left: 18px; line-height: 2">
+            <li>Isi nama, pilih level, senjata, dan target.</li>
+            <li>Klik Play Game.</li>
+            <li>Tembak target dengan klik mouse.</li>
+            <li>Tekan Spasi untuk ganti senjata.</li>
+            <li>Tekan Esc untuk pause.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN -->
+      <div id="countdown" class="overlay hidden">
+        <div id="countNum" class="count">3</div>
+      </div>
+
+      <!-- PAUSE -->
+      <div id="pause" class="overlay hidden">
+        <div class="panel" style="max-width: 320px; text-align: center">
+          <h2>Pause</h2>
+          <p>Tekan Esc atau klik Continue</p>
+          <button id="btnContinue" class="primary" style="margin-top: 12px">
+            Continue
+          </button>
+        </div>
+      </div>
+
+      <!-- GAME OVER -->
+      <div id="gameover" class="overlay hidden">
+        <div class="panel" style="max-width: 320px; text-align: center">
+          <h2>Game Over</h2>
+          <p>Player: <b id="goName"></b></p>
+          <p>Score: <b id="goScore"></b></p>
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-top: 16px;
+              justify-content: center;
+            "
+          >
+            <button id="btnSave" class="primary">Simpan Skor</button>
+            <button id="btnHistory">Riwayat</button>
+            <button id="btnRestart">Restart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div id="history" class="overlay hidden">
+        <div class="panel" style="max-width: 680px; position: relative">
+          <button class="close" data-close="history">✕</button>
+          <h2>Riwayat Pertandingan</h2>
+          <div style="display: flex; gap: 6px; margin-bottom: 10px">
+            <button id="histScore">Score</button>
+            <button id="histLast">Last</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nama</th>
+                <th>Skor</th>
+                <th>Level</th>
+                <th>Senjata</th>
+                <th>Target</th>
+                <th>Tanggal</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>

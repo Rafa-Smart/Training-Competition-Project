@@ -1,0 +1,1330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shooter Game</title>
+    <style>
+      /* ===== RESET & BASE ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: "Courier New", monospace;
+        overflow: hidden;
+        cursor: none; /* hide default cursor - we use custom pointer */
+      }
+
+      /* ===== GAME CONTAINER (1000x600 fixed) ===== */
+      #game {
+        width: 1000px;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+        border: 3px solid #f00;
+        box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+      }
+
+      /* ===== BACKGROUND ===== */
+      #bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url("background.jpg") center/cover no-repeat;
+        z-index: 0;
+      }
+
+      /* ===== HUD (Heads Up Display - info bar di atas) ===== */
+      #hud {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        z-index: 10;
+        color: #fff;
+        font-size: 14px;
+        border-bottom: 2px solid #f00;
+        display: none; /* tampil saat game mulai */
+      }
+      #hud span {
+        color: #f90;
+        font-weight: bold;
+      }
+
+      /* ===== GAMEBOARD (area target muncul) ===== */
+      #gameboard {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 200px;
+        bottom: 0;
+        z-index: 1;
+      }
+
+      /* ===== SIDEBAR (kanan - gun & history) ===== */
+      #sidebar {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 200px;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10;
+        padding: 10px;
+        color: #fff;
+        border-left: 2px solid #f00;
+        display: none;
+        overflow-y: auto;
+      }
+      #sidebar h3 {
+        color: #f00;
+        font-size: 12px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+      #gun-display {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      #gun-display img {
+        width: 80px;
+        transition: transform 0.3s;
+      }
+      #gun-display img.switching {
+        transform: rotate(360deg);
+      }
+      #shoot-list {
+        font-size: 11px;
+      }
+      #shoot-list .entry {
+        border-bottom: 1px solid #333;
+        padding: 3px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .hit {
+        color: #0f0;
+      }
+      .miss {
+        color: #f00;
+      }
+
+      /* ===== POINTER (custom cursor) ===== */
+      #pointer {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        z-index: 50;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        display: none;
+      }
+
+      /* ===== GUN (ikut mouse) ===== */
+      #gun {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        z-index: 20;
+        pointer-events: none;
+        transition: left 0.05s;
+        display: none;
+      }
+
+      /* ===== TARGET ===== */
+      .target {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        cursor: none;
+        z-index: 5;
+        animation: pop-in 0.4s ease-out;
+      }
+      @keyframes pop-in {
+        from {
+          transform: scale(0) rotate(-180deg);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+      .target.hit-anim {
+        animation: boom 0.4s ease-out forwards;
+      }
+      @keyframes boom {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.5);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(0);
+          opacity: 0;
+        }
+      }
+
+      /* ===== BOOM EFFECT ===== */
+      .boom-fx {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: url("boom.png") center/cover no-repeat;
+        z-index: 15;
+        animation: boom-fade 0.5s ease-out forwards;
+        pointer-events: none;
+      }
+      @keyframes boom-fade {
+        0% {
+          transform: scale(0.5);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      /* ===== OVERLAYS (popup layar penuh di atas game) ===== */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.85);
+      }
+      .overlay.hidden {
+        display: none;
+      }
+
+      /* ===== WELCOME SCREEN ===== */
+      #welcome {
+        background: rgba(0, 0, 0, 0.9);
+      }
+      #welcome img.logo {
+        width: 150px;
+        margin-bottom: 15px;
+      }
+      #welcome h1 {
+        color: #f00;
+        font-size: 36px;
+        letter-spacing: 4px;
+        text-shadow: 0 0 15px #f00;
+      }
+      #welcome p {
+        color: #aaa;
+        margin: 8px 0;
+        font-size: 13px;
+      }
+      .form-row {
+        margin: 8px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .form-row label {
+        color: #f90;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      .form-row input[type="text"] {
+        background: #1a1a1a;
+        border: 1px solid #f00;
+        color: #fff;
+        padding: 8px 14px;
+        font-size: 14px;
+        outline: none;
+        width: 220px;
+      }
+      .radio-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #fff;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .radio-group img {
+        width: 40px;
+        border: 2px solid transparent;
+      }
+      input[type="radio"]:checked + img,
+      input[type="radio"]:checked ~ img {
+        border-color: #f00;
+      }
+      input[type="radio"] {
+        display: none;
+      }
+      .radio-group label:has(input:checked) img {
+        border-color: #f00;
+        filter: brightness(1.3);
+      }
+
+      .btn {
+        padding: 10px 28px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        cursor: pointer;
+        border: none;
+        text-transform: uppercase;
+        transition: all 0.2s;
+      }
+      .btn-red {
+        background: #c00;
+        color: #fff;
+      }
+      .btn-red:hover {
+        background: #f00;
+      }
+      .btn-red:disabled {
+        background: #444;
+        color: #777;
+        cursor: not-allowed;
+      }
+      .btn-green {
+        background: #060;
+        color: #fff;
+      }
+      .btn-green:hover {
+        background: #0a0;
+      }
+      .btn-gray {
+        background: #333;
+        color: #fff;
+      }
+      .btn-gray:hover {
+        background: #555;
+      }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      /* ===== INSTRUCTION POPUP ===== */
+      #instruction-box {
+        background: #1a1a1a;
+        border: 2px solid #f00;
+        padding: 25px;
+        width: 420px;
+        color: #ccc;
+        font-size: 13px;
+        line-height: 1.8;
+        position: relative;
+      }
+      #instruction-box h2 {
+        color: #f00;
+        margin-bottom: 12px;
+      }
+      #btn-close-inst {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        background: none;
+        border: none;
+        color: #f00;
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      /* ===== COUNTDOWN ===== */
+      #countdown {
+        font-size: 120px;
+        color: #f00;
+        font-weight: bold;
+        text-shadow: 0 0 30px #f00;
+        animation: pulse 0.8s ease-in-out infinite alternate;
+      }
+      @keyframes pulse {
+        from {
+          transform: scale(1);
+        }
+        to {
+          transform: scale(1.1);
+        }
+      }
+
+      /* ===== PAUSE POPUP ===== */
+      #pause-box {
+        background: #111;
+        border: 2px solid #f90;
+        padding: 30px 50px;
+        text-align: center;
+        color: #fff;
+      }
+      #pause-box h2 {
+        color: #f90;
+        font-size: 28px;
+        margin-bottom: 15px;
+      }
+      #pause-box p {
+        color: #aaa;
+        font-size: 12px;
+      }
+
+      /* ===== GAME OVER POPUP ===== */
+      #gameover-box {
+        background: #111;
+        border: 2px solid #f00;
+        padding: 30px 50px;
+        text-align: center;
+        color: #fff;
+        min-width: 350px;
+      }
+      #gameover-box h2 {
+        color: #f00;
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+      #final-info {
+        color: #aaa;
+        margin: 10px 0;
+        font-size: 14px;
+      }
+      #final-info span {
+        color: #fff;
+        font-size: 18px;
+      }
+
+      /* ===== HISTORY POPUP ===== */
+      #history-box {
+        background: #111;
+        border: 2px solid #0af;
+        padding: 25px;
+        width: 450px;
+        color: #fff;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      #history-box h2 {
+        color: #0af;
+        margin-bottom: 10px;
+      }
+      .sort-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      #history-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      #history-table th {
+        background: #222;
+        color: #0af;
+        padding: 5px;
+      }
+      #history-table td {
+        padding: 5px;
+        border-bottom: 1px solid #222;
+        text-align: center;
+      }
+
+      /* ===== TIMER BAR (bawah hud) ===== */
+      #timer-bar-wrap {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: calc(100% - 200px);
+        height: 5px;
+        background: #333;
+        z-index: 11;
+        display: none;
+      }
+      #timer-bar {
+        height: 100%;
+        background: #f00;
+        transition: width 1s linear;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game" role="main" aria-label="Shooter Game">
+      <div id="bg" aria-hidden="true"></div>
+
+      <!-- HUD -->
+      <div id="hud" role="status" aria-live="polite">
+        <div>👤 <span id="hud-name">-</span></div>
+        <div>🎯 Target: <span id="hud-target">-</span></div>
+        <div>⭐ Score: <span id="hud-score">0</span></div>
+        <div>⏱ Time: <span id="hud-timer">30</span>s</div>
+        <button
+          class="btn btn-gray"
+          onclick="Game.toggleInstructions()"
+          style="padding: 4px 10px; font-size: 11px"
+          aria-label="Show Instructions"
+        >
+          Instructions
+        </button>
+      </div>
+
+      <!-- Timer bar -->
+      <div id="timer-bar-wrap" aria-hidden="true">
+        <div id="timer-bar"></div>
+      </div>
+
+      <!-- Gameboard -->
+      <div id="gameboard" aria-label="Game board"></div>
+
+      <!-- Sidebar -->
+      <div id="sidebar" role="complementary" aria-label="Game info">
+        <h3>🔫 Gun</h3>
+        <div id="gun-display">
+          <img id="sidebar-gun" src="" alt="Current gun" />
+          <p style="font-size: 11px; color: #aaa; margin-top: 4px">
+            Space to switch
+          </p>
+        </div>
+        <h3>📋 History</h3>
+        <div style="display: flex; gap: 4px; margin-bottom: 6px">
+          <button
+            class="btn btn-gray"
+            style="font-size: 10px; padding: 3px 6px"
+            onclick="Game.sortShootHistory('score')"
+          >
+            By Score
+          </button>
+          <button
+            class="btn btn-gray"
+            style="font-size: 10px; padding: 3px 6px"
+            onclick="Game.sortShootHistory('last')"
+          >
+            By Last
+          </button>
+        </div>
+        <div id="shoot-list" aria-live="polite"></div>
+      </div>
+
+      <!-- Pointer image (ikut mouse) -->
+      <img id="pointer" src="pointer.png" alt="" aria-hidden="true" />
+
+      <!-- Gun image (di bawah, ikut X mouse) -->
+      <img id="gun" src="" alt="" aria-hidden="true" />
+
+      <!-- ===== OVERLAYS ===== -->
+
+      <!-- Welcome Screen -->
+      <div
+        class="overlay"
+        id="welcome"
+        role="dialog"
+        aria-label="Welcome Screen"
+      >
+        <img class="logo" src="shooter.png" alt="Shooter Logo" />
+        <h1>SHOOTER</h1>
+        <div class="form-row">
+          <label for="input-name">Player Name</label>
+          <input
+            type="text"
+            id="input-name"
+            placeholder="Enter your name..."
+            aria-required="true"
+            maxlength="20"
+          />
+        </div>
+
+        <!-- Level -->
+        <div class="form-row">
+          <label>Difficulty Level</label>
+          <div class="radio-group" role="radiogroup" aria-label="Difficulty">
+            <label
+              ><input type="radio" name="level" value="easy" checked /> Easy
+              (30s)</label
+            >
+            <label
+              ><input type="radio" name="level" value="medium" /> Medium
+              (20s)</label
+            >
+            <label
+              ><input type="radio" name="level" value="hard" /> Hard
+              (15s)</label
+            >
+          </div>
+        </div>
+
+        <!-- Gun -->
+        <div class="form-row">
+          <label>Choose Gun</label>
+          <div class="radio-group" role="radiogroup" aria-label="Gun">
+            <label
+              ><input type="radio" name="gun" value="gun1" checked /><img
+                src="gun1.png"
+                alt="Gun 1"
+            /></label>
+            <label
+              ><input type="radio" name="gun" value="gun2" /><img
+                src="gun2.png"
+                alt="Gun 2"
+            /></label>
+          </div>
+        </div>
+
+        <!-- Target -->
+        <div class="form-row">
+          <label>Choose Target</label>
+          <div class="radio-group" role="radiogroup" aria-label="Target">
+            <label
+              ><input type="radio" name="target" value="target1" checked /><img
+                src="target1.png"
+                alt="Target 1"
+            /></label>
+            <label
+              ><input type="radio" name="target" value="target2" /><img
+                src="target2.png"
+                alt="Target 2"
+            /></label>
+            <label
+              ><input type="radio" name="target" value="target3" /><img
+                src="target3.png"
+                alt="Target 3"
+            /></label>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button
+            class="btn btn-gray"
+            onclick="Game.showInstructions()"
+            aria-label="Show game instructions"
+          >
+            Instructions
+          </button>
+          <button
+            class="btn btn-red"
+            id="btn-play"
+            disabled
+            onclick="Game.startCountdown()"
+            aria-label="Play game"
+          >
+            ▶ Play Game
+          </button>
+        </div>
+      </div>
+
+      <!-- Instructions Overlay -->
+      <div
+        class="overlay hidden"
+        id="instruction-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Game Instructions"
+      >
+        <div id="instruction-box">
+          <button
+            id="btn-close-inst"
+            onclick="Game.hideInstructions()"
+            aria-label="Close instructions"
+          >
+            ✕
+          </button>
+          <h2>📖 How to Play</h2>
+          <ul style="list-style: none; padding: 0">
+            <li>🖱 Move mouse to aim the gun</li>
+            <li>🖱 Click to shoot a target</li>
+            <li>🎯 Hit targets to earn points</li>
+            <li>❌ Miss? -5 seconds penalty!</li>
+            <li>⎵ Press <strong>Space</strong> to switch gun</li>
+            <li>⎋ Press <strong>Esc</strong> to pause/resume</li>
+            <li>⏱ Beat the clock before time runs out!</li>
+          </ul>
+          <br />
+          <strong style="color: #f90">Scoring:</strong>
+          <ul style="list-style: none; padding: 0">
+            <li>Easy target = +10 pts</li>
+            <li>Medium target = +20 pts</li>
+            <li>Hard target = +30 pts</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Countdown Overlay -->
+      <div
+        class="overlay hidden"
+        id="countdown-overlay"
+        aria-live="assertive"
+        aria-label="Countdown"
+      >
+        <div id="countdown">3</div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div
+        class="overlay hidden"
+        id="pause-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Game Paused"
+      >
+        <div id="pause-box">
+          <h2>⏸ PAUSED</h2>
+          <p>Press Esc or click Continue</p>
+          <br />
+          <button
+            class="btn btn-green"
+            onclick="Game.resume()"
+            aria-label="Continue game"
+          >
+            ▶ Continue
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div
+        class="overlay hidden"
+        id="gameover-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Game Over"
+      >
+        <div id="gameover-box">
+          <h2>💀 GAME OVER</h2>
+          <div id="final-info">
+            Player: <span id="final-name">-</span><br />
+            Score: <span id="final-score">0</span>
+          </div>
+          <div class="btn-row" style="justify-content: center">
+            <button
+              class="btn btn-green"
+              onclick="Game.saveScore()"
+              aria-label="Save score"
+            >
+              💾 Save Score
+            </button>
+            <button
+              class="btn btn-gray"
+              onclick="Game.showHistory()"
+              aria-label="Match history"
+            >
+              📋 History
+            </button>
+            <button
+              class="btn btn-red"
+              onclick="Game.restart()"
+              aria-label="Restart game"
+            >
+              🔄 Restart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Overlay -->
+      <div
+        class="overlay hidden"
+        id="history-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Match History"
+      >
+        <div id="history-box">
+          <h2>📋 Match History</h2>
+          <div class="sort-row">
+            <button
+              class="btn btn-gray"
+              style="font-size: 11px; padding: 4px 8px"
+              onclick="Game.showHistory('score')"
+              aria-label="Sort by score"
+            >
+              ⬆ By Score
+            </button>
+            <button
+              class="btn btn-gray"
+              style="font-size: 11px; padding: 4px 8px"
+              onclick="Game.showHistory('last')"
+              aria-label="Sort by latest"
+            >
+              🕑 Last Match
+            </button>
+            <button
+              class="btn btn-gray"
+              style="font-size: 11px; padding: 4px 8px"
+              onclick="Game.hideHistory()"
+              aria-label="Close history"
+            >
+              ✕ Close
+            </button>
+          </div>
+          <table id="history-table" aria-label="Match history table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /*
+       * ============================================================
+       *  SHOOTER GAME - Full OOP Implementation
+       *  Satu file, komentar per fungsi, siap jalan langsung
+       * ============================================================
+       *
+       *  STRUKTUR CLASS:
+       *  - Config      : semua konstanta/setting (tidak berubah)
+       *  - State       : semua data yang berubah saat game berjalan
+       *  - UI          : semua manipulasi DOM (tampil/sembunyi elemen)
+       *  - TargetManager: spawning & hit detection target
+       *  - ShootHistory : data tembakan per game (hit/miss)
+       *  - Game (object): controller utama, inisialisasi & event
+       * ============================================================
+       */
+
+      // ─────────────────────────────────────────────
+      // CONFIG: konstanta yang tidak berubah
+      // ─────────────────────────────────────────────
+      const Config = {
+        LEVEL_TIME: { easy: 30, medium: 20, hard: 15 }, // detik per level
+        SCORE_POINTS: { target1: 10, target2: 20, target3: 30 }, // poin per target type
+        MISS_PENALTY: 5, // pengurangan detik saat meleset
+        SPAWN_INTERVAL: 3000, // ms: target baru muncul tiap 3 detik
+        INIT_TARGETS: 3, // jumlah target saat game mulai
+        GUNS: ["gun1", "gun2"],
+      };
+
+      // ─────────────────────────────────────────────
+      // STATE: data game yang berubah-ubah
+      // ─────────────────────────────────────────────
+      const State = {
+        name: "",
+        level: "easy",
+        gunIndex: 0, // index ke Config.GUNS (0 atau 1)
+        targetType: "target1",
+        score: 0,
+        timeLeft: 30,
+        paused: false,
+        running: false,
+        timerInterval: null,
+        spawnInterval: null,
+        mouseX: 500,
+        mouseY: 300,
+        shootLog: [], // array { hit, score, time } per tembakan di game ini
+      };
+
+      // ─────────────────────────────────────────────
+      // UI: helper untuk tampil/sembunyikan overlay
+      // ─────────────────────────────────────────────
+      const UI = {
+        /** tampilkan satu overlay, sembunyikan semua yang lain */
+        show(id) {
+          [
+            "welcome",
+            "instruction-overlay",
+            "countdown-overlay",
+            "pause-overlay",
+            "gameover-overlay",
+            "history-overlay",
+          ].forEach((x) => document.getElementById(x)?.classList.add("hidden"));
+          if (id) document.getElementById(id)?.classList.remove("hidden");
+        },
+
+        /** update HUD (bar info atas) */
+        updateHUD() {
+          document.getElementById("hud-name").textContent = State.name;
+          document.getElementById("hud-target").textContent = State.targetType;
+          document.getElementById("hud-score").textContent = State.score;
+          document.getElementById("hud-timer").textContent = State.timeLeft;
+          // timer bar: lebar proporsional terhadap waktu awal
+          const maxTime = Config.LEVEL_TIME[State.level];
+          const pct = (State.timeLeft / maxTime) * 100;
+          document.getElementById("timer-bar").style.width = pct + "%";
+          document.getElementById("timer-bar").style.background =
+            pct > 50 ? "#0f0" : pct > 25 ? "#f90" : "#f00";
+        },
+
+        /** tampilkan/sembunyikan game elements (HUD, sidebar, gun, pointer) */
+        setGameVisible(v) {
+          ["hud", "sidebar", "timer-bar-wrap"].forEach((id) => {
+            document.getElementById(id).style.display = v
+              ? id === "timer-bar-wrap"
+                ? "block"
+                : "flex"
+              : "none";
+          });
+          document.getElementById("gun").style.display = v ? "block" : "none";
+          document.getElementById("pointer").style.display = v
+            ? "block"
+            : "none";
+        },
+
+        /** update gambar gun di sidebar & elemen gun bawah */
+        updateGunDisplay() {
+          const gunName = Config.GUNS[State.gunIndex];
+          document.getElementById("sidebar-gun").src = gunName + ".png";
+          document.getElementById("gun").src = gunName + ".png";
+        },
+
+        /** update shoot-list (sidebar kanan) */
+        renderShootList(list) {
+          const el = document.getElementById("shoot-list");
+          el.innerHTML = list
+            .map(
+              (e, i) =>
+                `<div class="entry ${e.hit ? "hit" : "miss"}">
+        <span>#${i + 1} ${e.hit ? "✅" : "❌"}</span>
+        <span>${e.hit ? "+" + e.score : "-5s"}</span>
+       </div>`,
+            )
+            .join("");
+        },
+      };
+
+      // ─────────────────────────────────────────────
+      // TARGET MANAGER: spawn, remove, hit detection
+      // ─────────────────────────────────────────────
+      const TargetManager = {
+        targets: [], // array DOM element yang aktif
+
+        /**
+         * spawnTarget()
+         * - Buat elemen <img> target di posisi random di gameboard
+         * - Tambah ke State.targets dan gameboard DOM
+         * - Dipanggil: saat game mulai (3x) dan setiap 3 detik
+         */
+        spawnTarget() {
+          const board = document.getElementById("gameboard");
+          const bw = board.offsetWidth - 70; // 70 = ukuran target
+          const bh = board.offsetHeight - 70;
+          const img = document.createElement("img");
+          img.src = State.targetType + ".png";
+          img.className = "target";
+          img.alt = "Target";
+          img.style.left = Math.random() * bw + "px";
+          img.style.top = Math.random() * bh + "px";
+
+          // Klik target = hit!
+          img.addEventListener("click", (e) => {
+            e.stopPropagation(); // jangan trigger miss di gameboard
+            this.hitTarget(img);
+          });
+
+          board.appendChild(img);
+          this.targets.push(img);
+        },
+
+        /**
+         * hitTarget(img)
+         * - Tambah score, animasi boom, hapus target dari DOM & array
+         * - Dipanggil: saat target diklik
+         */
+        hitTarget(img) {
+          if (!State.running || State.paused) return;
+
+          // boom effect
+          const boom = document.createElement("div");
+          boom.className = "boom-fx";
+          boom.style.left = parseFloat(img.style.left) - 5 + "px";
+          boom.style.top = parseFloat(img.style.top) - 5 + "px";
+          document.getElementById("gameboard").appendChild(boom);
+          setTimeout(() => boom.remove(), 500);
+
+          // hit animation → lalu hapus
+          img.classList.add("hit-anim");
+          setTimeout(() => img.remove(), 400);
+
+          // update score & log
+          const pts = Config.SCORE_POINTS[State.targetType];
+          State.score += pts;
+          State.shootLog.push({ hit: true, score: pts, time: State.timeLeft });
+          this.targets = this.targets.filter((t) => t !== img);
+
+          UI.updateHUD();
+          UI.renderShootList(State.shootLog);
+        },
+
+        /**
+         * miss()
+         * - Kurangi waktu 5 detik saat klik meleset
+         * - Dipanggil: saat gameboard (bukan target) diklik
+         */
+        miss() {
+          State.timeLeft = Math.max(0, State.timeLeft - Config.MISS_PENALTY);
+          State.shootLog.push({ hit: false, score: 0, time: State.timeLeft });
+          UI.updateHUD();
+          UI.renderShootList(State.shootLog);
+          if (State.timeLeft <= 0) Game.endGame();
+        },
+
+        /** hapus semua target dari DOM */
+        clear() {
+          this.targets.forEach((t) => t.remove());
+          this.targets = [];
+        },
+      };
+
+      // ─────────────────────────────────────────────
+      // GAME: controller utama
+      // ─────────────────────────────────────────────
+      const Game = {
+        /**
+         * init()
+         * - Setup event listener global (mouse, keyboard, input)
+         * - Dipanggil: satu kali saat DOMContentLoaded
+         */
+        init() {
+          // enable/disable tombol Play berdasarkan input nama
+          const nameInput = document.getElementById("input-name");
+          const btnPlay = document.getElementById("btn-play");
+          nameInput.addEventListener("input", () => {
+            btnPlay.disabled = nameInput.value.trim() === "";
+          });
+
+          // mouse: gerakkan pointer & gun
+          document.getElementById("game").addEventListener("mousemove", (e) => {
+            const rect = document
+              .getElementById("game")
+              .getBoundingClientRect();
+            State.mouseX = e.clientX - rect.left;
+            State.mouseY = e.clientY - rect.top;
+            this._movePointerGun();
+          });
+
+          // klik di gameboard = miss (jika kena target, target.click() stop propagation)
+          document.getElementById("gameboard").addEventListener("click", () => {
+            if (State.running && !State.paused) TargetManager.miss();
+          });
+
+          // keyboard
+          document.addEventListener("keydown", (e) => {
+            if (e.code === "Escape") this.togglePause();
+            if (e.code === "Space" && State.running && !State.paused) {
+              e.preventDefault();
+              this.switchGun();
+            }
+          });
+        },
+
+        /** Gerakkan elemen pointer & gun sesuai posisi mouse */
+        _movePointerGun() {
+          const pointer = document.getElementById("pointer");
+          const gun = document.getElementById("gun");
+          pointer.style.left = State.mouseX + "px";
+          pointer.style.top = State.mouseY + "px";
+          gun.style.left = State.mouseX + "px";
+        },
+
+        // ── WELCOME & INSTRUCTION ──────────────────
+
+        showInstructions() {
+          document
+            .getElementById("instruction-overlay")
+            .classList.remove("hidden");
+        },
+        hideInstructions() {
+          document
+            .getElementById("instruction-overlay")
+            .classList.add("hidden");
+        },
+        /** dipanggil dari HUD saat game sedang berjalan */
+        toggleInstructions() {
+          const el = document.getElementById("instruction-overlay");
+          el.classList.toggle("hidden");
+        },
+
+        // ── COUNTDOWN → START ─────────────────────
+
+        /**
+         * startCountdown()
+         * - Ambil pilihan user (nama, level, gun, target) → simpan ke State
+         * - Tampilkan countdown 3,2,1 → lalu mulai game
+         * - Dipanggil: klik tombol "Play Game"
+         */
+        startCountdown() {
+          State.name = document.getElementById("input-name").value.trim();
+          State.level = document.querySelector(
+            "input[name=level]:checked",
+          ).value;
+          State.gunIndex = Config.GUNS.indexOf(
+            document.querySelector("input[name=gun]:checked").value,
+          );
+          State.targetType = document.querySelector(
+            "input[name=target]:checked",
+          ).value;
+          State.score = 0;
+          State.timeLeft = Config.LEVEL_TIME[State.level];
+          State.shootLog = [];
+
+          UI.show("countdown-overlay");
+          let n = 3;
+          const cd = document.getElementById("countdown");
+          cd.textContent = n;
+          const iv = setInterval(() => {
+            n--;
+            if (n === 0) {
+              cd.textContent = "GO!";
+            } else if (n < 0) {
+              clearInterval(iv);
+              this._startGame();
+            } else {
+              cd.textContent = n;
+            }
+          }, 1000);
+        },
+
+        /**
+         * _startGame()
+         * - Sembunyikan overlay, tampilkan HUD & gameboard
+         * - Spawn 3 target awal, mulai timer, mulai spawn interval
+         */
+        _startGame() {
+          UI.show(null); // sembunyikan semua overlay
+          UI.setGameVisible(true);
+          UI.updateGunDisplay();
+          UI.updateHUD();
+
+          State.running = true;
+          State.paused = false;
+
+          // set lebar timer bar awal
+          document.getElementById("timer-bar").style.width = "100%";
+
+          // spawn 3 target awal
+          for (let i = 0; i < Config.INIT_TARGETS; i++)
+            TargetManager.spawnTarget();
+
+          // timer countdown 1 detik
+          State.timerInterval = setInterval(() => {
+            if (State.paused) return;
+            State.timeLeft--;
+            UI.updateHUD();
+            if (State.timeLeft <= 0) this.endGame();
+          }, 1000);
+
+          // spawn target baru tiap 3 detik
+          State.spawnInterval = setInterval(() => {
+            if (!State.paused && State.running) TargetManager.spawnTarget();
+          }, Config.SPAWN_INTERVAL);
+        },
+
+        // ── PAUSE / RESUME ────────────────────────
+
+        /**
+         * togglePause()
+         * - Jika running & tidak paused → pause
+         * - Jika paused → resume
+         * - Dipanggil: tekan Esc
+         */
+        togglePause() {
+          if (!State.running) return;
+          State.paused ? this.resume() : this._pause();
+        },
+
+        _pause() {
+          State.paused = true;
+          document.getElementById("pause-overlay").classList.remove("hidden");
+        },
+
+        /**
+         * resume()
+         * - Sembunyikan pause overlay
+         * - Tampilkan countdown singkat (3,2,1) sebelum lanjut
+         * - Dipanggil: klik Continue atau tekan Esc saat pause
+         */
+        resume() {
+          document.getElementById("pause-overlay").classList.add("hidden");
+          // countdown mini sebelum lanjut
+          document
+            .getElementById("countdown-overlay")
+            .classList.remove("hidden");
+          let n = 3;
+          const cd = document.getElementById("countdown");
+          cd.textContent = n;
+          const iv = setInterval(() => {
+            n--;
+            if (n === 0) {
+              cd.textContent = "GO!";
+            } else if (n < 0) {
+              clearInterval(iv);
+              document
+                .getElementById("countdown-overlay")
+                .classList.add("hidden");
+              State.paused = false;
+            } else {
+              cd.textContent = n;
+            }
+          }, 1000);
+        },
+
+        // ── GUN SWITCH ────────────────────────────
+
+        /**
+         * switchGun()
+         * - Toggle index gun (0→1→0)
+         * - Animasi rotate
+         * - Dipanggil: tekan Space
+         */
+        switchGun() {
+          State.gunIndex = (State.gunIndex + 1) % Config.GUNS.length;
+          UI.updateGunDisplay();
+          const img = document.getElementById("sidebar-gun");
+          img.classList.add("switching");
+          setTimeout(() => img.classList.remove("switching"), 300);
+        },
+
+        // ── GAME OVER ─────────────────────────────
+
+        /**
+         * endGame()
+         * - Hentikan timer & spawn
+         * - Tampilkan popup game over
+         * - Dipanggil: timeLeft <= 0
+         */
+        endGame() {
+          State.running = false;
+          clearInterval(State.timerInterval);
+          clearInterval(State.spawnInterval);
+          TargetManager.clear();
+          UI.setGameVisible(false);
+
+          document.getElementById("final-name").textContent = State.name;
+          document.getElementById("final-score").textContent = State.score;
+          UI.show("gameover-overlay");
+        },
+
+        // ── SAVE & HISTORY ────────────────────────
+
+        /**
+         * saveScore()
+         * - Simpan data match ke localStorage (array JSON)
+         * - Dipanggil: klik "Save Score"
+         */
+        saveScore() {
+          const history = JSON.parse(
+            localStorage.getItem("shooterHistory") || "[]",
+          );
+          history.push({
+            name: State.name,
+            score: State.score,
+            level: State.level,
+            date: new Date().toLocaleString(),
+          });
+          localStorage.setItem("shooterHistory", JSON.stringify(history));
+          alert("Score saved! ✅");
+        },
+
+        /**
+         * showHistory(sortBy)
+         * - Baca localStorage, sort, tampilkan di tabel
+         * - sortBy: 'score' (desc) | 'last' (reverse insertion order)
+         * - Dipanggil: tombol History
+         */
+        showHistory(sortBy = "last") {
+          let history = JSON.parse(
+            localStorage.getItem("shooterHistory") || "[]",
+          );
+          if (sortBy === "score") history.sort((a, b) => b.score - a.score);
+          // 'last' = urutan insert = tinggal reverse
+          else history = [...history].reverse();
+
+          const tbody = document.getElementById("history-tbody");
+          tbody.innerHTML =
+            history
+              .map(
+                (h, i) =>
+                  `<tr>
+        <td>${i + 1}</td>
+        <td>${h.name}</td>
+        <td>${h.score}</td>
+        <td>${h.level}</td>
+        <td>${h.date}</td>
+      </tr>`,
+              )
+              .join("") ||
+            '<tr><td colspan="5" style="color:#555">No history yet</td></tr>';
+
+          document.getElementById("gameover-overlay").classList.add("hidden");
+          document.getElementById("history-overlay").classList.remove("hidden");
+        },
+
+        hideHistory() {
+          document.getElementById("history-overlay").classList.add("hidden");
+          // jika game sudah over, tampilkan lagi gameover
+          if (!State.running)
+            document
+              .getElementById("gameover-overlay")
+              .classList.remove("hidden");
+        },
+
+        /**
+         * sortShootHistory(by)
+         * - Sort shoot-log di sidebar saat game berjalan
+         * - by: 'score' (hits dulu) | 'last' (terbaru dulu)
+         */
+        sortShootHistory(by) {
+          let list = [...State.shootLog];
+          if (by === "score")
+            list.sort(
+              (a, b) => (b.hit ? b.score : -1) - (a.hit ? a.score : -1),
+            );
+          else list.reverse();
+          UI.renderShootList(list);
+        },
+
+        // ── RESTART ───────────────────────────────
+
+        /**
+         * restart()
+         * - Reset semua state, kembali ke welcome screen
+         */
+        restart() {
+          State.running = false;
+          clearInterval(State.timerInterval);
+          clearInterval(State.spawnInterval);
+          TargetManager.clear();
+          UI.setGameVisible(false);
+          document.getElementById("input-name").value = "";
+          document.getElementById("btn-play").disabled = true;
+          UI.show("welcome");
+        },
+      };
+
+      // ─────────────────────────────────────────────
+      // BOOT: jalankan saat halaman selesai dimuat
+      // ─────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        Game.init();
+        UI.show("welcome"); // tampilkan welcome screen pertama
+      });
+    </script>
+  </body>
+</html>
