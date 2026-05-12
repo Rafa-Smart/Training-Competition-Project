@@ -3,6 +3,7 @@ import { useAuth } from "../context/authContext";
 import { parseErrors } from "../utils/format";
 import { authApi } from "../api/auth";
 import { Link, useNavigate } from "react-router-dom";
+import AlertError from "../utils/AlertError";
 
 export default Register = () => {
   const [loginUser] = useAuth();
@@ -41,6 +42,7 @@ export default Register = () => {
           method="POST"
           class="max-w-[500px] mx-auto w-full flex flex-col gap-5"
         >
+        <AlertError messages={errors}></AlertError>
           <h2 class="text-2xl font-semibold text-center">Register</h2>
 
           <div class="rounded-xl overflow-hidden">

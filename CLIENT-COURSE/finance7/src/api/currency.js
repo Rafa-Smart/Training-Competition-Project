@@ -1,5 +1,5 @@
 import { app } from "./axios";
 
-export const currency = {
+export const currencyApi = {
     index:() => app.get('currencies')
 }

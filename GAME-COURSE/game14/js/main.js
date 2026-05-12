@@ -2,11 +2,7 @@ class App {
   static LEBAR_MAP = 982;
   static TINGGI_MAP = 450;
 
-  static Transports = {
-    Train: { color: "#33E339", speed: 120, cost: 500, label: "Train" },
-    Bus: { color: "#A83BE8", speed: 80, cost: 100, label: "Bus" },
-    Airplane: { color: "#000000", speed: 800, cost: 1000, label: "Airplane" },
-  };
+
 
   constructor() {
     this.ox = 0;
@@ -71,6 +67,7 @@ class App {
   load() {
     this.pins = JSON.parse(localStorage.getItem("pins")) ?? [];
     this.connection = JSON.parse(localStorage.getItem("connection")) ?? [];
+    
   }
 
   apply() {
@@ -80,7 +77,7 @@ class App {
   fit() {
     console.log("masuk fit");
     const lebarMap = this.mapArea.clientWidth;
-    const tinggiMap = this.mapArea.clientHeight;
+    const tinggiMap = this.mapArea.clientHeight; 
     this.scale = Math.max(lebarMap / App.LEBAR_MAP, tinggiMap / App.TINGGI_MAP);
     this.ox = (lebarMap - App.LEBAR_MAP * this.scale) / 2;
     this.oy = (tinggiMap - App.TINGGI_MAP * this.scale) / 2;
@@ -157,7 +154,7 @@ class App {
         let x1 = pinFrom.x + off.x;
         let x2 = pinTo.x + off.x;
         let y1 = pinFrom.y + off.y;
-        let y2 = pinTo.y + off.y;
+        let y2 = pinTo.y + off.y;   
 
         if (this.selectedLine == conn.id) {
           this.ctx.shadowColor = "rgb(228, 228, 13)";
@@ -496,7 +493,7 @@ class App {
     document.addEventListener("mousemove", function (e) {
       e.preventDefault();
       self.mapContainer.classList.add("grabbing");
-      if (!self.isDragging) return;
+      if (!self.isDragging) return; 
       self.ox = self.sox + (e.clientX - self.dragX);
       self.oy = self.soy + (e.clientY - self.dragY);
       self.apply();
@@ -597,7 +594,7 @@ class App {
     self.mapArea.addEventListener("click", function (e) {
       if (e.target.closest(".pinpoint,.popup")) return;
 
-      let lineId = self.findClickedLine(e);
+      let lineId = self.findClickedLine(e); 
       if (lineId) {
         // console.log('ini dia adalah')
         self.selectedLine = lineId;

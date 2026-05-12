@@ -1,35 +1,32 @@
 import { useCallback, useState } from "react";
+import { transactionApi } from "../api/transaction";
 
-export default useInfinite = ({ params = {} }) => {
+export default useInifine = ({ params = {} }) => {
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const fetchData = useCallback(
-    async (pageNumber, reset = false) => {
-      const per_page = 25;
-      try {
-        const data = useState({
-          ...params,
-          page: pageNumber,
-          per_page: perpage,
+    (pageNumber, reset = false) => {
+      setLoading(true);
+      transactionApi
+        .index({ ...params, page: pageNumber, per_page: 25 })
+        .then((res) => {
+          if (reset) {
+            setTransactions(res.data.data);
+          } else {
+            setTransactions((prev) => [...prev, res.data.data]);
+          }
+          if (res.data.last_page <= res.data.current_page) {
+            setHasMore(false);
+          }
+          setPage(res.data.current_page);
+        })
+        .catch((e) => alert("err", e))
+        .finally(() => {
+          setLoading(false);
         });
-        if (reset) {
-          setTransactions(data.data.data);
-        } else {
-          setTransactions((prev) => [...prev, data.data.data]);
-        }
-
-        if (data.data.last_page < data.data.current_page) {
-          setHasMore(false);
-        }
-        setPage(data.data.current_page);
-      } catch (e) {
-        alert("ggal ambil transaksi", e);
-      } finally {
-        setLoading(false);
-      }
     },
     [JSON.stringify(params)],
   );
@@ -39,13 +36,11 @@ export default useInfinite = ({ params = {} }) => {
       fetchData(page + 1, false);
     }
   };
-
   const reset = () => {
     setTransactions([]);
-    fetchData(1, true);
-    setHasMore(true);
+    setHasMore(false);
     setPage(1);
+    setLoading(false);
   };
-
- return [transactions, page, hasMore, loading, loadMore, fetchData, reset]
+  return [transactions, page, hasMore, loading, fetchData, reset, loadMore];
 };

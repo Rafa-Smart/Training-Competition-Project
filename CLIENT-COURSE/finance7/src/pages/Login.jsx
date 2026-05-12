@@ -41,6 +41,7 @@ export default Register = () => {
           class="max-w-[500px] mx-auto w-full flex flex-col gap-5"
         >
           <h2 class="text-2xl font-semibold text-center">Login</h2>
+        <AlertError messages={errors}></AlertError>
 
           <div class="rounded-xl overflow-hidden">
            

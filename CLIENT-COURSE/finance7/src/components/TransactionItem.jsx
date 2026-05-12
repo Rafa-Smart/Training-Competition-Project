@@ -1,5 +1,5 @@
 import { transactionApi } from "../api/transaction";
-import { formatCurrency } from "../utils/format";
+import { formatCurrency, formatDate } from "../utils/format";
 
 export default TransactionItem = ({ transaction, onDelete, showDate }) => {
   const isExpense = (transaction.category.type = "EXPENSE");
@@ -16,6 +16,7 @@ export default TransactionItem = ({ transaction, onDelete, showDate }) => {
   };
   return (
     <>
+    {showDate && <>{formatDate(transaction.date)}</>}
       <div
         className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg"
         onDoubleClick={handleDelete}

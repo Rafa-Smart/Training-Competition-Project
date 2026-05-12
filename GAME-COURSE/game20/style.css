@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body,
+html {
+  background-color: #c8ebff;
+  font-family: "Courier New", Courier, monospace;
+  width: 100%;
+  height: 100vh;
+}
+
+#map-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#map-container.grabbing {
+  cursor: grabbing;
+}
+
+#map-container {
+  cursor: grab;
+  transform-origin: 0 0;
+  position: absolute;
+}
+#map-img {
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+}
+#lines-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+#pinpoints-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.pinpoint {
+  position: absolute;
+  transform: translate(-19%, -90%);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+}
+.pinpoint.hidden {
+  display: none;
+}
+
+.marker {
+  filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg)
+    brightness(100%);
+}
+
+.header-pinpoint {
+  border-radius: 5px;
+  background-color: antiquewhite;
+  padding: 2px;
+  border: 1px solid pink;
+  display: flex;
+  cursor: pointer;
+  gap: 3px;
+}
+.header-pinpoint.connecting{
+      border: 2px solid purple;
+}
+ 
+
+.btn {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.popup {
+z-index: 300;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: antiquewhite;
+}
+.popup.hidden {
+  display: none;
+}
+
+#route-list.hidden {
+    display: none;
+}
+
+#route-list {
+    display: flex;
+}
