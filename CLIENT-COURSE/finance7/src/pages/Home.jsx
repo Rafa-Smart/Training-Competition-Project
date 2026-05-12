@@ -4,6 +4,8 @@ import useInfinite from "../hooks/useInfinite";
 import { useAuth } from "../context/authContext";
 import { formatCurrency } from "../utils/format";
 import TransactionItem from "../components/TransactionItem";
+import AddWalletModal from "../components/AddWalletModal";
+import AddTransaction from "../components/AddTransaction";
 
 export default Home = () => {
   const [showWallet, setShowWallet] = useState(false);
@@ -117,6 +119,8 @@ export default Home = () => {
          }
         </div>
       </main>
+      <AddWalletModal isOpen={showWallet} onClose={() => setShowWallet(false)} onSuccess={handleDataChange}></AddWalletModal>
+      <AddTransaction isOpen={showTransaction} onClose={() => setShowTransactions(false)} onSuccess={handleDataChange} defaultWalletId={null}></AddTransaction>
       <></>
     </>
   );
