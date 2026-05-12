@@ -6,8 +6,10 @@ import {
   Tooltip,
 } from "chart.js";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { walletApi } from "../api/wallet";
+import useInfinite from "../hooks/useInfinite";
+import { reportApi } from "../api/report";
 
 Chart.register(ArcElement, Tooltip, Legend, DoughnutController);
 
@@ -40,6 +42,31 @@ export default DefaultWallet = () => {
   const [incomeRef, setIncomeRef] = useRef(null);
   const [expenseInstane, setExpenseInstance] = useRef(null);
   const [incomeInstance, setIncomeInstance] = useRef(null);
+  const navigate = useNavigate();
+  const now = new Date();
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+  const [transactions, page, hasMore, loading, loadMore, fetchData, reset] =
+    useInfinite({
+      month: selectedMonth,
+      year: selectedYear,
+    });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!e.ctrlKey) return;
+    };
+  });
+
+  const handleDataChange = () => {
+    fetchData(1, true);
+    loadWallet();
+  };
+
+  const showDate = (index) => {
+    if (index <= 0) return true;
+    return transactions[index].date != transactions[index].date;
+  };
 
   const loadWallet = () => {
     setLoadingWallet(true);
@@ -54,7 +81,108 @@ export default DefaultWallet = () => {
 
   useEffect(() => {
     loadWallet();
-  }, []);
+  }, [loadWallet]);
+
+  useEffect(
+    () => {
+      if (!wallet) return;
+      reportApi
+        .expense({ month: selectedMonth, year: selectedYear })
+        .then((res) => {
+          const summary = res.data.data;
+          renderChart(expenseRef, expenseInstane, summary, "EXPENSE");
+        })
+        .catch((e) => alert(e));
+      reportApi
+        .income({ month: selectedMonth, year: selectedYear })
+        .then((res) => {
+          const summary = res.data.data;
+          renderChart(expenseRef, expenseInstane, summary, "INCOME");
+        })
+        .catch((e) => alert(e));
+    },
+    selectedMonth,
+    selectedYear,
+  );
+
+  const renderChart = (canvasRef, instanceRef, summary, type) => {
+    if (!canvasRef.current) return;
+    if (!summary || summary.length <= 0) return;
+    if (!instanceRef.current) {
+      instanceRef.current.destroy();
+    }
+
+    const labels = summary.s.map((s) => `${s.category.icon}`);
+    const colors = summary.s.map((s) => s.category.color);
+    const data = summary.s.map((s) => s.amount);
+
+    instanceRef.current = new Chart(canvasRef, {
+      type: "doughnut",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: colors,
+            borderWidth: 3,
+            borderColor: "brown",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              color: "red",
+              padding: 10,
+              font: {
+                size: 12,
+                family: "sans-serif",
+              },
+            },
+          },
+        },
+      },
+    });
+  };
+
+  useEffect(() => {
+    loadWallet();
+  }, [loadWallet]);
+
+  useEffect(
+    () => {
+      fetchData(1, true);
+    },
+    selectedMonth,
+    selectedYear,
+  );
+
+  const handleChageEdit = (e) => setEditName((e) => e.target.value);
+
+  const handleEditName = async (e) => {
+    setIsEditName(true)
+    const name = editName.trim();
+    if (name == "") {
+      const confirmed = confirm("apus?");
+      if (confirmed) {
+        await walletApi.destroy(walletId);
+        navigate("/");
+      }
+      return;
+    } else {
+      // edi nih
+      try {
+        const data = await walletApi.update(walletId, { ...form, name: editName });
+        setWallet({...form, name:editName})
+        setIsEditName(false)
+      } catch (e) {
+        alert(e);
+      }
+    }
+  };
 
   return (
     <>
