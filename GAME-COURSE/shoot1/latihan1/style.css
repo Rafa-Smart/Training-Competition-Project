@@ -1,0 +1,126 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: rgba(1, 1, 124, 0.355);
+    color: white;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    overflow: hiddene;
+}
+
+#game {
+    /* sesuai sama perntah yaa ini */
+    width: 1000px;
+    height: 600px;
+    /* wajib ya ini relative */
+    position: relative; 
+    background-color:  rgba(1, 1, 124, 0.355);
+    border: 1px solid #fff;
+    overflow: hidden;
+}
+
+.hidden {display:none !important}
+
+
+#hud {
+    /* ini tuh bungkusnya ya bukan indikatornya */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 200px;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background-color: rgb(95, 95, 194);
+    border-bottom: 1px solid #FFF;
+    font-size: 13px;
+    z-index: 20;
+}
+
+#timeBar {
+    flex: 1;height: 7px;
+    background-color: yellow;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#timeBar span {
+    display: block;
+    height: 100%;
+    background-color: green;
+}
+
+
+#board {
+    position: absolute;
+    top: 44px;
+    /* right nya ini adalh dari sibe bar ya */
+    right: 100px;
+    left: 0;
+    bottom: 0;
+    cursor: none;
+}
+
+#sidebar {
+    position: absolute;
+    top: 44px;
+    right: 0;
+    width: 200px;
+    bottom: 0;
+    background-color: aliceblue;
+    border-left: 1px solid black;
+    overflow-y: auto;
+}
+
+#pointer, #gun {
+    position: absolute;
+    pointer-events: none;
+    z-index: 30;
+}
+
+#pointer {
+    width: 34px;
+    height: 34px;
+    transform: translate(-30%, -50%);
+}
+
+#gun {
+    width: 110px;
+    transform: translate(-20%, -40%);
+}
+
+/* targetnya */
+.tgt {
+    position: absolute;
+    width: 68px;
+    height: 68px;
+    cursor: none;
+    z-index: 8;
+}
+
+/* efek ledaknnya */
+.boomfx {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    background: url('/Sprites/boom.png') center/cover no-repeat;
+    pointer-events: none;
+    z-index: 12;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    display:grid;
+    place-items: center;
+    background-color: rgba(0,0,0,0,70);
+    z-index: 100;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main id="game">
+        <div id="hud" class="hidden">
+            <span>Player: <b id="hudName"></b></span>
+            <span>Score: <b id="hudScore">0</b></span>
+            <span>Time: <b id="hudTime">0</b></span>
+            <div id="timeBar" class="hidden"><span></span></div>
+        </div>
+        <div id="board" class="hidden"></div>
+        <aside id="sidebar" class="hidden">
+            <h3>Gun</h3>
+            <img src="./Sprites/gun1.png" alt="" id="sideGun">
+            <small>Space = ganti senjata</small>
+            <h3>Shoot History</h3>
+            <div class="bnts">
+                <button id="sortScore">Score</button>
+                <button id="sortLast">Last</button>
+            </div>
+            <div id="shotlog"></div>
+        </aside>
+
+        <!-- pointer -->
+         <img src="./Sprites/pointer.png" alt="" id="pointer" class="hidden">
+         <img src="./Sprites/gun1.png" alt="" id="gun" class="hidden">
+
+         <!-- overlay -->
+          <section id="welcome" class="welcome">
+            <div class="panel">
+                <h1>Shooter</h1>
+                <label for="">
+                    Nama Pemain
+                    <input type="text" id="playerName">
+                </label>
+                <label for="">
+                    Level
+                    <select name="levelSelect" id="levelSelect">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </label>
+                <div class="group">
+                    <p>Senjata</p>
+                    <label for="" class="choice">
+                        <input type="radio" name="gun" id="gun" value="gun1" checked>
+                        <img src="./Sprites/gun1.png" alt="">
+                    </label>
+                    <label for="" class="choice">
+                        <input type="radio" name="gun" id="gun" value="gun2" checked>
+                        <img src="./Sprites/gun2.png" alt="">
+                    </label>
+                </div>
+                <div class="group">
+                    <p>Target</p>
+                    <label for="" class="choice">
+                        <input type="radio" name="target" value="target1" checked>
+                        <img src="./Sprites/target1.png" alt="">
+                    </label>
+                     <label for="" class="choice">
+                        <input type="radio" name="target" value="target2" checked>
+                        <img src="./Sprites/target2.png" alt="">
+                    </label>
+                    <label for="" class="choice">
+                        <input type="radio" name="target" value="target3" checked>
+                        <img src="./Sprites/target3.png" alt="">
+                    </label>
+                </div>
+                <div class="btns center">
+                    <button id="btnInstruksi">Instruksi</button>
+                    <button id="btnPlay" class="primary">Play</button>
+                </div>
+            </div>
+          </section>
+          <section id="instruction" class="overlay hidden">
+            <div class="panel sm">
+                <button class="close-btn" onclick="show('welcome')">X</button>
+                <h2>Cara Bermain</h2>
+                <ul style="padding-left: 10px;line-height: 2;">
+                    <li>Isi Name, Pilih level, senjata, dan target</li>
+                    <li>klik play game</li>
+                    <li>tembak target dnnga klik mouse</li>
+                    <li>tekan spasi untuk ganit senjata</li>
+                    <li>teken esc untuk pause</li>
+                </ul>
+          </section>
+          <section id="countdown" class="overlay hidden">
+            <div id="countNum">3</div>
+          </section>
+          <section id="pause" class="overlay hidden">
+            <div class="panel sm">
+                <h2>Pause</h2>
+                <p style="margin-bottom: 12px;">tekan esc atau klik continue</p>
+                <button id="btnContinue" class="primary">Continue</button>
+            </div>
+          </section>
+          <section id="gameover" class="overlay hidden">
+            <div class="panel sm">
+                <h2>Game Over</h2>
+                <p>Player : <b id="goName"></b></p>
+                <p>Score : <b id="goScore"></b></p>
+                <div class="btns center">
+                    <button id="btnSave" class="primary">Simpan Skor</button>
+                    <button id="btnHistory">Riwayat</button>
+                    <button id="btnRestart">Restart</button>
+                </div>
+            </div>
+          </section>
+          <section id="history" class="overlay hidden">
+            <div class="panel lg">
+                <button class="close-btn" onclick="show('gameover')">X</button>
+                <h2>Riwayat Pertandingan</h2>
+                <div class="btns">
+                    <button onclick="showHistory('score')">Score</button>
+                    <button onclick="showHistory('last')">Last</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Skor</th>
+                            <th>Level</th>
+                            <th>Senjata</th>
+                            <th>Target</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
+          </section>
+    </main>
+</body>
+<script src="./main.js"></script>
+</html>
