@@ -99,3 +99,27 @@ body {
 .panel.lg {
     width: 600px;
 }
+
+/* tahap ke tiga (css ga ada tahap dua ya) */
+.target {
+    position: absolute;
+    width: 80px;
+    cursor: none;
+    z-index: 10;
+    animation: popIn .2s ease-out;
+}
+@keyframes popIn{
+    from{
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.boomfx {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: url('../Sprites//boom.png')center/cover;
+    pointer-events: none;
+    z-index: 13;
+}

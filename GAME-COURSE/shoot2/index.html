@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <main id="game">
+    <main id="game" data-el="game">
       <div data-el="hud" class="hidden">
         <span>Player: <b data-el="hudPlayer"></b></span>
         <span>Score: <b data-el="hudScore">0</b></span>
@@ -17,8 +17,8 @@
       <aside data-el="sidebar" class="hidden">
         <h3>Leaderboard</h3>   
         <select data-el="lbSort">
-          <option  value="score">Sort By Score</opti>
-          <button value="last">Last By Last</button>
+          <option  value="score">Sort By Score</option>
+          <option value="last">Last By Last</option>
         </select>
         <div data-el="leaderboardList"></div>
       </aside>
@@ -40,11 +40,11 @@
           <h1>Shooter</h1>
           <label for="">
             Nama Pemain:
-            <input type="text" data-el="namePemain" />
+            <input type="text" data-el="namePemain"  />
           </label>
           <label for="">
             Level:
-            <select name="" id="" date-el="level">
+            <select name="" id="" data-el="level">
               <option value="Easy">Easy</option>
               <option value="Medium">Medium</option>
               <option value="Hard">Hard</option>
@@ -53,40 +53,40 @@
           <div class="group">
             <p>Senjata</p>
             <label for="" class="choice">
-              <input type="radio" data-el="gun1" value="gun1"  />
+              <input type="radio" name="gun" data-el="gun1" value="gun1" checked  />
               <img src="./Sprites/gun1.png" alt="" width="30px" height="30px"/>
             </label>
             <label for="" class="choice">
-              <input type="radio" data-el="gun2" value="gun2" />
+              <input type="radio" data-el="gun2"name="gun" value="gun2"  />
               <img src="./Sprites/gun2.png" alt="" width="30px" height="30px"/>
             </label>
           </div>
           <div class="group">
             <p>Target</p>
             <label for="">
-              <input type="radio" date-el="target1" value="target1"  />
+              <input type="radio" name="target" data-el="target1" value="target1"checked  />
               <img src="./Sprites/target1.png" alt="" width="30px" height="30px" />
             </label>
             <label for="">
-              <input type="radio" date-el="target2" value="target2"  />
+              <input type="radio" data-el="target2" name="target" value="target2"  />
               <img src="./Sprites/target2.png" width="30px" height="30px" alt="" />
             </label>
-            <label for="">
-              <input type="radio" date-el="target3" value="target3"  />
+            <label for=""> 
+              <input type="radio" data-el="target3" name="target" value="target3"  />
               <img src="./Sprites/target3.png" width="30px" height="30px" alt="" />
             </label>
             <div class="btns center">
-              <button date-el="btnInstruksi">Instruksi</button>
-              <button date-el="btnPlay">Play Game</button>
+              <button data-el="btnInstruksi">Instruksi</button>
+              <button data-el="btnPlay">Play Game</button>
             </div>
           </div>
         </div>
       </section>
+<!-- data-id -->
 
 
 
-
-      <section date-el="instruksi" class="overlay hidden">
+      <section data-el="instruksi" class="overlay hidden">
         <div class="panel sm" data-el="panel">
           <button
             data-el="btnClose"
@@ -104,31 +104,32 @@
             <li>Enjoy</li>
           </ol>
         </div>
+        <!-- GPU -->
       </section>
-      <section date-el="countdown" class="overlay hidden">
-        <div date-id="countNum">3</div>
+      <section data-el="countdown" class="overlay hidden">
+        <div data-el="countNum">3</div>
       </section>
-      <section date-el="pause" class="hidden overlay">
+      <section data-el="pause" class="hidden overlay">
         <div data-el="panel" class="panel">
             <h3>paused</h3>
-            <button date-el="btnContinue" >Continue</button>
+            <button data-el="btnContinue" >Continue</button>
         </div>
       </section>
 
       <section data-el="gameover" class="overlay hidden">
         <div class="panel sm">
             <h2>Game Over</h2>
-            <p>Player: <b date-el="goName"></b></p>
-            <p>Score: <b date-el="goScore"></b></p>
+            <p>Player: <b data-el="goName"></b></p>
+            <p>Score: <b data-el="goScore"></b></p>
             <div class="btns">
-                <button date-el="btnSave">Save</button>
-                <button date-el="btnHistory">History</button>
-                <button date-el="btnRestart">Restart</button>
+                <button data-el="btnSave">Save</button>
+                <button data-el="btnHistory">History</button>
+                <button data-el="btnRestart">Restart</button>
             </div>
         </div>
       </section>
 
-      <section date-el="history" class="overlay hidden">
+      <section data-el="history" class="overlay hidden">
         <div class="panel sm">
             <button class="btn-close" data-el="btnClose" onclick="show('gameover')">game over</button>
             <h2>Macth Hsitory</h2>
@@ -145,7 +146,7 @@
                         <th>Level</th>
                         <th>Gun</th>
                         <th>Target</th>
-                        <th>Date</th>
+                        <th>data</th>
                     </tr>
                 </thead>
                 <tbody data-el="historyBody"></tbody>
