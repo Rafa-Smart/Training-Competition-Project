@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shooter Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main data-el="game">
+
+  <!-- HUD: muncul saat game berjalan -->
+  <div data-el="hud" class="hidden">
+    <span>Player : <b data-el="hudName"></b></span>
+    <span>Score : <b data-el="hudScore">0</b></span>
+    <span>Time : <b data-el="hudTime">00:00</b></span>
+  </div>
+
+  <!-- Arena tembak -->
+  <div data-el="board" class="hidden"></div>
+
+  <!-- Sidebar kanan = Leaderboard -->
+  <aside data-el="sidebar" class="hidden">
+    <h2>LEADERBOARD</h2>
+    <select data-el="lbSort">
+      <option value="score">Sort By Score</option>
+      <option value="last">Sort By Last</option>
+    </select>
+    <div data-el="lbList"></div>
+  </aside>
+
+  <!-- Kursor & senjata ikut mouse -->
+  <img data-el="pointer" class="hidden" src="Sprites/pointer.png" alt="" />
+  <img data-el="gun"     class="hidden" src="Sprites/gun1.png"    alt="" />
+
+  <!-- Welcome -->
+  <section data-el="welcome" class="overlay">
+    <div class="panel">
+      <h1>SHOOTER</h1>
+      <label>Player Name
+        <input data-el="playerName" type="text" maxlength="20" placeholder="Enter your name" />
+      </label>
+      <label>Level
+        <select data-el="levelSelect">
+          <option value="easy">Easy (30s)</option>
+          <option value="medium">Medium (20s)</option>
+          <option value="hard">Hard (15s)</option>
+        </select>
+      </label>
+      <div class="group">
+        <p>Gun</p>
+        <label class="choice"><input type="radio" name="gun" value="gun1" checked /><img src="Sprites/gun1.png" alt="Gun 1" /></label>
+        <label class="choice"><input type="radio" name="gun" value="gun2" /><img src="Sprites/gun2.png" alt="Gun 2" /></label>
+      </div>
+      <div class="group">
+        <p>Target</p>
+        <label class="choice"><input type="radio" name="target" value="target1" checked /><img src="Sprites/target1.png" alt="T1" /></label>
+        <label class="choice"><input type="radio" name="target" value="target2" /><img src="Sprites/target2.png" alt="T2" /></label>
+        <label class="choice"><input type="radio" name="target" value="target3" /><img src="Sprites/target3.png" alt="T3" /></label>
+      </div>
+      <div class="btns">
+        <button data-el="btnInst">Instruction</button>
+        <button data-el="btnPlay" class="primary" disabled>Play Game</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instruksi -->
+  <section data-el="instruction" class="overlay hidden">
+    <div class="panel sm">
+      <button class="close-btn" onclick="show('welcome')">&#10005;</button>
+      <h2>How To Play</h2>
+      <ol>
+        <li>Fill name, choose level, gun &amp; target.</li>
+        <li>Click Play Game.</li>
+        <li>Click targets to shoot.</li>
+        <li>Press Space to switch gun.</li>
+        <li>Press Esc to pause.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Countdown -->
+  <section data-el="countdown" class="overlay hidden">
+    <div data-el="countNum">3</div>
+  </section>
+
+  <!-- Pause -->
+  <section data-el="pause" class="overlay hidden">
+    <div class="panel sm">
+      <h2>Paused</h2>
+      <button data-el="btnContinue" class="primary">Continue</button>
+    </div>
+  </section>
+
+  <!-- Game Over -->
+  <section data-el="gameover" class="overlay hidden">
+    <div class="panel sm">
+      <h2>Game Over</h2>
+      <p>Player : <b data-el="goName"></b></p>
+      <p>Score &nbsp;: <b data-el="goScore"></b></p>
+      <div class="btns">
+        <button data-el="btnSave" class="primary">Save Score</button>
+        <button data-el="btnHistory">Match History</button>
+        <button data-el="btnRestart">Restart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Riwayat -->
+  <section data-el="history" class="overlay hidden">
+    <div class="panel lg">
+      <button class="close-btn" onclick="show('gameover')">&#10005;</button>
+      <h2>Match History</h2>
+      <div class="btns">
+        <button onclick="showHistory('score')">By Score</button>
+        <button onclick="showHistory('last')">By Last</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Score</th><th>Level</th><th>Gun</th><th>Target</th><th>Date</th></tr>
+        </thead>
+        <tbody data-el="historyBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+<script src="main.js"></script>
+</body>
+</html>

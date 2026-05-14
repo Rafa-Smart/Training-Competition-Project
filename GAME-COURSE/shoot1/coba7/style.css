@@ -1,0 +1,124 @@
+/* ── Reset ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Variabel warna ── */
+:root {
+  --bg:    #111;
+  --panel: #1a1a1a;
+  --bdr:   #333;
+  --txt:   #fff;
+  --muted: #aaa;
+  --green: #22c55e;
+  --yellow:#f5c518;
+}
+
+/* ── Tengahkan game di layar ── */
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: var(--txt);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* ── Kotak utama 1000x600 ── */
+[data-el="game"] {
+  width: 1000px; height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hidden { display: none !important; }
+
+/* ── HUD ── */
+[data-el="hud"] {
+  position: absolute;
+  top: 0; left: 0; right: 200px; height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  background: rgba(0,0,0,.75);
+  font-size: 14px;
+  z-index: 20;
+}
+
+/* ── Arena ── */
+[data-el="board"] {
+  position: absolute;
+  top: 40px; left: 0; right: 200px; bottom: 0;
+  background: url("Sprites/bg.jpg") center/cover;
+  cursor: none;
+}
+
+/* ── Sidebar Leaderboard ── */
+[data-el="sidebar"] {
+  position: absolute;
+  top: 0; right: 0; width: 200px; bottom: 0;
+  padding: 12px;
+  background: var(--bg);
+  border-left: 1px solid var(--bdr);
+  overflow-y: auto;
+}
+[data-el="sidebar"] h2 { font-size: 15px; text-align: center; margin-bottom: 8px; }
+[data-el="lbSort"] { width: 100%; padding: 5px; background: #222; color: var(--txt); border: 1px solid var(--bdr); border-radius: 4px; margin-bottom: 8px; }
+
+/* Baris leaderboard */
+.lb-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; border-bottom: 1px solid var(--bdr); font-size: 12px; }
+.lb-item small { color: var(--muted); display: block; }
+.lb-item button { background: var(--yellow); color: #000; border: none; padding: 3px 7px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; }
+
+/* ── Pointer & Gun ── */
+[data-el="pointer"], [data-el="gun"] { position: absolute; pointer-events: none; z-index: 30; }
+[data-el="pointer"] { width: 34px; transform: translate(-50%,-50%); }
+[data-el="gun"]     { width: 200px; transform: translate(-40%,-10%); }
+
+/* Animasi ganti senjata (instruksi point 20) */
+[data-el="gun"].swap { animation: gunSwap .22s ease; }
+@keyframes gunSwap { 50% { transform: translate(-40%,-10%) scale(1.1) rotate(8deg); } }
+
+/* ── Target ── */
+.tgt { position: absolute; width: 80px; cursor: none; z-index: 8; animation: popIn .2s ease-out; }
+@keyframes popIn { from { transform: scale(0); opacity: 0; } }
+
+/* Efek ledakan */
+.boomfx { position: absolute; width: 80px; height: 80px; background: url("Sprites/boom.png") center/cover; pointer-events: none; z-index: 12; }
+
+/* ── Overlay ── */
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.75); z-index: 100; }
+
+/* Panel */
+.panel    { width: 420px; padding: 24px; background: var(--panel); border: 1px solid var(--bdr); border-radius: 12px; position: relative; }
+.panel.sm { max-width: 340px; }
+.panel.lg { width: 660px; }
+
+/* Tipografi */
+h1 { text-align: center; font-size: 28px; letter-spacing: 3px; margin-bottom: 16px; }
+h2 { margin-bottom: 12px; }
+label { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
+ol    { padding-left: 20px; line-height: 2.2; }
+[data-el="countNum"] { font-size: 120px; font-weight: bold; }
+
+/* Form input */
+input[type="text"], select { width: 100%; margin-top: 4px; padding: 8px 10px; background: #0d0d0d; color: var(--txt); border: 1px solid var(--bdr); border-radius: 6px; font: inherit; }
+
+/* Pilihan gambar (radio tersembunyi) */
+.group { margin-top: 12px; }
+.group > p { color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+.choice { display: inline-flex; flex-direction: column; align-items: center; margin-right: 8px; cursor: pointer; }
+.choice input { display: none; }
+.choice img   { width: 48px; padding: 4px; border: 2px solid transparent; border-radius: 8px; background: #0d0d0d; }
+.choice input:checked + img { border-color: var(--green); }
+
+/* Tombol */
+.btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+button { border: none; padding: 8px 14px; border-radius: 6px; background: #333; color: var(--txt); cursor: pointer; font: inherit; }
+button:hover    { filter: brightness(1.2); }
+button:disabled { opacity: .4; cursor: not-allowed; }
+.primary { background: var(--green); color: #000; font-weight: bold; }
+.close-btn { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; padding: 0; border-radius: 50%; }
+
+/* Tabel */
+table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+th, td { border-bottom: 1px solid var(--bdr); padding: 7px 4px; text-align: center; }
+th { color: var(--yellow); }

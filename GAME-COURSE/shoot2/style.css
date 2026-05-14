@@ -1,0 +1,101 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* taruh ke tengah */
+
+body {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background-color: #000;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+/* ini layout */
+[data-el="game"] {
+  width: 1000px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+[data-el='hud']{
+    position: absolute;
+    top: 0;
+    height: 40px;
+    right: 200px;
+    left: 0;
+    display: flex;
+    justify-content: space-evenly;
+    z-index: 20;
+}
+
+[data-el='board']{
+    position: absolute;
+    top: 40px;
+    right: 200px;
+    bottom: 0;
+    left: 0;
+    background: url('../Sprites/background.jpg') center/cover;
+    cursor: none;
+}
+
+[data-el='sidebar']{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 200px;
+    bottom: 0;
+    overflow-y: auto;
+    border-left: 1px solid black;
+}
+
+/* ini yang gun  */
+[data-el='gun'],[data-el='pointer']{
+    pointer-events: none;
+    position: absolute;
+    z-index: 30;
+}
+[data-el='gun']{
+    width: 40px;
+    transform: translate(-40%, -10%);
+}
+[data-el='pointer']{
+    width: 34px;
+    transform: translate(-60%, -60%);
+}
+
+/* buat overlay biar ditengah gampang kita pake grid ja ya*/
+.overlay {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    z-index: 100;
+    /* ini  PENTINGGGG BANGET INSETTT😭 */
+    inset: 0; 
+}
+
+/* panel */
+.panel {
+    position: relative;
+    width: 490px;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.panel.sm {
+    max-width: 340px;
+}
+.panel.lg {
+    width: 600px;
+}
