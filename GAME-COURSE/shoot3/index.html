@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="wdata-elth=device-wdata-elth, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <!-- jadi ginI CARA CEPETNYA ITU PAS KITA NGETIK DATA-EL JADI KITA KETIK AJA DULU SEMANYA INI JADATA-EL DATA-EL NAH NANIT KITA CTRL H LLAU REPLACE SEMUA DATA-EL JADI DATA-DATA-EL -->
+    <main data-el="game">
+      <div data-el="hud">
+        <div>Player:<b data-el="hudName"></b></div>
+        <div>Score:<b data-el="hudScore">0</b></div>
+        <div>Time:<b data-el="hudTime">00:00</b></div>
+      </div>
+
+      <div data-el="board" class="hidden"></div>
+      <img src="./Sprites/pointer.png" alt="" data-el="pointer">
+      <img src="./Sprites/gun1.png" alt="" data-el="gun">
+
+      <aside data-el="sdata-elebar" class="hidden">
+        <h2>Learderboard</h2>
+        <select name="lbSort" data-el="lbSort">
+            <option value="score">By Score</option>
+            <option value="last">By Last</option>
+        </select>
+        <div data-el="lbList"></div>
+      </aside>
+
+      <section data-el="welcome" class="overlay">
+        <div class="container">
+          <img src="./Sprites/background.jpg" alt="" />
+          <input type="text" data-el="inputName" />
+          <select name="inputLevel" data-el="inputLevel">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+          <div class="gun-container">
+            <div class="group">
+                <img src="./Sprites/gun1.png" alt="" />
+                <input type="radio" data-el="gun" value="gun1" name="gun" checked />
+            </div>
+            <div class="group">
+                <img src="./Sprites/gun2.png" alt="" />
+                <input type="radio" data-el="gun" value="gun2" name="gun"  />
+            </div>
+          </div>
+          <div class="target-container">
+            <div class="group">
+                <img src="./Sprites/target1.png" alt="" />
+                <input type="radio" data-el="target" value="target1" name="target" checked />
+            </div>
+            <div class="group">
+                <img src="./Sprites/target2.png" alt="" />
+                <input type="radio" data-el="target" value="target2" name="target"  />
+            </div>
+            <div class="group">
+                <img src="./Sprites/target3.png" alt="" />
+                <input type="radio" data-el="target" value="target3" name="target"  />
+            </div>
+          </div>
+          <div class="btns">
+            <button onclick="this.show('instruksi')" data-el="btnInstruksi">Instruction</button>
+            <button  data-el="btnPlay">Play Game</button>
+          </div>
+        </div>
+      </section>
+
+      <section data-el="instruksi" class="hidden overlay">
+        <h2>Instruksi</h2>
+        <div class="panel">
+            <button onclick="this.show('welcome')">X</button>
+            <ol>
+                <li>Fill name, choose level, gun &amp; target.</li>
+                <li>Click Play Game.</li>
+                <li>Click targets to shoot.</li>
+                <li>Press Space to switch gun.</li>
+                <li>Press Esc to pause.</li>
+            </ol>
+        </div>
+      </section>
+
+      <section data-el="countDown" class="overlay hidden">
+        <div data-el="countNum">3</div>
+      </section>
+
+      <section data-el="pause" class="overlay hidden">
+        <div class="panel">
+            <h2>Paused</h2>
+            <button data-el="btnContinue">Continue</button>
+        </div>
+      </section>
+
+      <section data-el="gameOver" class="overlay hidden">
+        <div class="panel">
+            <h2>Game Over</h2>
+            <p>Player: <b data-el="goName"></b></p>
+            <p>Score: <b data-el="goScore"></b></p>
+            <div class="btns">
+                <button data-el="btnSave">Save</button>
+                <button data-el="btnHistory">History</button>
+                <button data-el="btnRestart">Restart</button>
+            </div>
+        </div>
+      </section>
+
+      <section data-el="history" class="overlay hidden">
+        <div class="panel">
+            <button onclick="this.show('gameOver')">X</button>
+            <h2>Match History</h2>
+            <div class="btns">
+                <button onclick="this.showHistory('score')">By Score</button>
+                <button onclick="this.showHistory('last')">By Last</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Level</th>
+                        <th>Gun</th>
+                        <th>Target</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody data-el="historyBody"></tbody>
+            </table>
+        </div>
+      </section>
+    </main>
+  </body>
+  <script src="./main.js"></script>
+</html>

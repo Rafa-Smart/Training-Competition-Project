@@ -1,0 +1,103 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  background-color: rgb(3, 163, 163);
+  overflow: hidden;
+  min-height: 100vh;
+}
+.hidden {
+  display: none !important;
+}
+.overlay {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  z-index: 1000;
+}
+.target {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  cursor: none;
+  z-index: 40;
+  animation: popIn 0.2s ease-out;
+}
+.boomFx {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+   z-index: 50;
+   background:url('./Sprites/boom.png')center/cover;
+   pointer-events: none;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+[data-el="game"] {
+  width: 1000px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-el="hud"] {
+  position: absolute;
+  top: 0;
+  height: 40px;
+  right: 200px;
+  left: 0;
+  display: flex;
+  justify-content: space-around;
+  z-index: 20;
+}
+
+[data-el="board"] {
+  position: absolute;
+  top: 40px;
+  right: 200px;
+  bottom: 0;
+  left: 0;
+  background: url("./Sprites/background.jpg");
+  cursor: none;
+}
+
+[data-el="sidebar"] {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 200px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+[data-el="gun"],
+[data-el="target"] {
+  position: absolute;
+  pointer-events: none;
+  z-index: 30;
+}
+
+[data-el="gun"] {
+  width: 30px;
+  height: 30px;
+  transform: translate(-40%, -10%);
+}
+[data-el="target"] {
+  width: 30px;
+  height: 30px;
+  transform: translate(-60%, -60%);
+}

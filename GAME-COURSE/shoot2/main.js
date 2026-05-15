@@ -108,9 +108,8 @@ const movePointer = () => {
 
 const switchGun = () => {
   State.gunidx = (State.gunidx + 1) % config.guns.length;
-  el.gun.src = `../Sprites/${config.guns[State.gunidx]}.png`;
+  el.gun.src = `./Sprites/${config.guns[State.gunidx]}.png`;
   el.gun.animate([
-    
          { transform: "translate(-40%, -10%) scale(1)" },
     { transform: "translate(-40%, -10%) scale(1.1) rotate(8deg)" },
     { transform: "translate(-40%, -10%) scale(1)" },
@@ -131,14 +130,14 @@ const preparedGame = () => {
     document.querySelector('[name="gun"]:checked').value,
   );
   State.target = document.querySelector('[name="target"]:checked').value;
-  State.score = 0; //GPU ../Sprites/gun${config.guns[State.gunidx]}.png spawnPointer
+  State.score = 0; //GPU ./Sprites/gun${config.guns[State.gunidx]}.png spawnPointer
   State.timeLeft = config.levels[State.level];
   State.running = false;
   State.paused = false;
   State.counting = false;
   clearTimers();
   clearTargets();
-  el.gun.src = `../Sprites/${config.guns[State.gunidx]}.png`;
+  el.gun.src = `./Sprites/${config.guns[State.gunidx]}.png`;
   updateHud();
   show("countdown");
   runCountdown(startGame);
@@ -264,11 +263,11 @@ const spawnInitial = () => {
 
 const spawnTarget = () => {
   if (el.board.querySelectorAll(".target").length >= config.maxTargets) return;
-  //   let img = `<img src="../Sprites/${State.target}.png"/>`;
+  //   let img = `<img src="./Sprites/${State.target}.png"/>`;
   // ga bisa giu ya soalnya itu adalh string buakn objek
   const img = document.createElement("img");
   img.className = "target";
-  img.src = `../Sprites/${State.target}.png`;
+  img.src = `./Sprites/${State.target}.png`;
   // disni 80 adalah ukuran tinggi dan lebar dari si target ya innerHtml
   img.style.left = `${Math.random() * (el.board.clientWidth - 80)}px`;
   img.style.top = `${Math.random() * (el.board.clientHeight - 80)}px`;
