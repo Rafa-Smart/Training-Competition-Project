@@ -1,0 +1,115 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+body, html {
+    height: 100vh;
+    width: 100%;
+    background-color: #c8ebff;
+}
+
+#map-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    cursor: grab;
+}
+#map-area.grab {
+    cursor: grabbing;
+}
+
+#map-container {
+    transform-origin: 0 0;
+    position: absolute;
+    display: block;
+}
+
+#map-img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#lines-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+#pinpoints-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    position: none;
+}
+
+.pinpoint {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 40;
+    transform: translate(-10%, -90%);
+}
+.popup {
+    position: absolute;
+    width: min-content;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid pink;
+    z-index: 30;
+    cursor: pointer;
+     z-index: 30;
+}
+.header-pinpoint {
+    border: 1px solid purple;
+    border-radius: 3px;
+    cursor: pointer;
+     z-index: 30;
+     padding: 2px;
+     display: flex;
+     gap: 5px;
+     justify-content: center;
+     align-items: center;
+}
+.btn {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+.hidden {
+    display: none  !important;
+}
+.header-pinpoint.connecting {
+    border: 1px solid pink;
+}
+.header {
+    display: flex;
+    justify-content: space-around;
+}
+
+#close-add {
+    width: 12px;
+    height: 12px; 
+}
+.marker {
+    filter: invert(100%) sepia(100%) hue-rotate(340deg) saturate(2000%) brightness(100%);
+}
+#formConnect {
+    display: flex;
+    flex-direction: column;
+}
+
+#panel {
+    z-index: 300;
+    position: absolute;
+    top: 22%;
+    left: 12%;
+}
+#btn-route {
+        z-index: 300;
+    position: absolute;
+    top: 12%;
+    left: 15%;
+    
+}

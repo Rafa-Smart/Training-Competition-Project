@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="map-area">
+      <div id="map-container">
+        <img src="./assets/indonesia.svg" alt="" id="map-img" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+    </main>
+    <div id="popAdd" class="popup hidden">
+      <div class="header">
+        <span>Add Pin</span>
+        <img src="./assets/BiXLg.svg" alt="" id="close-add" />
+      </div>
+      <form id="formAdd">
+        <input type="text" id="inputName" />
+      </form>
+    </div>
+    <div id="popConnect" class="popup ">
+      <div class="header">
+        <span>Connec Pin</span>
+        <img src="./assets/BiXLg.svg" alt="" id="close-connect" />
+      </div>
+      <form id="formConnect">
+        <input type="number" id="inputDistance" />
+        <select name="inputMode" id="inputMode">
+            <option value="Train">Train</option>
+            <option value="Bus">Bus</option>
+            <option value="Airplane">Airplane</option>
+        </select>
+        <button type="submit">connect</button>
+      </form>
+    </div>
+
+    <button id="btn-route">route</button>
+    <div id="panel">
+        <h2>Search</h2>
+        <div class="header">
+            <span>Search Route</span>
+        </div>
+        <div id="search">
+            <div class="group">
+                <img src="./assets/MaterialSymbolsLocationOnOutline.svg" alt="">
+                <input type="text" id="inputFrom" />
+            </div>
+            <div class="group">
+                <img src="./assets/MaterialSymbolsLocationOn.svg" alt="">
+                <input type="text" id="inputTo" />
+            </div>
+        </div>
+        <button id="btn-search">search</button>
+        <div class="btns">
+            <button data-sort="fastest">fastest</button>
+            <button data-sort="cheaptest">cheaptest</button>
+        </div>
+        <div id="route-list" class="hidden"></div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
