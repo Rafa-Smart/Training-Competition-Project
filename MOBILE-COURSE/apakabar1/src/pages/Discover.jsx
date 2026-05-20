@@ -46,6 +46,26 @@ export default function Discover({ onArticleClick }) {
     if (node) observerRef.current.observe(node);
   }, [hasMore, loading]);
 
+
+  // atau kalo mau pake addeventlistener bisa juga pake ini
+  // Ganti useCallback observe dan observerRef dengan ini:
+// useEffect(() => {
+//   const main = document.querySelector("main"); // scroll container kita
+  
+//   const handleScroll = () => {
+//     // Jarak dari bawah scroll container ke posisi scroll sekarang
+//     const distanceFromBottom = main.scrollHeight - main.scrollTop - main.clientHeight;
+    
+//     // Kalau jarak < 300px dan masih ada data, naikkan page
+//     if (distanceFromBottom < 300 && hasMore && !loading) {
+//       setPage(p => p + 1);
+//     }
+//   };
+  
+//   main.addEventListener("scroll", handleScroll);
+//   return () => main.removeEventListener("scroll", handleScroll); // cleanup!
+// }, [hasMore, loading]); // re-register saat nilai ini berubah
+
   useEffect(() => {
     getCategories().then(r => setCategories(r.data || []));
   }, []);

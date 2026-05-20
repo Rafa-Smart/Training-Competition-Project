@@ -20,7 +20,7 @@ class PostFactory extends Factory
             'slug' => Str::slug($title . '-' . fake()->unique()->numberBetween(1, 9999)),
 
             'thumbnail' => 'https://picsum.photos/800/600?random=' . rand(1, 999),
-
+// test
             'body' => fake()->paragraphs(10, true),
 
             'author_name' => fake()->name(),
