@@ -16,5 +16,7 @@ export default function useBookmarks() {
   };
 
   const isBookmarked = (slug) => bookmarks.some(b => b.slug === slug);
+// some  Kalau ada satu saja yang cocok → hasilnya true.
+//     Kalau tidak ada satupun yang cocok → hasilnya false.
   return { bookmarks, toggle, isBookmarked };
 }
