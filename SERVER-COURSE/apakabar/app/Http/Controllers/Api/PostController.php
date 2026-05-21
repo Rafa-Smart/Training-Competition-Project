@@ -16,9 +16,17 @@ class PostController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
+        
+        
         if ($request->category) {
-            $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->category);
+            // nah jadi gini, disini agar bisa multi pencarian kita akn megggunakan 
+            // whee in da ngubah string teknologi,makanan,dll,dll
+            // menjadi array ya apke explode
+
+            $arr = explode(',', $request->category);
+
+            $query->whereHas('category', function ($q) use ($arr) {
+                $q->whereIn('slug', $arr);
             });
         }
 
