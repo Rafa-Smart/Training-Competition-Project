@@ -4,7 +4,7 @@ import ArticleCard from "../components/ArticleCard";
 export default function Bookmark({ onArticleClick }) {
   const { bookmarks, toggle, isBookmarked } = useBookmarks();
 
-  if (!bookmarks.length) return (
+  if (!bookmarks.length) return (     
     <div className="page empty">
       <span>🔖</span>
       <p>No bookmarks yet</p>

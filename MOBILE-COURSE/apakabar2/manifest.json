@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Apa Kabar",
+  "short_name": "Apakabar",
+  "description": "Platform Berita Online",
+  "start_url": "/",
+  "penting": "ini yang standalone itu biar pas di download sebagai pwa ga akn nampilin searchbar gitu",
+  "display": "standalone",
+  "backgroundc_color": "#fff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/public/icons.svg",
+      "sizes": "192x192",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/icons.svg",
+      "sizes": "192x192",
+      "purpose": "maskable",
+      "type": "image/png"
+    }
+  ]
+}

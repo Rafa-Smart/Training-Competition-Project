@@ -3,15 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no viewport-fit-cover"  />
     <meta name="description" content="Apa Kabar - Platfrom Berita Online">
 
-    <!-- in unuk ios -->
+    <!-- in unuk ios -->  
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content=""></meta>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"></meta>
+    <meta name="apple-mobile-web-app-title" content="ApaKabar">
+    <link rel="apple-touch-icon" href="/public/favicon.svg" sizes="192x192" >
+
+
+
+    <!-- ini untuk pwa / android -->
+     <link rel="manifest" href="/manifest.json">
+     <link rel="icon" href="/public/favicon.svg">
     <title>apakabar2</title>
   </head>
-  <body>
+  <body>  
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

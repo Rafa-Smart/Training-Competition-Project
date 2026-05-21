@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap");
 
-/* TOKENS */
+/* ─ TOKENS ───────────────────────────────────────────────────────── */
+/* Dipakai di seluruh file. Ganti di sini = ganti tampilan semua komponen */
 :root {
   --bg: #f6f6f4;
   --surface: #fff;
@@ -20,7 +21,8 @@
   --muted: #888884;
 }
 
-/* RESET */
+/* ─ RESET ────────────────────────────────────────────────────────── */
+/* Wajib. Tanpa ini tiap browser punya margin/padding default sendiri */
 *,
 *::before,
 *::after {
@@ -48,7 +50,9 @@ img {
   object-fit: cover;
 }
 
-/* LAYOUT */
+/* ─ LAYOUT UTAMA ─────────────────────────────────────────────────── */
+/* #app → kerangka flex vertikal fullscreen                           */
+/* main → area scroll di antara header & navbar                       */
 #app {
   display: flex;
   flex-direction: column;
@@ -61,7 +65,9 @@ main {
   padding-bottom: var(--nav);
 }
 
-/* header & navbar share base: fixed bar */
+/* ─ HEADER & NAVBAR ──────────────────────────────────────────────── */
+/* Keduanya fixed bar, share properti posisi yang sama                */
+/* File: Header.jsx & NavBar.jsx                                      */
 .header,
 .navbar {
   position: fixed;
@@ -80,7 +86,6 @@ main {
   align-items: center;
   padding: 0 16px;
   gap: 10px;
-
   & .header-title {
     font-size: 1.1rem;
     font-weight: 700;
@@ -98,7 +103,6 @@ main {
   height: var(--nav);
   border-top: 1px solid var(--border);
   display: flex;
-
   & .nav-btn {
     flex: 1;
     display: flex;
@@ -116,15 +120,15 @@ main {
   }
 }
 
-/* PAGE */
+/* ─ PAGE & SECTION ───────────────────────────────────────────────── */
+/* .page → wrapper semua halaman (Home, Discover, dll)                */
+/* .section-title & .card-cat → label uppercase kecil, share base    */
 .page {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
-/* shared: uppercase small label */
 .section-title,
 .card-cat {
   font-size: 0.7rem;
@@ -138,7 +142,9 @@ main {
   margin-bottom: 4px;
 }
 
-/* shared: horizontal scroll strip */
+/* ─ BREAKING NEWS ────────────────────────────────────────────────── */
+/* File: Home.jsx                                                      */
+/* .breaking-scroll & .cat-filter share: horizontal scroll flex       */
 .breaking-scroll,
 .cat-filter {
   display: flex;
@@ -152,7 +158,6 @@ main {
 }
 .breaking-scroll {
   scroll-snap-type: x mandatory;
-
   & .breaking-card {
     flex: 0 0 280px;
     height: 180px;
@@ -161,7 +166,6 @@ main {
     position: relative;
     scroll-snap-align: start;
     cursor: pointer;
-
     & img {
       height: 100%;
     }
@@ -183,7 +187,8 @@ main {
   }
 }
 
-/* CARD */
+/* ─ ARTICLE CARD ─────────────────────────────────────────────────── */
+/* File: ArticleCard.jsx — kartu artikel di Home, Discover, Bookmark  */
 .card {
   display: flex;
   gap: 12px;
@@ -196,7 +201,6 @@ main {
   &:active {
     transform: scale(0.98);
   }
-
   & .card-img {
     width: 100px;
     height: 80px;
@@ -208,7 +212,6 @@ main {
     display: flex;
     flex-direction: column;
     gap: 4px;
-
     & .card-title {
       font-size: 0.88rem;
       font-weight: 600;
@@ -228,7 +231,9 @@ main {
   }
 }
 
-/* shared: pill button — base untuk bm-full, theme-btn, cat-btn, cat-chip */
+/* ─ TOMBOL ───────────────────────────────────────────────────────── */
+/* Semua tombol pill/chip share base yang sama                         */
+/* bm-full→ArticleDetail, theme-btn→Settings, cat-btn→Discover, cat-chip→Settings */
 .bm-full,
 .theme-btn,
 .cat-btn,
@@ -287,7 +292,8 @@ main {
   text-align: left;
 }
 
-/* FILTER LABEL */
+/* ─ FILTER AKTIF ─────────────────────────────────────────────────── */
+/* File: Discover.jsx — label kategori yang sedang dipilih            */
 .active-filter-label {
   font-size: 0.75rem;
   color: var(--muted);
@@ -304,7 +310,8 @@ main {
   }
 }
 
-/* LOADER */
+/* ─ LOADER & SENTINEL ───────────────────────────────────────────────*/
+/* File: Discover.jsx — infinite scroll loading indicator             */
 .sentinel {
   display: flex;
   justify-content: center;
@@ -334,7 +341,8 @@ main {
   padding: 24px 0;
 }
 
-/* ARTICLE DETAIL */
+/* ─ ARTICLE DETAIL ───────────────────────────────────────────────── */
+/* File: ArticleDetail.jsx                                             */
 .article {
   padding: 0;
   gap: 0;
@@ -381,7 +389,8 @@ main {
   }
 }
 
-/* EMPTY STATE */
+/* ─ EMPTY STATE ──────────────────────────────────────────────────── */
+/* File: Bookmark.jsx — tampilan saat belum ada bookmark              */
 .empty {
   align-items: center;
   justify-content: center;
@@ -393,7 +402,8 @@ main {
   }
 }
 
-/* SETTINGS */
+/* ─ SETTINGS ─────────────────────────────────────────────────────── */
+/* File: Settings.jsx                                                  */
 .settings {
   gap: 24px;
 }
@@ -407,7 +417,8 @@ main {
   gap: 8px;
 }
 
-/* OFFLINE */
+/* ─ OFFLINE ──────────────────────────────────────────────────────── */
+/* File: Offline.jsx — tampil saat tidak ada koneksi internet         */
 .offline {
   display: flex;
   flex-direction: column;

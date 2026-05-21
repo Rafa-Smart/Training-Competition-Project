@@ -1,6 +1,6 @@
 export default function ArticleCard({ article, onClick, onBookmark, isBookmarked }) {
   const { title, thumbnail, category, published_at, author } = article;
-  const date = new Date(published_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  const date = new Date(published_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }); 
 
   return (
     <article className="card" onClick={() => onClick(article.slug)} role="button" tabIndex={0}>

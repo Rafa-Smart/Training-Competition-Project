@@ -20,7 +20,7 @@ export default function Settings({ theme, setTheme }) {
 
   return (
     <div className="page settings">
-      <section>
+      <secti    on>
         <h2 className="section-title">Theme</h2>
         <div className="theme-btns">
           {THEMES.map(t => (
@@ -30,15 +30,15 @@ export default function Settings({ theme, setTheme }) {
             </button>
           ))}
         </div>
-      </section>
+      </secti>
 
       <section>
         <h2 className="section-title">Category Preferences</h2>
         <div className="cat-grid">
           {categories.map(c => (
             <button key={c.slug} className={`cat-chip ${prefs.includes(c.slug) ? "active" : ""}`}
-              onClick={() => togglePref(c.slug)}>{c.name}</button>
-          ))}
+                onClick={() => togglePref(c.slug)}>{c.name}</button>
+            ))}
         </div>
       </section>
     </div>
