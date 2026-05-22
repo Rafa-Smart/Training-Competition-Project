@@ -39,7 +39,7 @@ export default function Home({ onArticleClick }) {
           {breaking.map(a => (
             <div className="breaking-card" key={a.slug} onClick={() => onArticleClick(a.slug)}>
               {a.thumbnail && <img src={a.thumbnail} alt={a.title} />}
-              <div className="breaking-overlay">
+              <div className="breaking-overlay">  
                 {a.category && <span className="card-cat">{a.category.name}</span>}
                 <p>{a.title}</p>
               </div>
@@ -52,7 +52,7 @@ export default function Home({ onArticleClick }) {
         <h2 className="section-title">📌 For You</h2>
         {recs.length === 0
           ? <p className="muted-msg">Pilih kategori favorit di Settings untuk personalisasi.</p>
-          : recs.map(a => (
+          : recs.map(a => ( 
               <ArticleCard key={a.slug} article={a} onClick={onArticleClick}
                 onBookmark={toggle} isBookmarked={isBookmarked(a.slug)} />
             ))
