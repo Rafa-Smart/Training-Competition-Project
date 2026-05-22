@@ -8,6 +8,7 @@ export default useBookmarks = () => {
   const toggle = (article) => {
     setbookmarks((prev) => {
       const ada = bookmarks.find((b) => b.slug == article.slug);
+      // ini ga bisa pake bookmarks.includes(article.slug) ya, krena ini objek bukan 1 stirng atau gitu deh
       const next = ada
         ? bookmarks.filter((b) => b.slug != article.slug)
         : [ada, ...prev];

@@ -20,7 +20,7 @@ export default function Settings({ theme, setTheme }) {
 
   return (
     <div className="page settings">
-      <secti    on>
+      <section>
         <h2 className="section-title">Theme</h2>
         <div className="theme-btns">
           {THEMES.map(t => (
@@ -30,7 +30,7 @@ export default function Settings({ theme, setTheme }) {
             </button>
           ))}
         </div>
-      </secti>
+      </section>
 
       <section>
         <h2 className="section-title">Category Preferences</h2>

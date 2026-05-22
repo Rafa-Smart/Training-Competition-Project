@@ -31,8 +31,13 @@ export default function App() {
     // ini yg langsung dari sistemnya ya yang atas itu yang via click
     else {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      // jadi dsni kalo dia beneran dark maka kita isi data-theme adalah dark
+      // kalo eng berati light
       root.setAttribute("data-theme", mq.matches ? "dark" : "light");
 
+
+      // nah ini baru ketiak kita ganti color di sistem kita maka akn di ganti ya
+      // kalo yang atas itu kan ngambil yang pertama kali, kalo ini hraus di picu dulu d sistemnya
       const handler = e => root.setAttribute("data-theme", e.matches ? "dark" : "light");
       mq.addEventListener("change", handler);
       return () => mq.removeEventListener("change", handler);
