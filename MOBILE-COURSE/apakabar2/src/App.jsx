@@ -5,6 +5,10 @@ import heroImg from './assets/hero.png'
 import './App.css'
 import Header from './components/Header'
 import ArticleDetail from './pages/ArticleDetail'
+import Discover from './pages/Discover'
+import Bookmark from './pages/Bookmark'
+import Settings from './pages/Settings'
+import Navbar from './components/Navbar'
 
 function App() {
   
@@ -53,7 +57,7 @@ function App() {
   }, [theme])
 
   if(!online) return <Offline></Offline>  
-  const operArticle = (slug) => setArticle(sllug);
+  const openArticle = (slug) => setArticle(sllug);
   const closeArticle = () => setArticle(null);
 
   return (
@@ -71,11 +75,19 @@ function App() {
 
       {/* kita kaish dulu pengecekan untuk artikel detailnya ya */}
       {
-        article ? <ArticleDetail ></ArticleDetail>:""
+        article ? <ArticleDetail slug={article} onArticleClick={openArticle}></ArticleDetail>:(
+         <>
+          {tab == 'home' && <Home onArticleClick={openArticle}></Home>}
+          {tab == 'discover' && <Discover onArticleClick={openArticle}></Discover>}
+          {tab == 'bookmark' && <Bookmark onArticleClick={openArticle}></Bookmark>}
+          {tab == 'settings' && <Settings onArticleClick={openArticle}></Settings>}
+         </>
+        )
       }
 
       </main>
       {/* ini untuk footer */}
+      {!article && <Navbar setTab={setTabet} tab={tab} ></Navbar>}
     </div>
   )
 }

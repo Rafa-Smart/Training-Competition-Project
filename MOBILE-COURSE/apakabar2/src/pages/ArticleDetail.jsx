@@ -1,3 +1,3 @@
-export default ArticleDetail = () => {
-    
+export default ArticleDetail = ({slug, onArticleClick}) => {
+
 }

@@ -1,3 +1,3 @@
-export default Discover  = () => {
-    
+export default Discover  = ({onArticleClick}) => {
+
 }
