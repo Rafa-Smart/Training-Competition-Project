@@ -1,7 +1,7 @@
 import ArticleCard from "../components/ArticleCard";
 import useBookmark from "../hooks/useBookmark"
 
-export default Bookmark =({onArticleClick}) => {
+const Bookmark =({onArticleClick}) => {
     const [bookmarks, toggle, isBookmark] = useBookmark();
     if(bookmarks.length <= 0){
         return <div className="page empty">
@@ -15,3 +15,4 @@ export default Bookmark =({onArticleClick}) => {
         })}
     </div>
 }
+export default Bookmark

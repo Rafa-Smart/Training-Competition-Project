@@ -2,8 +2,7 @@ import { useEffect, useState } from "react"
 import useBookmark from "../hooks/useBookmark";
 import { api } from "../api/api";
 import ArticleCard from "../components/ArticleCard";
-
-export default ArticleDetail = ({slug, onArticleClick}) => {
+const ArticleDetail = ({slug, onArticleClick}) => {
     const [post, setPost] = useState(null);
     const [related, setRelated] = useState([]);
     const [toggle, isBookmark] = useBookmark();
@@ -63,3 +62,4 @@ export default ArticleDetail = ({slug, onArticleClick}) => {
     )
 
 }
+export default ArticleDetail

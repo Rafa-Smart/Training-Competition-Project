@@ -1,4 +1,4 @@
-export default ArticleCard = ({article, onClickBookmark, onBookmark, isBookmarked}) => {
+const ArticleCard = ({article, onClickBookmark, onBookmark, isBookmarked}) => {
     const date =  new Date(article.published_at).toLocaleDateString('id-ID',{
         month:'short',
         day:'numeric',
@@ -25,3 +25,4 @@ export default ArticleCard = ({article, onClickBookmark, onBookmark, isBookmarke
         </article>
     )
 }
+export default ArticleCard

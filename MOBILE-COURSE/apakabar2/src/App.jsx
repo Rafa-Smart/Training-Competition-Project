@@ -3,12 +3,14 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import Header from './components/Header'
+import HeaderComponent from './components/HeaderComponent'
 import ArticleDetail from './pages/ArticleDetail'
 import Discover from './pages/Discover'
 import Bookmark from './pages/Bookmark'
 import Settings from './pages/Settings'
 import Navbar from './components/Navbar'
+import Offline from './pages/Offline'
+import Home from './pages/Home'
 
 function App() {
   
@@ -56,19 +58,19 @@ function App() {
     }
   }, [theme])
 
-  if(!online) return <Offline></Offline>  
+  if(online) return <Offline></Offline>  
   const openArticle = (slug) => setArticle(sllug);
   const closeArticle = () => setArticle(null);
 
   return (
     <div id="app">
-    {/* ini untuk header */}
+    {/* ini untuk HeaderComponent */}
 
-    <Header 
+    <HeaderComponent 
     title={article ? "Article": titles[tab]}
     showBack={!!article}
     onback={closeArticle}
-    ></Header>
+    ></HeaderComponent>
 
     {/* ini untuk main */}
       <main>
@@ -87,7 +89,7 @@ function App() {
 
       </main>
       {/* ini untuk footer */}
-      {!article && <Navbar setTab={setTabet} tab={tab} ></Navbar>}
+      {!article && <Navbar setTab={setTab} tab={tab} ></Navbar>}
     </div>
   )
 }

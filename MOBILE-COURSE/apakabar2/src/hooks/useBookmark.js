@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const KEY = "bookmarks";
-export default useBookmarks = () => {
+const useBookmarks = () => {
   const [bookmarks, setbookmarks] = useState(
     JSON.parse(localStorage.getItem(KEY)) || [],
   );
@@ -20,3 +20,4 @@ export default useBookmarks = () => {
   const isBookmark = (article) => bookmarks.some(b => b.slug == article.slug);
   return [bookmarks, toggle, isBookmark]
 };
+export default useBookmarks

@@ -1,6 +1,6 @@
-const baseAPI = import.meta.env.VITE_API_URL || 'http://localhost:8000';
- const get = (path, params ={}) => {
-    const url = new URL(`${baseApi}/${path}`);
+const get = (path, params ={}) => {
+    // const baseAPI = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const url = new URL(`http://localhost:8000/${path}`);
     // jadi gini kan dari params itu dia adaalh objek ya dan objek itu ada key dan values kan maka inidi sebut entries
     // nah kita au ubha dari objek ke array pake entries, kalo kealkannya itu kita bisa pake fromEntries maka ini ubha dari array ke objek
     Object.entries(params).forEach(([key, value]) => {

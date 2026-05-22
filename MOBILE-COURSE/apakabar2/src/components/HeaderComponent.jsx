@@ -1,4 +1,4 @@
-export default Header = ({ title, showBack, onback }) => {
+const HeaderComponent = ({ title, showBack, onback }) => {
   return (
     <header className="header">
       {showBack && (
@@ -10,3 +10,4 @@ export default Header = ({ title, showBack, onback }) => {
     </header>
   );
 };
+export default HeaderComponent

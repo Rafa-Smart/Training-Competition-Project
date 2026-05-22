@@ -3,7 +3,7 @@ import { api } from "../api/api";
 
 const KEY = "prefs";
 const themes = ["light", "dark", "system"];
-export default Settings = ({ theme, setTheme }) => {
+const Settings = ({ theme, setTheme }) => {
   const [categories, setCategories] = useState([]);
   const [prefs, setPrefs] = useState(
     JSON.parse(localStorage.getItem(KEY)) || [],
@@ -56,3 +56,4 @@ export default Settings = ({ theme, setTheme }) => {
     </div>
   )
 };
+export default Settings

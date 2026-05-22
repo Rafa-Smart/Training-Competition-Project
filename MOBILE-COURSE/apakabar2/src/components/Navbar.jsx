@@ -20,7 +20,7 @@ const TABS = [
     icon: "🧿",
   },
 ];
-export default Navbar = ({ tab, setTab }) => {
+const Navbar = ({ tab, setTab }) => {
   return (
     <nav className="nav" role="navigation">
       {TABS.map(({ id, label, icon }) => {
@@ -38,3 +38,5 @@ export default Navbar = ({ tab, setTab }) => {
     </nav>
   );
 };
+
+export default Navbar

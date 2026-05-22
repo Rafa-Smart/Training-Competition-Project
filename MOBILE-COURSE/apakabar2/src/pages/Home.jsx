@@ -4,7 +4,7 @@ import { api } from "../api/api";
 import ArticleDetail from "./ArticleDetail";
 import ArticleCard from "../components/ArticleCard";
 const KEY = 'prefs';
-export default Home = ({onArticleClick}) => {
+const Home = ({onArticleClick}) => {
     const [breakings, setBreakings] = useState([]);
     const [recomendations, setRecomendations] = useState([]);
     const [toggle, isBookmark] = useBookmark();
@@ -13,7 +13,7 @@ export default Home = ({onArticleClick}) => {
         api.getPosts({
             per_page:5,
             order_by:'latest'
-        }).then((data) => setBreakings(data.data || []));
+        }).then((resposne) => console.log(resposne||[]));
 
         const prefs = JSON.parse(localStorage.getItem(KEY)) || [];
         if(!prefs)return;
@@ -48,10 +48,11 @@ export default Home = ({onArticleClick}) => {
         <section>
             <h2 className="section-title">For You</h2>
             {
-                prefs.length == 0 ? <p>kosong</p>:recomendations.map((recomendation, index) => {
+                recomendations.length == 0 ? <p>kosong</p>:recomendations.map((recomendation, index) => {
                     return <ArticleCard article={recomendation} isBookmarked={isBookmark(recomendation.slug)} onBookmark={toggle}  onClickBookmark={onArticleClick} key={index} ></ArticleCard>
                 }) 
             }
         </section>
     </div>
 }
+export default Home

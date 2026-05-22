@@ -6,11 +6,11 @@ import useDebounce from "../hooks/useDebounce";
 export default function Discover({ onArticleClick }) {
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [query, setQuery] = useState("");
+  const [query,   setQuery] = useState("");
   const [activeCats, setActiveCats] = useState([]); // ← array, bukan string tunggal
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
   const { toggle, isBookmarked } = useBookmarks();
   const debouncedQ = useDebounce(query, 700);
   const observerRef = useRef();
@@ -45,9 +45,15 @@ export default function Discover({ onArticleClick }) {
   }, [page, debouncedQ, catParam]);
 
   // Infinite scroll
+  // https://chatgpt.com/c/6a0fbeac-6210-83ec-a2d7-7c3a14978d72
+  // baca disan ya di akun rafa.engineer.dev@gmail.com
   const observe = useCallback(node => {
     if (observerRef.current) observerRef.current.disconnect();
     observerRef.current = new IntersectionObserver(entries => {
+      // disini entries itu adalha objek yang ag di observasi ya, jadi observasi iu untuk ngeliat dan merhaitiin apkaah suatu komponen muncul di halaman
+      // disni pake yang ke 0 / pertama karan biasnaya kita hanya observasi 1 elemen aja
+
+      // atribut intersecting itu artinya terlihat ya jadi kalo dia uhda terlihat nanti akan true kalo ega maka akan false
       if (entries[0].isIntersecting && hasMore && !loading) setPage(p => p + 1);
     }, { rootMargin: "200px" });
     if (node) observerRef.current.observe(node);
