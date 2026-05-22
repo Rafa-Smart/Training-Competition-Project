@@ -34,7 +34,7 @@ export default function ArticleDetail({ slug, onArticleClick }) {
         <div className="article-meta">
           <span>{post.author?.name}</span>
           <span>{date}</span>
-          <span>👁 {post.visited_count?.toLocaleString()}</span>
+          <span>👁 {post.visited_count?.toLocaleString()}</span>  
         </div>
 
         <button className={`bm-full ${isBookmarked(slug) ? "bm-active" : ""}`}
