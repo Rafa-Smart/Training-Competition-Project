@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
 
-const KEY = "pref";
+const KEY = "prefs";
 const themes = ["light", "dark", "system"];
 export default Settings = ({ theme, setTheme }) => {
   const [categories, setCategories] = useState([]);
