@@ -13,7 +13,7 @@ const Home = ({onArticleClick}) => {
         api.getPosts({
             per_page:5,
             order_by:'latest'
-        }).then((resposne) => console.log(resposne||[]));
+        }).then((data) => setBreakings(data.data || []));
 
         const prefs = JSON.parse(localStorage.getItem(KEY)) || [];
         if(!prefs)return;

@@ -1,0 +1,439 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap");
+
+/* ─ TOKENS ───────────────────────────────────────────────────────── */
+/* Dipakai di seluruh file. Ganti di sini = ganti tampilan semua komponen */
+:root {
+  --bg: #f6f6f4;
+  --surface: #fff;
+  --border: #e5e5e3;
+  --text: #1a1a18;
+  --muted: #7a7a76;
+  --accent: #e8442a;
+  --r: 12px;
+  --header: 56px;
+  --nav: 62px;
+}
+[data-theme="dark"] {
+  --bg: #121210;
+  --surface: #1e1e1c;
+  --border: #2e2e2c;
+  --text: #f0f0ee;
+  --muted: #888884;
+}
+
+/* ─ RESET ────────────────────────────────────────────────────────── */
+/* Wajib. Tanpa ini tiap browser punya margin/padding default sendiri */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Sora", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* ─ LAYOUT UTAMA ─────────────────────────────────────────────────── */
+/* #app → kerangka flex vertikal fullscreen                           */
+/* main → area scroll di antara header & navbar                       */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+main {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: var(--header);
+  padding-bottom: var(--nav);
+}
+
+/* ─ HEADER & NAVBAR ──────────────────────────────────────────────── */
+/* Keduanya fixed bar, share properti posisi yang sama                */
+/* File: Header.jsx & NavBar.jsx                                      */
+.header,
+.navbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  z-index: 100;
+}
+.header {
+  top: 0;
+  height: var(--header);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  & .header-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  & .back-btn {
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+    padding: 4px;
+  }
+}
+.navbar {
+  bottom: 0;
+  height: var(--nav);
+  border-top: 1px solid var(--border);
+  display: flex;
+  & .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.15s;
+    &.active {
+      color: var(--accent);
+    }
+  }
+}
+
+/* ─ PAGE & SECTION ───────────────────────────────────────────────── */
+/* .page → wrapper semua halaman (Home, Discover, dll)                */
+/* .section-title & .card-cat → label uppercase kecil, share base    */
+.page {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.section-title,
+.card-cat {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+}
+.section-title {
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* ─ BREAKING NEWS ────────────────────────────────────────────────── */
+/* File: Home.jsx                                                      */
+/* .breaking-scroll & .cat-filter share: horizontal scroll flex       */
+.breaking-scroll,
+.cat-filter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.breaking-scroll {
+  scroll-snap-type: x mandatory;
+  & .breaking-card {
+    flex: 0 0 280px;
+    height: 180px;
+    border-radius: var(--r);
+    overflow: hidden;
+    position: relative;
+    scroll-snap-align: start;
+    cursor: pointer;
+    & img {
+      height: 100%;
+    }
+    & .breaking-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 30%, #000a);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      color: #fff;
+      & p {
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+    }
+  }
+}
+
+/* ─ ARTICLE CARD ─────────────────────────────────────────────────── */
+/* File: ArticleCard.jsx — kartu artikel di Home, Discover, Bookmark  */
+.card {
+  display: flex;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.12s;
+  &:active {
+    transform: scale(0.98);
+  }
+  & .card-img {
+    width: 100px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+  & .card-body {
+    flex: 1;
+    padding: 10px 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    & .card-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    & .card-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
+
+/* ─ TOMBOL ───────────────────────────────────────────────────────── */
+/* Semua tombol pill/chip share base yang sama                         */
+/* bm-full→ArticleDetail, theme-btn→Settings, cat-btn→Discover, cat-chip→Settings */
+.bm-full,
+.theme-btn,
+.cat-btn,
+.cat-chip {
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--muted);
+  transition: all 0.15s;
+  &.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+}
+.bm-full {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  color: var(--text);
+  width: fit-content;
+  &.bm-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+}
+.bm-btn {
+  color: var(--muted);
+  display: flex;
+  padding: 2px;
+  &.bm-active {
+    color: var(--accent);
+  }
+}
+.theme-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--r);
+  &.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--surface);
+  }
+}
+.cat-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+}
+.cat-chip {
+  border-radius: var(--r);
+  padding: 10px 14px;
+  text-align: left;
+}
+
+/* ─ FILTER AKTIF ─────────────────────────────────────────────────── */
+/* File: Discover.jsx — label kategori yang sedang dipilih            */
+.active-filter-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  & .clear-filter {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 99px;
+    border: 1px solid var(--accent);
+  }
+}
+
+/* ─ LOADER & SENTINEL ───────────────────────────────────────────────*/
+/* File: Discover.jsx — infinite scroll loading indicator             */
+.sentinel {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  min-height: 40px;
+}
+.loader {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.end-msg,
+.muted-msg {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.muted-msg {
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ─ ARTICLE DETAIL ───────────────────────────────────────────────── */
+/* File: ArticleDetail.jsx                                             */
+.article {
+  padding: 0;
+  gap: 0;
+}
+.article-img {
+  height: 220px;
+}
+.article-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  & .article-title {
+    font-family: "Noto Serif", serif;
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
+  & .article-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  & .article-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    & img {
+      border-radius: var(--r);
+      margin: 8px 0;
+    }
+  }
+  & .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    & .tag {
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--border);
+      color: var(--muted);
+    }
+  }
+}
+
+/* ─ EMPTY STATE ──────────────────────────────────────────────────── */
+/* File: Bookmark.jsx — tampilan saat belum ada bookmark              */
+.empty {
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--muted);
+  gap: 8px;
+  & span {
+    font-size: 3rem;
+  }
+}
+
+/* ─ SETTINGS ─────────────────────────────────────────────────────── */
+/* File: Settings.jsx                                                  */
+.settings {
+  gap: 24px;
+}
+.theme-btns {
+  display: flex;
+  gap: 8px;
+}
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* ─ OFFLINE ──────────────────────────────────────────────────────── */
+/* File: Offline.jsx — tampil saat tidak ada koneksi internet         */
+.offline {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  & .offline-msg {
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  & .game-frame {
+    flex: 1;
+    border: none;
+    width: 100%;
+  }
+}
