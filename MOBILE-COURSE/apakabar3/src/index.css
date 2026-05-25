@@ -52,18 +52,51 @@
 
 body {
   margin: 0;
+  box-sizing: border-box;
+  padding:0;
+  
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  --nav:64px;
+  --header:60px;
+ 
+  max-width: 480px;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  overflow-x:hidden;
+  background:var(--code-bg)
+}
+
+#app {
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+} 
+
+main {
+  flex:1;
+  overflow-y: auto;
+  margin-top:var(--header);
+  padding-bottom:var(--nav)
+}
+
+.page {
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+}
+
+nav {
+  display:flex;
+  justify-content: space-around;
+  margin:7px;
+}
+
+header {
+  display:flex;
+  justify-content: space-around;
+  margin:7px;
 }
 
 h1,

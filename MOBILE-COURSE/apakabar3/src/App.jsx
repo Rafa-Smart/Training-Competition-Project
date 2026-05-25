@@ -1,14 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css' 
+import Header from './components/Header'
+import Navbar from './components/Navbar'
+import ArticleDetail from './pages/ArticleDetail'
+import Home from './pages/Home'
+import Discover from './pages/Discover'
+import Bookmark from './pages/Bookmark'
+import Settings from './pages/Settings'
+import Offline from './pages/Offline'
 const key_2 = 'apakabar_theme'
 function App() { 
   const [tab, setTab] = useState('home');
   const [article, setArticle] = useState(null);
   const [online, setOnline] = useState(navigator.onLine)
-  const [theme, setTheme]=useState(locaStorage.get(key_2) || 'system')
+  const [theme, setTheme]=useState(localStorage.getItem(key_2) || 'system')
 
   useEffect(() => {
     const on = setOnline(true);
@@ -37,8 +45,32 @@ function App() {
     }
   },[theme]) 
 
+  const openArticle = (slug) => setArticle(slug);
+  const closeArticle = () => setArticle(null);
+  const titles = {home:"Home", discover:"Discover", bookmark:"Bookmark", settings:"Settings"}
+
+  if(online)return <Offline></Offline>
+
   return (
-    <></>
+    <>
+      <div id='app'>
+        <Header onBack={closeArticle} showback={!!article} title={article ?'Article' :titles[tab]}></Header>
+        <main>
+          {
+            article ? (<ArticleDetail  onClickArticle={openArticle} slug={article}></ArticleDetail>) :(
+              <>
+                {tab == 'home' && <Home onClickArticle={openArticle}></Home>}
+                {tab == 'discover' && <Discover onClickArticle={openArticle}></Discover>}
+                {tab == 'bookmark' && <Bookmark onClickArticle={openArticle}></Bookmark>}
+                {tab == 'settings' && <Settings onClickArticle={openArticle}></Settings>}
+              </>
+            )
+
+          }
+        </main>
+        <Navbar setTab={setTab} tab={tab} ></Navbar>
+      </div>
+    </>
   )
 }
 

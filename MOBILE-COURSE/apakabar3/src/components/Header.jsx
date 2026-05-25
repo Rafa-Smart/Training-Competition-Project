@@ -1,7 +1,7 @@
-const Header = (title, showback, onBack)=> {
+const Header = ({title, showback, onBack})=> {
     return <header>
         {
-            showback ? (<button className='btn-back'>{'<-'}</button>) :(<h2>{title}</h2>)
+            showback ? (<button className='btn-back' onclick={() => onBack()}>{'<-'}</button>) :(<h2>{title}</h2>)
         }
     </header>
 }
