@@ -1,3 +1,7 @@
+
+/* ============= */
+
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -10,9 +14,10 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    --garis-bawah:rgb(35, 33, 33);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -43,6 +48,8 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+    --garis-bawah:white;
   }
 
   #social .button-icon {
@@ -53,52 +60,159 @@
 body {
   margin: 0;
   box-sizing: border-box;
-  padding:0;
-  
+  padding: 0;
+  overflow-y: none;
 }
 
 #root {
-  --nav:64px;
-  --header:60px;
- 
+   overflow-y: none;
+  --nav: 64px;
+  --header: 60px;
+
   max-width: 480px;
   margin: 0 auto;
-  overflow-x:hidden;
-  background:var(--code-bg)
+  overflow-x: hidden;
+  background: var(--code-bg);
 }
 
 #app {
-  display:flex;
-  flex-direction:column;
-  height:100dvh;
-} 
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
 
 main {
-  flex:1;
+  flex: 1;
   overflow-y: auto;
-  margin-top:var(--header);
-  padding-bottom:var(--nav)
+  margin-top: var(--header);
+  padding-bottom: var(--nav);
 }
 
 .page {
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 nav {
-  display:flex;
+  display: flex;
   justify-content: space-around;
-  margin:7px;
+  background-color: var(--accent-bg);
+  padding: 9px;
+
+  /* GINI INI PENING BANGET, JDI KALO DIA & .active, artinya dia kan cari nav llu didalam nav ii ada btn lalu didalam btn yang .btn-nav saya ini didalamnyaaa baru amibl active
+  
+  sedangkan kan kita itu mau ngmbilya adalalah yang se tingkat ya ya emga satu kompnen, maka jadinya ga boleh pake spasi, jaid harus &btn-nav*/
+  & .btn-nav { 
+    /* ini wajib pake realtive soalnya mau pake absolute*/
+    position:relative;
+
+
+    /* kalo spasi artinya ngambil anaknya */
+
+    background-color: var(--social-bg);
+    color: var(--text-h);
+    border: none;
+    border-radius:10px;
+    padding:5px;
+    &.active {
+      /* kalo enga spasi artinya ngambil yang sejajar */
+      background-color: var(--code-bg) !important;
+    }
+  }
+  & .btn-nav:hover {
+    cursor: pointer;
+    &.active {
+      background-color: var(--code-bg)!important;
+    }
+  }
+
+  /* ini utuk yag garis bawahnya gitu ya */
+  /* jadi bisa yang kaya atas ya pake &.active */
+  /* atua bisa juga gini karena emang sejajar git ya*/
+
+  & .btn-nav.active {
+    background-color: var(--code-bg)!important;
+  }
+
+  /* llu untuk afternya */
+  & .btn-nav.active::after {
+    content:'';
+    position:absolute; 
+    height:2px;
+    background-color: var(--garis-bawah);
+    bottom:-4px;
+    border-radius:999px;
+    height: 2px;
+    left:0%;
+    width:100%;
+  }
 }
 
 header {
-  display:flex;
-  justify-content: space-around;
-  margin:7px;
+  display: flex; 
+  background-color: var(--accent-bg);
+  color: var(--text-h);
+  padding: 13px;
+    justify-content: flex-start;
+  font-size: 1.4rem;
 }
 
+
+.article-item {
+  cursor: pointer;
+  margin: 2px 10px;
+  border:1px solid var(--border);
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  gap:2%;
+  align-items: center;
+  & .article-img {
+    width:40%;
+    height: 40%;
+    border-radius:5px;
+  }
+  & .article-category {
+      color:var(--text-h)
+  }
+  & .article-title {
+      color:var(--text)
+  }
+  & .article-name {
+      color:var(--text-h)
+  }
+  & .article-detail {
+    & .article-meta {
+      display:flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ======================== */
 h1,
 h2 {
   font-family: var(--heading);

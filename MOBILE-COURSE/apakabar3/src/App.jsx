@@ -68,7 +68,9 @@ function App() {
 
           }
         </main>
-        <Navbar setTab={setTab} tab={tab} ></Navbar>
+        {
+          !article && <Navbar setTab={setTab} tab={tab} ></Navbar>
+        }
       </div>
     </>
   )

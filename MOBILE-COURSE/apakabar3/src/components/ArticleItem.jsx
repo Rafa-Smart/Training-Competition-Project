@@ -1,21 +1,23 @@
-const ArticleItem = ({article, onClickItem, obBookmark, isBookmark}) => {
+const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
     const date = new Date(article.published_at).toLocaleDateString('id-ID', {
         month:'short',
         day:'numeric',
         year:'numeric'
     })
-    return <div className='article-item' onclick={onClickItem}>
-        {article?.thumbnail && <img src={article.thumbnail} loading='lazy'></img>}
+    // console.log({article})
+    return <div className='article-item' onClick={onClickItem}>
+        {article?.thumbnail && <img src={article.thumbnail} loading='lazy' className="article-img"></img>}
         {article && <div className='article-detail'>
-        {article?.category && <span >{article?.category.name}</span>}
-        <h2>{article?.title}</h2>
         <div className='article-meta'>
-            <span >{article?.author.name} - {date}</span>
-            {onBookmark && <button className={`btn-bookmark ${isBookmark?'active':''}`} onclick={(e) => {
+            {article?.category && <span className='article-category'>{article?.category.name}</span>} {onBookmark && <button className={`btn-bookmark ${isBookmark?'active':''}`} onClick={(e) => {
                 e.stopPropagation();
                 onBookmark(article)
-            }}>{isBookmark ? '🔖':"🔍"}</button>}
+            }}>{isBookmark ? '🔖':"🔍"}</button>}   
         </div>
+        <p className='article-title'>{article?.title}</p>
+         
+            <span className="article-name">{article?.author_name} - {date}</span>
+
         </div>}
     </div>
 }

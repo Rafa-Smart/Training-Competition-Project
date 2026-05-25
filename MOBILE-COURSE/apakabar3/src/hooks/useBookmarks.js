@@ -1,19 +1,21 @@
+import { useState } from "react";
+
 const key = "apakabar_bookmarks";
 const useBookmarks = () => {
-  const [bookmarks, setBookmarks] = useState([]);
-  const toggle = (slug) => {
+  const [bookmarks, setBookmarks] = useState(JSON.parse(localStorage.getItem(key)));
+  const toggle = (article) => {
     setBookmarks((prev) => {
-      const ada = prev.find((data) => data.slug == slug);
+      const ada = prev.find((data) => article.slug == data.slug);
       const next = ada
-        ? prev.filter((data) => data.slug != slug)
+        ? prev.filter((data) => data.slug != article.slug)
         : [...prev, ada];
       localStorage.setItem(key, JSON.stringify(next));
       return next;
     });
-  };
+  };    
 
-  const isBookmark = (slug) => bookmarks.some(data => data.slug == slug)
+  const isBookmark = (slug) => bookmarks.some(data => data.slug == article.slug)
   return [bookmarks, toggle, isBookmark]
 };
 
-export default { useBookmarks };
+export default useBookmarks;
