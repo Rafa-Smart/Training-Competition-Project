@@ -19,3 +19,5 @@ const ArticleItem = ({article, onClickItem, obBookmark, isBookmark}) => {
         </div>}
     </div>
 }
+
+export default ArticleItem;
