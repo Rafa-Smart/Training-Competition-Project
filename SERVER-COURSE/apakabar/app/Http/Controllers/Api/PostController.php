@@ -37,7 +37,7 @@ class PostController extends Controller
         }
 
         $posts = $query->paginate(
-            $request->per_page ?? 20
+            $request->per_page ?? 100
         );
 
         return response()->json([

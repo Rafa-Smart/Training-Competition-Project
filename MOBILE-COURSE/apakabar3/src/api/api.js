@@ -3,9 +3,14 @@ const get = (urlnya, params = {}) => {
     Object.entries(params).forEach(([key, value]) => {
         if(key != undefined && value != undefined ) {
             url.searchParams.set(key, value)
+            
         }
     })
-    return fetch(url).then((data) => data.json())
+    return fetch(url, {
+        'headers':{
+            'Content-Type':"application/json"
+        }
+    }).then((data) => data.json())
 }
 
 

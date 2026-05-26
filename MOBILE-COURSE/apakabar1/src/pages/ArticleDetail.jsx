@@ -7,7 +7,7 @@ export default function ArticleDetail({ slug, onArticleClick }) {
   const [post, setPost] = useState(null);
   const [related, setRelated] = useState([]);
   const { toggle, isBookmarked } = useBookmarks();
-
+  
   useEffect(() => {
     setPost(null);
     getPost(slug).then(r => {

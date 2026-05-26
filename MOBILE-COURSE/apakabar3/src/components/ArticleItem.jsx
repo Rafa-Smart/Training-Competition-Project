@@ -4,8 +4,8 @@ const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
         day:'numeric',
         year:'numeric'
     })
-    // console.log({article})
-    return <div className='article-item' onClick={onClickItem}>
+    console.log({article})
+    return <div className='article-item' onClick={() => onClickItem(article.slug)}>
         {article?.thumbnail && <img src={article.thumbnail} loading='lazy' className="article-img"></img>}
         {article && <div className='article-detail'>
         <div className='article-meta'>
