@@ -12,11 +12,12 @@ const Settings = ({theme, setTheme}) => {
             setCategories(response.data);
         })
     }, []) 
-
+    
     const togglePreferensi = (category) => {
         setPreferensi(prev => {
             const next = prev.includes(category) ? prev.filter(preferensinya => preferensinya!=category):[...prev, category];
-            localStorage.setItem(key, JSON.stringify(prev));
+            localStorage.setItem(key, JSON.stringify(next));
+            // console.log(next)
             return next
         })
     };
@@ -29,7 +30,9 @@ const Settings = ({theme, setTheme}) => {
          <div className='setting-flex'>
             {
                 themes.map((themeN, index) => {
-                    return <div key={index} className={`setting-item ${themeN == theme ? 'active':''}`} onClick={(e) => {setTheme(themeN);localStorage.setItem(key_2, themeN)}}>{themeN.charAt(0).toUpperCase() + themeN.slice(1)}</div>
+                    return <div key={index} className={`setting-item ${themeN == theme ? 'active':''}`} onClick={(e) => {setTheme(themeN);
+                    
+                    localStorage.setItem(key_2, themeN)}}>{themeN.charAt(0).toUpperCase() + themeN.slice(1)}</div>
                 })
             }
             </div>
@@ -40,7 +43,9 @@ const Settings = ({theme, setTheme}) => {
                   {
                     categories.map((category, index) => {
                         {/* ini itu bukan preferensi == category ya,karna dinsi ita ingin bandinign array gitu, d aga di array, jadi pake includes */}
-                        return <div key={index} className={`setting-item ${preferensi.includes(category.slug) ?'active':'' }`} onClick={(e) => {togglePreferensi(category.slug);localStorage.setItem(key, JSON.stringify(preferensi)) }}><p style={{textAlign:'center'}}>{category.slug.charAt(0).toUpperCase() + category.slug.slice(1)}</p></div>
+                        return <div key={index} className={`setting-item ${preferensi.includes(category.slug) ?'active':'' }`} onClick={(e) => {togglePreferensi(category.slug);
+                        // console.log(preferensi)
+                        localStorage.setItem(key, JSON.stringify(preferensi)) }}><p style={{textAlign:'center'}}>{category.slug.charAt(0).toUpperCase() + category.slug.slice(1)}</p></div>
                     })
                 }
               </div>

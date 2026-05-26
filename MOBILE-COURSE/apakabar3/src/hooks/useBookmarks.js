@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const key = "apakabar_bookmarks";
 const useBookmarks = () => {
-  const [bookmarks, setBookmarks] = useState(JSON.parse(localStorage.getItem(key)));
+  const [bookmarks, setBookmarks] = useState(JSON.parse(localStorage.getItem(key)) || []);
   const toggle = (article) => {
     setBookmarks((prev) => {
       const ada = prev.find((data) => article.slug == data.slug);
