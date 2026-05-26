@@ -1,7 +1,7 @@
 const Header = ({title, showback, onBack})=> {
     return <header>
         {
-            showback ? (<><button className='btn-back' onClick={() => onBack()}>{'<-'}</button> <p style={{marginLeft:'4px'}}> Article Detail</p></>) :(<p>{title}</p>)
+            showback ? (<><p className='btn-back' onClick={() => onBack()}>{'<<'}</p> <p style={{marginLeft:'15%', fontWeight:'bold',lineHeight:'30px'}}> Article Detail</p></>) :(<p>{title}</p>)
         }
     </header>
 }

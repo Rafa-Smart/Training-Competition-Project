@@ -24,6 +24,30 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Bisnis',
                 'slug' => 'bisnis'
             ],
+            [
+                'name' => 'Ekonomi',
+                'slug' => 'Ekonomi'
+            ],
+            [
+                'name' => 'Game',
+                'slug' => 'Game'
+            ],
+            [
+                'name' => 'Ekonomi2',
+                'slug' => 'Ekonomi2'
+            ],
+            [
+                'name' => 'Game2',
+                'slug' => 'Game2'
+            ],
+            [
+                'name' => 'Ekonomi3',
+                'slug' => 'Ekonomi3'
+            ],
+            [
+                'name' => 'Game3',
+                'slug' => 'Game3'
+            ],
         ];
 
         foreach ($categories as $category) {

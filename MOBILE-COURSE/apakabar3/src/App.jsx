@@ -32,7 +32,7 @@ function App() {
   useEffect(() => {
     const root = document.documentElement;
     if(theme=='dark'){
-      root.setAttribute('data-color', 'dark');
+      root.setAttribute('data-theme', 'dark');
     }else if(theme=='light'){
       root.setAttribute('data-theme', 'light')
     }else {
@@ -62,7 +62,7 @@ function App() {
                 {tab == 'home' && <Home onClickArticle={openArticle}></Home>}
                 {tab == 'discover' && <Discover onClickArticle={openArticle}></Discover>}
                 {tab == 'bookmark' && <Bookmark onClickArticle={openArticle}></Bookmark>}
-                {tab == 'settings' && <Settings onClickArticle={openArticle}></Settings>}
+                {tab == 'settings' && <Settings setTheme={setTheme} theme={theme}></Settings>}
               </>
             )
 
