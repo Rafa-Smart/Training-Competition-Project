@@ -7,9 +7,11 @@ const Home = ({ onClickArticle }) => {
   const [recomendations, setRecomendations] = useState([]);
   const [breakingNews, setBreakingNews] = useState([]);
   const [toggle, isBookmark] = useBookmarks();
+  const [loading, setLoading] = useState(false);
   const preferensi = JSON.parse(localStorage.getItem(key));
-//   console.log(preferensi)
+  //   console.log(preferensi)
   useEffect(() => {
+    setLoading(true);
     api
       .getPosts({
         per_page: 5,
@@ -17,32 +19,68 @@ const Home = ({ onClickArticle }) => {
       })
       .then((response) => setBreakingNews(response.data));
 
-    //   Promise.all(
-    //     preferensi.map((pref) => {
-    //         return api.getPosts({category:pref.slug, ordey_by:'latest',per_page:3}).then((response) => {
-    //             return response.data;
-    //         })
-    //     })
-    //   ).then((results) => setRecomendations(results.flat()))
+    Promise.all(
+      preferensi.map((pref) => {
+        return api
+          .getPosts({ category: pref, ordey_by: "latest", per_page: 3 })
+          .then((response) => {
+            return response.data;
+          });
+      }),
+    )
+      .then((results) => setRecomendations(results.flat()))
+      .finally(() => setLoading(false));
   }, []);
-//   console.log(preferensi)
+  //   console.log(preferensi)
   return (
-    <div className="page">
-      <section className="home-section">
+    <div className="page-home">
+      <section className="home-section h">
         <div className="home-heading">
-          <h2>Breaking News</h2>
+          <h3>Breaking News</h3>
         </div>
-        <div className="home-horizontal-scroll"></div>
+        <div className="home-horizontal-scroll">
+            {
+                loading ? <span className='loading center'></span>: breakingNews.map((article) => {
+                    return <div className='horizontal-item' onClick={() => onClickArticle(article.slug)}>
+                                {
+                                    <>
+                                        {article.thumbnail && <img className='item-img' src={article.thumbnail}></img>}
+                                    <div className='item-body'>
+                                        <p className='item-body-category'  >{article.category.name}</p>
+                                        <p className='item-body-title'>{article.title}</p>
+                                    </div>
+                                    </>
+                                }
+                           </div>
+                })
+            }
+        </div>
       </section>
-      <section className="home-section">
-        <div className="home-heading">
-          <h2>For You!</h2>
+
+
+      <section className="home-section v">
+        <div style={{marginBottom:'14px'}} className="home-heading">
+          <h3>For You!</h3>
         </div>
-        <div className="home-horizontal-scroll">{
-            recomendations.map((article, index) => {
-                return <ArticleItem article={article} isBookmark={isBookmark} onBookmark={toggle} onClickItem={onClickArticle} key={index}></ArticleItem>
+        {loading ? (
+          <span className="loading center"></span>
+        ) : (
+          <div className="home-vertical-scroll">
+            {
+                recomendations.length == 0 ? <p className='center'>Piih dulu categorynya di setting</p>: recomendations.map((article, index) => {
+              return (
+                <ArticleItem
+                  article={article}
+                  isBookmark={isBookmark}
+                  onBookmark={toggle}
+                  onClickItem={onClickArticle}
+                  key={index}
+                ></ArticleItem>
+              );
             })
-        }</div>
+            }
+          </div>
+        )}
       </section>
     </div>
   );
