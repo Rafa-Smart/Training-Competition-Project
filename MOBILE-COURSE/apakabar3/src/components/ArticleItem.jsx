@@ -1,4 +1,5 @@
 const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
+    console.log({article})
     const date = new Date(article.published_at).toLocaleDateString('id-ID', {
         month:'short',
         day:'numeric',

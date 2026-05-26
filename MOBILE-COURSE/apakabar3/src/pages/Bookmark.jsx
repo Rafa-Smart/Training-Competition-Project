@@ -3,6 +3,7 @@ import useBookmarks from "../hooks/useBookmarks";
 
 const Bookmark = ({onClickArticle}) => {
     const [bookmarks, toggle, isBookmark] = useBookmarks()
+    console.log({bookmarks})
     return <div className='page'>
         {
             bookmarks.length > 0 ? <div className='article-scroll-vertical'>

@@ -6,9 +6,9 @@ const key = "apakabar_preferensi";
 const Home = ({ onClickArticle }) => {
   const [recomendations, setRecomendations] = useState([]);
   const [breakingNews, setBreakingNews] = useState([]);
-  const [toggle, isBookmark] = useBookmarks();
+  const [bookmarks, toggle, isBookmark] = useBookmarks();
   const [loading, setLoading] = useState(false);
-  const preferensi = JSON.parse(localStorage.getItem(key));
+  const preferensi = JSON.parse(localStorage.getItem(key))||[];
   //   console.log(preferensi)
   useEffect(() => {
     setLoading(true);
