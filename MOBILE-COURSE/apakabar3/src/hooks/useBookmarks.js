@@ -4,7 +4,7 @@ const key = "apakabar_bookmarks";
 const useBookmarks = () => {
   const [bookmarks, setBookmarks] = useState(JSON.parse(localStorage.getItem(key)) || []);
   const toggle = (article) => {
-    console.log(article)
+    // console.log(article)
     setBookmarks((prev) => {
       const ada = prev.find((data) => data.slug == article.slug);
       const next = ada
@@ -15,7 +15,7 @@ const useBookmarks = () => {
     });
   };    
 
-  const isBookmark = (slug) => bookmarks.some(data => data.slug == article.slug)
+  const isBookmark = (slug) => bookmarks.some(data => data.slug == slug)
   return [bookmarks, toggle, isBookmark]
 };
 

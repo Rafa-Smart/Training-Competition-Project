@@ -5,15 +5,18 @@ const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
         day:'numeric',
         year:'numeric'
     })
-    console.log({isBookmark})
-    return <div className='article-item' onClick={() => onClickItem(article.slug)}>
+    // console.log({isBookmark})
+    return <div className='article-item' onClick={() => {
+        console.log('clickk')
+        onClickItem(article.slug);
+    }}>
         {article?.thumbnail && <img src={article.thumbnail} loading='lazy' className="article-img"></img>}
         {article && <div className='article-detail'>
         <div className='article-meta'>
             {article?.category && <span className='article-category'>{article?.category.name}</span>} {onBookmark && <button className={`btn-bookmark ${isBookmark?'active':''}`} onClick={(e) => {
                 e.stopPropagation();
                 onBookmark(article)
-            }}>{isBookmark(article.slug) ? '🔖':"🔍"}</button>}   
+            }}>{isBookmark(article?.slug) ? '🔖':"🔍"}</button>}   
         </div>
         <p className='article-title'>{article?.title}</p>
          

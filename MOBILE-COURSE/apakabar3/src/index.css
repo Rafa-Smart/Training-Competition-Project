@@ -244,13 +244,12 @@ header {
   flex-direction: column;
   padding: 5px;
 }
- 
 
 .home-section.h {
-  flex: 1;  
+  flex: 1;
 }
 .home-section.v {
-  flex: 2;  
+  flex: 2;
 }
 .home-heading {
   width: 100%;
@@ -287,32 +286,30 @@ header {
 }
 
 .home-horizontal-scroll {
- 
   display: flex;
   flex: 4;
-  gap:12px;  
+  gap: 12px;
   overflow-x: auto;
   /* INIIIIII PENTIGG YA WAJIB */
   scroll-snap-type: x mandatory;
-  & .horizontal-item { 
-    display: flex;      
+  & .horizontal-item {
+    display: flex;
     position: relative;
     flex-direction: column;
-        /* scroll-snap-align: start; */
+    /* scroll-snap-align: start; */
 
     & .item-img {
-
       width: 250px;
-      
-      border-radius:12px;
+
+      border-radius: 12px;
       height: 160px;
       object-fit: cover;
       display: block;
     }
     & .item-body {
       position: absolute;
-      top:40%;
-      margin:6px;
+      top: 40%;
+      margin: 6px;
       font-weight: bold;
 
       & .item-body-category {
@@ -334,22 +331,49 @@ overflow-x: scroll;
 overflow-y: scroll;
 overflow: auto; */
 .hide-scrollbar {
-  scrollbar-width: none !important; 
+  scrollbar-width: none !important;
 }
 
+.page-detail {
+  display: flex;
 
+  & .detail-article {
 
+    & .article-detail-body {
+      margin:5px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
 
+      & .btn-bookmark {
+        align-self: flex-start;
+        padding: 7px;
+        border-radius: 40px;
+        background-color: var(--accent-border);
+        color: var(--text-h);
+      }
+      & .detail-category {
+        display:flex;
+        justify-content: space-between;
+        color: var(--accent);
+        & .detail-tag {
+          background-color: var(--accent-border);
+          color: var(--text-h);
+          padding: 2px 5px;
+          border-radius: 5px;
+          margin-left: 5px; 
+        }
+      }
+    }
+    
 
-
-
-
-
-
-
-
-
-
+    & .detail-img {
+      width: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+  }
+}
 
 /* ======================== */
 h1,
@@ -379,7 +403,7 @@ h2 {
 }
 h3 {
   line-height: 118%;
-  color:var(--text-h);
+  color: var(--text-h);
   letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
