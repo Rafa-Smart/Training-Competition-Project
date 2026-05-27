@@ -375,6 +375,38 @@ overflow: auto; */
   }
 }
 
+
+.discover-category {
+  display:flex;
+  width: 100%;
+  gap: 12px;
+  padding:5px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  & .discover-category-item {
+    padding:9px;
+    border-radius: 50px;
+    background-color: var(--social-bg);
+    color: var(--text-h);
+  }
+  & .discover-category-item.active {
+    background-color: var(--accent-border );
+  }
+  & .discover-category-item:hover {
+     cursor: pointer;
+  }
+  & .discover-category-item.active:hover {
+     cursor: pointer;
+  }
+}
+
+
+
+
+
+
+
 /* ======================== */
 h1,
 h2 {

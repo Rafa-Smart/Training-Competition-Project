@@ -33,12 +33,12 @@ export default function Discover({ onArticleClick }) {
 
   // Fetch
   useEffect(() => {
-    if (!hasMore) return;
+    if (!hasMore) return; 
     setLoading(true);
     getPosts({ page, per_page: 10, search: debouncedQ, category: catParam })
       .then(r => {
         const data = r.data || [];
-        setPosts(prev => page === 1 ? data : [...prev, ...data]);
+        setPosts(prev => page === 1 ? data : [...prev, ...data]); 
         setHasMore((r.meta?.current_page || 1) < (r.meta?.last_page || 1));
       })
       .finally(() => setLoading(false));
