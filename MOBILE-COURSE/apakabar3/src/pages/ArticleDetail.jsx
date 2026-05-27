@@ -15,8 +15,15 @@ const ArticleDetail = ({slug, onClickArticle}) =>{
     // jadi gini, ii tuh masalhnya karena bookmark nya masih pegang
     
     useEffect(() => {
-        setLoading(true);
-        api.getPost(slug).then((response) => {
+             {/* NAH INI WAJIB BANGET KTIA KASIH KEY DISNI, KARENA GINI KETIAK KITA SET ARTICLE YA DARI SI DETAIL ARTICLE
+          KA KALO KOMPONENNAY MASIH SAMA MAKA TIDAK AKAN DI RENDER, JADI DISNI KITA KA MAU BUKA DETIAL PAGE TAPI KITA UDHA DI DETAIL PAGE, MAKANYA OPEN ARTICLENYA ENGGA JAALN GITUU, MAKANYA DISNI KITA WAJIB PAKE KEY UNTUK PEMBEDA, JAID KALO AD ASETsTATE MAKA AKAN DI RELOAD LAGI KARENA KEYNYA BERBEDA */}
+        setLoading(true);    
+        setPost(null);
+        setReferensi([]);
+        // nah jadi gini slugnya itu wajib kita taruh dulu di vriable local ya
+        // kareana, nanti kalo engga article yang saat ini akan masih ada di realated
+        const currentSlug = slug;
+        api.getPost(currentSlug).then((response) => {
             const data = response.data;
             const slug = data.category.slug;
             setPost(data);
@@ -27,7 +34,7 @@ const ArticleDetail = ({slug, onClickArticle}) =>{
                 per_page:10
             }).then((response) => {
                 const data = (response.data || [])
-                const filtered = data.filter(article => article.slug != slug);
+                const filtered = data.filter(article => article.slug != currentSlug);
                 const sliced = filtered.slice(0,3);
                 setReferensi(sliced);
             }).finally(() => setLoading(false))

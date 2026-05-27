@@ -7,9 +7,10 @@ export default function ArticleDetail({ slug, onArticleClick }) {
   const [post, setPost] = useState(null);
   const [related, setRelated] = useState([]);
   const { toggle, isBookmarked } = useBookmarks();
-  
+
   useEffect(() => {
     setPost(null);
+    setRelated([]);
     getPost(slug).then(r => {
       const data = r.data;
       setPost(data);
@@ -55,7 +56,7 @@ export default function ArticleDetail({ slug, onArticleClick }) {
             <h2 className="section-title">Related</h2>
             {related.map(a => (
               <ArticleCard key={a.slug} article={a} onClick={onArticleClick}
-                onBookmark={toggle} isBookmarked={isBookmarked(a.slug)} />
+                onBookmark={toggle} isBookmarked={isBookmarked(a.slug)}/>
             ))}
           </section>
         )}

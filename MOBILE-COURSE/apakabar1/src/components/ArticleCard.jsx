@@ -3,7 +3,7 @@ export default function ArticleCard({ article, onClick, onBookmark, isBookmarked
   const date = new Date(published_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }); 
 
   return (
-    <article className="card" onClick={() => onClick(article.slug)} role="button" tabIndex={0}>
+    <article className="card" onClick={() => {onClick(article.slug)}} role="button" tabIndex={0}>
       {thumbnail && <img className="card-img" src={thumbnail} alt={title} loading="lazy" />}
       <div className="card-body">
         {category && <span className="card-cat">{category.name}</span>}

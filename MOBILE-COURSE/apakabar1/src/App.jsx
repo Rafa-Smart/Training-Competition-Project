@@ -60,8 +60,10 @@ export default function App() {
       onBack={closeArticle} />
       <main>
           {/* jadi kalo artikelnya ada atau ketika artikel di klik artinya kan buka artiel detail maka tampiilin detailnya */}
+          {/* NAH INI WAJIB BANGET KTIA KASIH KEY DISNI, KARENA GINI KETIAK KITA SET ARTICLE YA DARI SI DETAIL ARTICLE
+          KA KALO KOMPONENNAY MASIH SAMA MAKA TIDAK AKAN DI RENDER, JADI DISNI KITA KA MAU BUKA DETIAL PAGE TAPI KITA UDHA DI DETAIL PAGE, MAKANYA OPEN ARTICLENYA ENGGA JAALN GITUU, MAKANYA DISNI KITA WAJIB PAKE KEY UNTUK PEMBEDA, JAID KALO AD ASETsTATE MAKA AKAN DI RELOAD LAGI KARENA KEYNYA BERBEDA */}
         {article ? (
-          <ArticleDetail slug={article} onArticleClick={openArticle} />
+          <ArticleDetail key={article} slug={article} onArticleClick={openArticle} />
         ) : (
           <>
           {/* jadi gini si tab ini berubah ketika di klik ya, nah di kliknya itu di komponen navbar */}

@@ -55,9 +55,11 @@ function App() {
     <>
       <div id='app'>
         <Header onBack={closeArticle} showback={!!article} title={article ?'Article' :titles[tab]}></Header>
+                    {/* NAH INI WAJIB BANGET KTIA KASIH KEY DISNI, KARENA GINI KETIAK KITA SET ARTICLE YA DARI SI DETAIL ARTICLE
+          KA KALO KOMPONENNAY MASIH SAMA MAKA TIDAK AKAN DI RENDER, JADI DISNI KITA KA MAU BUKA DETIAL PAGE TAPI KITA UDHA DI DETAIL PAGE, MAKANYA OPEN ARTICLENYA ENGGA JAALN GITUU, MAKANYA DISNI KITA WAJIB PAKE KEY UNTUK PEMBEDA, JAID KALO AD ASETsTATE MAKA AKAN DI RELOAD LAGI KARENA KEYNYA BERBEDA */}
         <main>
           {
-            article ? (<ArticleDetail  onClickArticle={openArticle} slug={article}></ArticleDetail>) :(
+            article ? (<ArticleDetail key={article} onClickArticle={openArticle} slug={article}></ArticleDetail>) :(
               <>
                 {tab == 'home' && <Home onClickArticle={openArticle}></Home>}
                 {tab == 'discover' && <Discover onClickArticle={openArticle}></Discover>}
