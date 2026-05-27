@@ -1,11 +1,11 @@
 const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
-    console.log({article})
+    // console.log({article})
     const date = new Date(article.published_at).toLocaleDateString('id-ID', {
         month:'short',
         day:'numeric',
         year:'numeric'
     })
-    // console.log({article})
+    console.log({isBookmark})
     return <div className='article-item' onClick={() => onClickItem(article.slug)}>
         {article?.thumbnail && <img src={article.thumbnail} loading='lazy' className="article-img"></img>}
         {article && <div className='article-detail'>
@@ -13,7 +13,7 @@ const ArticleItem = ({article, onClickItem, onBookmark, isBookmark}) => {
             {article?.category && <span className='article-category'>{article?.category.name}</span>} {onBookmark && <button className={`btn-bookmark ${isBookmark?'active':''}`} onClick={(e) => {
                 e.stopPropagation();
                 onBookmark(article)
-            }}>{isBookmark ? '🔖':"🔍"}</button>}   
+            }}>{isBookmark(article.slug) ? '🔖':"🔍"}</button>}   
         </div>
         <p className='article-title'>{article?.title}</p>
          

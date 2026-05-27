@@ -326,6 +326,31 @@ header {
   }
 }
 
+/* ini buatin hilngin scroll barnya */
+
+/* jadi ini kita taruh di smeua yang ada 
+overflow: scroll;
+overflow-x: scroll;
+overflow-y: scroll;
+overflow: auto; */
+.hide-scrollbar {
+  scrollbar-width: none !important; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ======================== */
 h1,
 h2 {

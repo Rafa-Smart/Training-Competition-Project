@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { api } from "../api/api";
 
 const ArticleDetail = ({slug, onClickArticle}) =>{
-    const [post, setPosts] = useState();
+    const [post, setPost] = useState();
     const [referensi, setReferensi] = useState([]);
     // console.log(slug)
     // console.log({referensi})
-    // console.log({post})
+    console.log({post})
 
     // jadi gini, ii tuh masalhnya karena bookmark nya masih pegang
 
@@ -30,7 +30,7 @@ const ArticleDetail = ({slug, onClickArticle}) =>{
     },[])
 
     return<div>
-        <h1>ini article detail</h1>
+        <h1>ini article ''</h1>
     </div>
 }
 

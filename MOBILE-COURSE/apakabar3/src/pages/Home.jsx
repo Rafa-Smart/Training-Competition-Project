@@ -33,12 +33,12 @@ const Home = ({ onClickArticle }) => {
   }, []);
   //   console.log(preferensi)
   return (
-    <div className="page-home">
+    <div className="page-home hide-scrollbar">
       <section className="home-section h">
         <div className="home-heading">
           <h3>Breaking News</h3>
         </div>
-        <div className="home-horizontal-scroll">
+        <div className="home-horizontal-scroll hide-scrollbar">
             {
                 loading ? <span className='loading center'></span>: breakingNews.map((article) => {
                     return <div className='horizontal-item' onClick={() => onClickArticle(article.slug)}>
@@ -58,14 +58,14 @@ const Home = ({ onClickArticle }) => {
       </section>
 
 
-      <section className="home-section v">
+      <section className="home-section v ">
         <div style={{marginBottom:'14px'}} className="home-heading">
           <h3>For You!</h3>
         </div>
         {loading ? (
           <span className="loading center"></span>
         ) : (
-          <div className="home-vertical-scroll">
+          <div className="home-vertical-scroll hide-scrollbar">
             {
                 recomendations.length == 0 ? <p className='center'>Piih dulu categorynya di setting</p>: recomendations.map((article, index) => {
               return (
