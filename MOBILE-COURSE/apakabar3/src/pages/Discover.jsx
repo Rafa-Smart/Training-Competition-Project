@@ -94,7 +94,8 @@ const Discover = ({onClickArticle}) => {
 
     const observeRef = useRef();
    
-
+console.log(activeCategory);
+console.log(categoryParameter);
 
     const toggleCategory = (category) => {
         setActiveCategory(prev => {
@@ -152,7 +153,7 @@ const Discover = ({onClickArticle}) => {
             <div className={`discover-category-item ${activeCategory.length <= 0 ?'active':''}`} onClick={() => setActiveCategory([])}>All</div>
             {
                 categories.map((category, index) => {
-                    return <div key={index} className={`discover-category-item ${activeCategory.includes(category) ? 'active':''}`} onClick={() => toggleCategory(category)}>{category.name}</div>
+                    return <div key={index} className={`discover-category-item ${activeCategory.includes(category.slug) ? 'active':''}`} onClick={() => toggleCategory(category.slug)}>{category.name}</div>
                 })
             }
             </div>

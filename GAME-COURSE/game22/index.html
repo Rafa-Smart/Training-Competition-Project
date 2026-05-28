@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <main id="map-area"> 
+        <div id="map-container">
+            <img id="map-img" src="./assets/indonesia.svg"></img>
+            <canvas id="lines-layer"></canvas>
+            <div id="pinpoints-layer"></div>
+        </div>
+        <div id="popAdd" class="popup hidden">
+            <div class="header-pop">
+                <span>Add Pinpoint</span>
+                <img src="./assets/BiXLg.svg" alt="" class="btn" id="closeAdd">
+            </div>
+            <form id="formAdd">
+                <input type="text" id="inputName" placeholder="Name" required>
+            </form>
+        </div>
+         <div id="popConnect" class="popup hidden">
+            <div class="header-pop">
+                <span>Add Pinpoint</span>
+                <img src="./assets/BiXLg.svg" alt="" class="btn" id="closeConnect">
+            </div>
+            <form id="formConnect">
+                <input type="number" id="inputDistance" placeholder="Distance" required>
+                <select name="inputMode" id="inputMode">
+                    <option value="" disabled>Select Mode</option>
+                    <option value="Train">Train</option>
+                    <option value="Bus">Bus</option>
+                    <option value="Airplane">Airplane</option>
+                </select>
+                <button type="submit" id="btnConnect">Connect</button>
+            </form>
+        </div>
+
+        <button id="btnRoute">Route</button>
+        <div id="panelRoute" class="popup hidden">
+            <div class="header-pop">
+                <span>Search Routes</span>
+            </div>
+            <div id="inputan">
+                <label for="">
+                    <img src="./assets/MaterialSymbolsLocationOnOutline.svg" alt=""><input type="text" id="inputFrom" placeholder="Input From" required>
+                </label>
+                <label for="">
+                    <img src="./assets/MaterialSymbolsLocationOn.svg" alt=""><input type="text" id="inputTo" placeholder="Input To" required>
+                </label>
+                <br>
+                <button type="submit" id="btnSearch" >Search</button>
+                <div class="btns">
+                    <button data-sort="fastest" class="btn-sort">fastest</button>
+                    <button data-sort="cheaptest"  class="btn-sort">cheaptest</button>
+                </div>
+                <div id="routeList" class="hidden">
+
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+    <script src="./js/script.js"></script>
+</body>
+</html>

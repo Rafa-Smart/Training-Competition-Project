@@ -576,7 +576,7 @@ class App {
     document.addEventListener("keydown", function (e) {
       let input = e.target.closest("input,select");
 
-      if (
+      if (  
         !input &&
         self.selectedLine &&
         (e.key == "Backspace" || e.key == "Delete")

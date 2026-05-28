@@ -101,14 +101,14 @@ export default DefaultWallet = () => {
         })
         .catch((e) => alert(e));
     },
-    selectedMonth,
-    selectedYear,
+ [   selectedMonth,
+    selectedYear,]
   );
 
   const renderChart = (canvasRef, instanceRef, summary, type) => {
     if (!canvasRef.current) return;
     if (!summary || summary.length <= 0) return;
-    if (!instanceRef.current) {
+    if (instanceRef.current) {
       instanceRef.current.destroy();
     }
 
