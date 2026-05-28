@@ -139,6 +139,56 @@ class TransactionController extends Controller
      * current_page, data[], from, last_page, per_page, to, total
      * Persis seperti yang diminta di response D3.
      */
+
+
+    // nih ya kamu bisa kaya gini jua kalo mau manual
+    public function index2(Request $request)
+{
+    $perPage = $request->query('per_page', 25);
+
+    $query = Transaction::with(['wallet', 'category'])
+        ->whereHas('wallet', function ($q) {
+            $q->where('user_id', auth()->id());
+        })
+        ->orderBy('date', 'desc');
+
+    if ($request->filled('month')) {
+        $query->whereMonth('date', $request->month);
+    }
+
+    if ($request->filled('year')) {
+        $query->whereYear('date', $request->year);
+    }
+
+    if ($request->filled('wallet_id')) {
+        $query->where('wallet_id', $request->wallet_id);
+    }
+
+    // paginate tetap dipakai
+    $transactions = $query->paginate($perPage);
+
+    // response manual
+    return response()->json([
+        'success' => true,
+
+        // data transaksi
+        'transactions' => $transactions->items(),
+
+        // pagination custom
+        'pagination' => [
+            'current_page' => $transactions->currentPage(),
+            'last_page' => $transactions->lastPage(),
+            'per_page' => $transactions->perPage(),
+            'total' => $transactions->total(),
+
+            // custom attribute
+            'total_page' => $transactions->currentPage() * $transactions->lastPage(),
+
+            // optional
+            'has_more' => $transactions->hasMorePages(),
+        ]
+    ], 200);
+}
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 25);
