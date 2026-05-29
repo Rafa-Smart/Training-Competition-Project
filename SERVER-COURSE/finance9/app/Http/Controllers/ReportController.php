@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Report;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
+use App\Models\Category;
+use App\Models\Report;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -14,43 +14,60 @@ class ReportController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function expense(Request $request)
+    {
+        $summary = $this->getSummary($request, 'EXPENSE');
 
-
-    public function expense(){
-            
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Get summary by expense category successful',
+            'data' => [
+                'summary' => $summary,
+            ],
+        ]);
     }
 
-    public function income(){
+    public function income(Request $request)
+    {
+        $summary = $this->getSummary($request, 'INCOME');
 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Get summary by income category successful',
+            'data' => [
+                'summary' => $summary,
+            ],
+        ]);
     }
 
-    public function getSummary(Request $request, string $type){
+    public function getSummary(Request $request, string $type)
+    {
         $categories = Category::where('type', $type)->get();
-        $summary = $categories->map(function($category) use ($request){
-            $query = Transaction::with(['category','wallet'])->whereHas('wallet', function($w){
+        $summary = $categories->map(function ($category) use ($request) {
+            $query = Transaction::with(['category', 'wallet'])->whereHas('wallet', function ($w) {
                 $w->where('user_id', auth()->id());
             });
 
-            if($request->has('year')){
+            if ($request->has('year')) {
                 $query->whereYear('date', $request->year);
             }
-            if($request->has('month')){
+            if ($request->has('month')) {
                 $query->whereMonth('date', $request->month);
             }
-
 
             $total = $query->sum('amount');
 
             return [
-                'category'=>$category,
-                'amount'=>$total
+                'category' => $category,
+                'amount' => $total,
             ];
-        })->filter(function($d){
-            return $d['amount']> 0;
+        })->filter(function ($d) {
+            return $d['amount'] > 0;
         })->values()->toArray();
 
         return $summary;
     }
+
     public function index()
     {
         //

@@ -17,5 +17,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/currencies', [CurrencyController::class,'index']);
     Route::apiResource('/wallets', WalletController::class);
     Route::apiResource('/transactions', TransactionController::class);
+    // atua bsia jgua gini y
+    Route::apiResources([
+        'wallets'=>WalletController::class,
+        'transactions'=>TransactionController::class
+    ]);
+
     Route::get('/reports/summary-by-category/expense');
+    Route::get('/reports/summary-by-category/income');
 });

@@ -13,6 +13,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
+
+    // jaid gini, kalo all itu biasanya kita gnambil semua data tnapa ada syarat aapu ya
+    // jadi sebelumnya itu enga ada where, dll
+
+    // tpai kal get itu untuk eksekusi semua query di belakagnya biasanya
         $categories = Category::all();
         return response()->json([
             'message'=> 'Get all Categories successful', 
