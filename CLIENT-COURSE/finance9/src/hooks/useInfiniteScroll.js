@@ -6,7 +6,6 @@ const useInfiniteScroll = (params ={}) => {
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const [loading, setLoading]  = useState(false);
-
     const load = useCallback( async(pageNumber, reset) => {
         setLoading(true)
         try {
@@ -24,9 +23,12 @@ const useInfiniteScroll = (params ={}) => {
             setHasMore(response.data.current_page < response.data.last_page);
             setPage(response.data.current_page);
         }catch(e){
-            alert('gagal ambil data transaksi')
+            
+            alert(e)
+        }finally{
+            setLoading(false)
         }
-    });
+    }, [JSON.stringify(params)]);
 
     const loadMore = () => {
         if(!loading && hasMore){

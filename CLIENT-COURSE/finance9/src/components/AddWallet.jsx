@@ -9,13 +9,18 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
         name:'',
         currency_code:''
     });
+    
     const [currencies, setCurrencies] = useState([])
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState();
     useEffect(() => {
-        currencyApi.get().then(response => setCurrencies(response.data.currencies));
-    }, [isOpen])
-    const handleChage = (e) => setForm({...form, [e.target.name]:e.target.value});
+        setForm({
+        name:'',
+        currency_code:''
+        })
+        currencyApi.get().then(response => setCurrencies(response.data.data.currencies));
+    }, [isOpen]);
+    const handleChange = (e) => setForm({...form, [e.target.name]:e.target.value});
     const handleSubmit = async(e) => {
         e.preventDefault();
         setSubmitting(true)
@@ -31,7 +36,7 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
     }
     if(!isOpen)return null
 
-    return <><div className="modal is-open" onClick={(e) => e.currentTarget == e.target && onCLose()}>
+    return <><div className="modal is-open" onClick={(e) => e.currentTarget == e.target && onClose()}>
     <div className="modal-header">
         <div></div>
         <h3 className="text-lg">Add Wallet</h3>
@@ -42,7 +47,7 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
 
             <AlertError messages={errors}></AlertError>
             <div className="rounded-xl overflow-hidden">
-                <select onChange={() => handleChange(e)} 
+                <select onChange={(e) => handleChange(e)} 
                 value={form.currency_code} name="currency_code" id="currency_code" className="form-input">
                     <option value="" disabled>Select Currency</option>
                     {
@@ -51,7 +56,7 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
                         } )
                     }
                 </select>
-                <input type="text"  onChange={() => handleChange(e)} 
+                <input type="text"  onChange={(e) => handleChange(e)} 
                 value={form.name} id="name" name="name" className="form-input" placeholder="Wallet Name"/>
             </div>
 

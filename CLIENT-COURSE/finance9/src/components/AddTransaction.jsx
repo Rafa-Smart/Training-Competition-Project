@@ -2,41 +2,45 @@ import { useEffect, useState } from "react";
 import { getToday, parseErrors } from "../utils/format";
 import { walletApi } from "../api/wallet";
 import { categoryApi } from "../api/category";
+import { transactionApi } from "../api/transaction";
+import AlertError from "../utils/Alert";
 
 const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
   const [form, setForm] = useState({
     wallet_id: "",
     category_id: "",
-    note:'',
-    date:'',
-    amount:''
+    note: "",
+    date: "",
+    amount: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState();
   const [categories, setCategories] = useState([]);
-  const [wallets, setWallets] = useState([])
+  const [wallets, setWallets] = useState([]);
 
   useEffect(() => {
-      setForm({
-        ...form,
-        wallet_id:defaultId,
-        date:getToday(),
-      });
-      categoryApi.get().then(response => {
-        setCategories(response.data.categories);
-      });
-      walletApi.get().then((response) => setWallets(response.data.wallets))
-  }, [isOpen])
+    setForm({
+      category_id: "",
+      note: "",
+      amount: "",
+      wallet_id: defaultId||'',
+      date: getToday(),
+    });
+    categoryApi.get().then((response) => {
+      setCategories(response.data.data.categories);
+    });
+    walletApi.get().then((response) => setWallets(response.data.data.wallets));
+  }, [isOpen]);
 
-  const handleChage = (e) =>
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    
- 
+
     try {
-      await walletApi.create({...form, amount:parseInt(form.amount)});
+      await transactionApi.create({ ...form, amount: parseInt(form.amount) });
       onClose();
       onSuccess();
     } catch (e) {
@@ -57,10 +61,13 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
         <div className="modal-header">
           <div></div>
           <h3 className="text-lg">Add Transaction</h3>
-          <button className="modal-close" onClick={(e) => onClose()}>×</button>
+          <button className="modal-close" onClick={(e) => onClose()}>
+            ×
+          </button>
         </div>
         <div className="modal-body overflow-y-auto max-h-[calc(100vh_-_80px_-_77px)]">
-          <form action="" method="POST" className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} method="POST" className="flex flex-col gap-6">
+          <AlertError messages={errors}></AlertError>
             <div>
               <h3 className="mb-2">Data</h3>
               <div className="rounded-xl overflow-hidden">
@@ -74,21 +81,22 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   placeholder="Enter amount"
                 />
                 <select
-                value={form.form_wallet_id}
+                  value={form.wallet_id}
                   onChange={(e) => handleChange(e)}
                   name="wallet_id"
                   id="wallet_id"
                   className="form-input"
                 >
-                  <option value="" disabled hidden>
-                     Wallet
+                  <option value="" disabled >
+                    Select Wallet
                   </option>
-                  {
-                    wallets.map((wallet, index) => { 
-                        return <option value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
-                       
-                    })
-                  }
+                  {wallets.map((wallet, index) => {
+                    return (
+                      <option value={wallet.id}>
+                        {wallet.name} {wallet.currency_code}
+                      </option>
+                    );
+                  })}
                 </select>
                 <select
                   name="category_id"
@@ -97,19 +105,20 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   value={form.category_id}
                   onChange={(e) => handleChange(e)}
                 >
-                  <option value="" disabled hidden>
+                  <option value="" disabled >
                     Select Category
                   </option>
-                 
-                 {
-                    categories.map((category, index) => {
-                        return <option value={category.id}>{category.icon} {category.name}</option>
-                    })
 
-                 }
+                  {categories.map((category, index) => {
+                    return (
+                      <option value={category.id}>
+                        {category.icon} {category.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 <textarea
-                value={form.note}
+                  value={form.note}
                   onChange={(e) => handleChange(e)}
                   id="note"
                   rows="3"
@@ -119,8 +128,6 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                 ></textarea>
               </div>
             </div>
-
-         
 
             <div>
               <h3 className="mb-2">DATE</h3>
@@ -138,9 +145,7 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
             </div>
 
             <button type="submit" className="btn btn-lg mt-4">
-              {
-                submitting ? 'submitting...':'submit'
-              }
+              {submitting ? "submitting..." : "submit"}
             </button>
           </form>
         </div>

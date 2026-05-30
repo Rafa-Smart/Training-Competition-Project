@@ -1,3 +1,5 @@
+import { app } from "./axios"
+
 const transactionApi = {
     get:(params={}) => app.get('transactions', {params}),
     create:(data) => app.post('transactions', data),

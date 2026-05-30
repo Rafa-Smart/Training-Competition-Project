@@ -6,20 +6,27 @@ import { formatCurrency } from "../utils/format";
 import TransactionItem from "../components/TransactionItem";
 import AddWallet from "../components/AddWallet";
 import AddTransaction from "../components/AddTransaction";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-    const [wallets, setWallets] = useState([])
+    const [wallets, setWallets] = useState([]);
+    const [loadingWallet, setLoadingWallet] = useState(false)
     const [showWallet, setShowWallet] = useState(false);
     const [showTransaction, setShowTransaction] = useState(false);
     const {user} = useAuth();
     const [transactions, page, loading, hasMore, loadMore, reload] = useInfiniteScroll();
-
+// showTransaction
     const loadWallet = () => {
-        walletApi.get().then(response => setWallets(response.data.wallets));
-    }
+        setLoadingWallet(true)
+        walletApi.get().then(response => setWallets(response.data.data.wallets)).catch(e=>console.log(e)).finally(() => setLoadingWallet(false));
+    } 
 
     useEffect(() => {
         loadWallet();
+    }, [])
+
+    useEffect(() => {
+        reload();
     }, [])
 
     useEffect(() => {
@@ -46,7 +53,8 @@ const Home = () => {
         return () => window.removeEventListener('keydown', handle)
     }, [])
 
-    const handleDataChage = () => {
+    const handleDataChange = () => {
+        reload();
         loadWallet();
         loadMore(1, true);
     }
@@ -66,7 +74,7 @@ const Home = () => {
                 <p className="text-sm text-slate-400 mt-0.5">Let’s check where your money’s going and growing.</p>
             </div>
             <div className="flex items-center gap-3">
-                <a onClick={() => showTransaction(true)} className="btn">Add Transaction</a>
+                <a onClick={() => setShowTransaction(true)} className="btn">Add Transaction</a>
             </div>
         </div>
 
@@ -77,13 +85,14 @@ const Home = () => {
                     +
                 </a>
                 {
-                    wallets.map((wallet, index) => {
-                        return <>
-                <a href="wallet-detail.html" className="p-5 border border-slate-700 rounded-xl inline-block pe-12 whitespace-nowrap hover:bg-slate-800">
+                   loadingWallet ? <span className='loading'></span> :  wallets && wallets.reverse().map((wallet, index) => {
+                      
+                        return <div key={index}>
+                <Link to={'wallet-detail/'+wallet.id} className="p-5 border border-slate-700 rounded-xl inline-block pe-12 whitespace-nowrap hover:bg-slate-800">
                     <div className="font-medium text-slate-400 mb-1.5">{wallet.name}</div>
                     <div className="font-semibold amount line-clamp-1 text-2xl lg:text-3xl">{formatCurrency(wallet.balance, wallet.currency_code)}</div>
-                </a>
-                        </>
+                </Link>
+                        </div>
                     })
                 }
             </div>
@@ -93,17 +102,17 @@ const Home = () => {
             <h3 className="text-xl font-medium">Recent Transactions</h3>
 
                {
-                transactions.map((transaction, index) => {
-                    return  <TransactionItem onDelete={handleDataChage} showDate={() => showDate(index)} transaction={transaction} key={index} ></TransactionItem>
+                loading ? <span className='loading'></span>:transactions && transactions.map((transaction, index) => {
+                    return  <TransactionItem onDelete={handleDataChange} showDate={showDate(index)} transaction={transaction} key={index} ></TransactionItem>
                 })
                }
 
         </div>
     </main>
 
-    <AddWallet  isOpen={showWallet} onClose={() => setShowWallet(false)} onSuccess={handleDataChage}></AddWallet>
+    <AddWallet  isOpen={showWallet} onClose={() => setShowWallet(false)} onSuccess={handleDataChange}></AddWallet>
 
-    <AddTransaction  isOpen={showTransaction} onClose={() => setShowTransaction(false)} onSuccess={handleDataChage}></AddTransaction>
+    <AddTransaction  isOpen={showTransaction} onClose={() => setShowTransaction(false)} onSuccess={handleDataChange}></AddTransaction>
     </>
 }
 

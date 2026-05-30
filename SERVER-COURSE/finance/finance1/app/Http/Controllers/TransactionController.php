@@ -145,7 +145,7 @@ class TransactionController extends Controller
     public function index2(Request $request)
 {
     $perPage = $request->query('per_page', 25);
-
+dd(auth()->id());
     $query = Transaction::with(['wallet', 'category'])
         ->whereHas('wallet', function ($q) {
             $q->where('user_id', auth()->id());

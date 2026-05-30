@@ -21,18 +21,23 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
   const [wallets, setWallets] = useState([])
 
   useEffect(() => {
-      setForm({
-        ...form,
-        from_wallet_id:defaultId,
+      setForm({ 
+    from_category_id: "",
+    from_note:'',
+    to_wallet_id:'',
+    to_category_id:'',
+    to_note:'', 
+    amount:'',
+        from_wallet_id:defaultId||'',
         date:getToday(),
       });
       categoryApi.get().then(response => {
-        setCategories(response.data.categories);
+        setCategories(response.data.data.categories);
       });
-      walletApi.get().then((response) => setWallets(response.data.wallets))
+      walletApi.get().then((response) => setWallets(response.data.data.wallets))
   }, [isOpen])
 
-  const handleChage = (e) =>
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
   const handleSubmit = async (e) => {
     e.preventDefault();

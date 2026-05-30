@@ -5,6 +5,8 @@
     height:50px;
     border-top:2px solid red;
     border-right:2px solid red;
+    border-radius:50px;
+    margin: 0 auto;
     /* Nama | Durasi | Delay | Pengulangan tanpa batas | Bolak-balik */
     animation: spin .7s ease 1s infinite alternate
 }

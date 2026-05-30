@@ -3,24 +3,28 @@ import { formatCurrency, formatDate } from "../utils/format";
 
 const TransactionItem = ({transaction, showDate, onDelete}) => {
     const isExpense=transaction.category.type== 'EXPENSE';
-    const handleDelete = (e) => {
+    const handleDelete = async () => {
+        console.log('asdasd')
         const confirmed = window.confirm('apus nih ?');
         if(!confirmed)return;
         try{
-            transactionApi.delete(transaction.id)
+            try {
+                console.log(transaction.id)
+                await transactionApi.delete(transaction.id)
             onDelete();
+            }catch(e){
+                alert(e)
+            }
         }catch(e){
             alert('gagal apus')
         }
     }
-
-
     return <>
 
         {
-            showDate && <>{formatDate(transaction.date)}</>
+            showDate && <div>{formatDate(transaction.date)}</div>
         }
-            <div className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg" onDoubleClick={handleDelete}>
+            <div className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg" onClick={handleDelete}>
                 <div className="flex lg:items-center gap-3">
                     <div className={`aspect-[1/1] h-[40px] flex items-center   border-2 justify-center ${isExpense ? ' bg-red-200 border-red-300':' bg-green-200 border-green-300'} rounded-full`}>
                         {transaction?.category?.icon}
