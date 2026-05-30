@@ -3,6 +3,9 @@ import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { walletApi } from "../api/wallet";
 import { useAuth } from "../context/AuthContext";
 import { formatCurrency } from "../utils/format";
+import TransactionItem from "../components/TransactionItem";
+import AddWallet from "../components/AddWallet";
+import AddTransaction from "../components/AddTransaction";
 
 const Home = () => {
     const [wallets, setWallets] = useState([])
@@ -89,10 +92,18 @@ const Home = () => {
         <div className="w-full max-w-[700px]">
             <h3 className="text-xl font-medium">Recent Transactions</h3>
 
-                <Transac></Transac>
+               {
+                transactions.map((transaction, index) => {
+                    return  <TransactionItem onDelete={handleDataChage} showDate={() => showDate(index)} transaction={transaction} key={index} ></TransactionItem>
+                })
+               }
 
         </div>
     </main>
+
+    <AddWallet  isOpen={showWallet} onClose={() => setShowWallet(false)} onSuccess={handleDataChage}></AddWallet>
+
+    <AddTransaction  isOpen={showTransaction} onClose={() => setShowTransaction(false)} onSuccess={handleDataChage}></AddTransaction>
     </>
 }
 
