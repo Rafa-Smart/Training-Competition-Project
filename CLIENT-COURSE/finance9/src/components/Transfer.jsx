@@ -37,6 +37,9 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
     e.preventDefault();
     setSubmitting(true);
     
+    if(form.from_wallet_id == form.to_wallet_id){
+      alert('ga boleh sama bro walletnya')
+    }
     try {
       await walletApi.create({...form, amount:parseInt(form.amount)});
       onClose();
@@ -86,10 +89,9 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                     From Wallet
                   </option>
                   {
-                    categories.map((category, index) => {
-                      if(category.type != "EXPENSE"){
-                        return <option value={category.id}>{category.icon} {category.name}</option>
-                      }
+                    wallets.map((wallet, index) => { 
+                        return <option value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
+                       
                     })
                   }
                 </select>
@@ -129,6 +131,8 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
               <h3 className="mb-2">TO</h3>
               <div className="rounded-xl overflow-hidden">
                 <select
+                 value={form.to_wallet_id}
+                  onChange={(e) => handleChange(e)}
                   name="to_wallet_id"
                   id="to_wallet_id"
                   className="form-input"
@@ -136,10 +140,16 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   <option value="" disabled hidden>
                     Destination Wallet
                   </option>
-                  <option>Wallet Name 3 (IDR)</option>
-                  <option>Wallet Name 4 (USD)</option>
+                  {
+                    wallets.map((wallet, index) => { 
+                        return <option value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
+                       
+                    })
+                  }
                 </select>
                 <select
+                  value={form.to_category_id}
+                  onChange={(e) => handleChange(e)}
                   name="to_category_id"
                   id="to_category_id"
                   className="form-input form-input-lg"
@@ -147,10 +157,18 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   <option value="" disabled hidden>
                     Select Category
                   </option>
-                  <option value="">Icon - Category Name</option>
+                   {
+                    categories.map((category, index) => {
+                      if(category.type != "INCOME"){
+                        return <option value={category.id}>{category.icon} {category.name}</option>
+                      }
+                    })
+                 }
                 </select>
                 <textarea
                   id="to_note"
+                    value={form.to_note}
+                  onChange={(e) => handleChange(e)}
                   rows="3"
                   name="to_note"
                   className="form-input"
@@ -163,6 +181,8 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
               <h3 className="mb-2">DATE</h3>
               <div className="rounded-xl overflow-hidden">
                 <input
+                  value={form.date}
+                  onChange={(e) => handleChange(e)}
                   type="date"
                   id="date"
                   name="date"
@@ -173,7 +193,9 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
             </div>
 
             <button type="submit" className="btn btn-lg mt-4">
-              Transfer
+              {
+                submitting ? 'transfering...':'transfer'
+              }
             </button>
           </form>
         </div>

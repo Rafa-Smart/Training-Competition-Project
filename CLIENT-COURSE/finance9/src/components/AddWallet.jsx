@@ -56,7 +56,7 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
             </div>
 
             <button type="submit" className="btn btn-lg w-full mt-4">
-                {loading ? 'saving...':'save'}
+                {submitting ? 'saving...':'save'}
             </button>
         </form>
     </div>
