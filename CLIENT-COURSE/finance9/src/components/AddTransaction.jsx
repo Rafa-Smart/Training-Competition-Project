@@ -2,16 +2,12 @@ import { useEffect, useState } from "react";
 import { getToday, parseErrors } from "../utils/format";
 import { walletApi } from "../api/wallet";
 import { categoryApi } from "../api/category";
-import AlertError from "../utils/Alert";
 
-const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
+const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
   const [form, setForm] = useState({
-    from_wallet_id: "",
-    from_category_id: "",
-    from_note:'',
-    to_wallet_id:'',
-    to_category_id:'',
-    to_note:'',
+    wallet_id: "",
+    category_id: "",
+    note:'',
     date:'',
     amount:''
   });
@@ -23,7 +19,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
   useEffect(() => {
       setForm({
         ...form,
-        from_wallet_id:defaultId,
+        wallet_id:defaultId,
         date:getToday(),
       });
       categoryApi.get().then(response => {
@@ -38,9 +34,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
     e.preventDefault();
     setSubmitting(true);
     
-    if(form.from_wallet_id == form.to_wallet_id){
-      alert('ga boleh sama bro walletnya')
-    }
+ 
     try {
       await walletApi.create({...form, amount:parseInt(form.amount)});
       onClose();
@@ -62,14 +56,13 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
       >
         <div className="modal-header">
           <div></div>
-          <h3 className="text-lg">Transfer Money</h3>
+          <h3 className="text-lg">Add Transaction</h3>
           <button className="modal-close" onClick={(e) => onClose()}>×</button>
         </div>
         <div className="modal-body overflow-y-auto max-h-[calc(100vh_-_80px_-_77px)]">
           <form action="" method="POST" className="flex flex-col gap-6">
-          <AlertError messages={errors}></AlertError>
             <div>
-              <h3 className="mb-2">FROM</h3>
+              <h3 className="mb-2">Data</h3>
               <div className="rounded-xl overflow-hidden">
                 <input
                   type="number"
@@ -83,12 +76,12 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                 <select
                 value={form.form_wallet_id}
                   onChange={(e) => handleChange(e)}
-                  name="from_wallet_id"
-                  id="from_wallet_id"
+                  name="wallet_id"
+                  id="wallet_id"
                   className="form-input"
                 >
                   <option value="" disabled hidden>
-                    From Wallet
+                     Wallet
                   </option>
                   {
                     wallets.map((wallet, index) => { 
@@ -98,10 +91,10 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   }
                 </select>
                 <select
-                  name="from_category_id"
-                  id="from_category_id"
+                  name="category_id"
+                  id="category_id"
                   className="form-input form-input-lg"
-                  value={form.from_category_id}
+                  value={form.category_id}
                   onChange={(e) => handleChange(e)}
                 >
                   <option value="" disabled hidden>
@@ -110,74 +103,24 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                  
                  {
                     categories.map((category, index) => {
-                      if(category.type != "EXPENSE"){
                         return <option value={category.id}>{category.icon} {category.name}</option>
-                      }
                     })
 
                  }
                 </select>
                 <textarea
-                value={form.from_note}
+                value={form.note}
                   onChange={(e) => handleChange(e)}
-                  id="from_note"
+                  id="note"
                   rows="3"
-                  name="from_note"
+                  name="note"
                   className="form-input"
                   placeholder="Enter note"
                 ></textarea>
               </div>
             </div>
 
-            <div>
-              <h3 className="mb-2">TO</h3>
-              <div className="rounded-xl overflow-hidden">
-                <select
-                 value={form.to_wallet_id}
-                  onChange={(e) => handleChange(e)}
-                  name="to_wallet_id"
-                  id="to_wallet_id"
-                  className="form-input"
-                >
-                  <option value="" disabled hidden>
-                    Destination Wallet
-                  </option>
-                  {
-                    wallets.map((wallet, index) => { 
-                        return <option value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
-                       
-                    })
-                  }
-                </select>
-                <select
-                  value={form.to_category_id}
-                  onChange={(e) => handleChange(e)}
-                  name="to_category_id"
-                  id="to_category_id"
-                  className="form-input form-input-lg"
-                >
-                  <option value="" disabled hidden>
-                    Select Category
-                  </option>
-                   {
-                    categories.map((category, index) => {
-                      if(category.type != "INCOME"){
-                        return <option value={category.id}>{category.icon} {category.name}</option>
-                      }
-                    })
-                 }
-                </select>
-                <textarea
-                  id="to_note"
-                    value={form.to_note}
-                  onChange={(e) => handleChange(e)}
-                  rows="3"
-                  name="to_note"
-                  className="form-input"
-                  placeholder="Enter note"
-                ></textarea>
-              </div>
-            </div>
+         
 
             <div>
               <h3 className="mb-2">DATE</h3>
@@ -196,7 +139,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
 
             <button type="submit" className="btn btn-lg mt-4">
               {
-                submitting ? 'transfering...':'transfer'
+                submitting ? 'submitting...':'submit'
               }
             </button>
           </form>
@@ -206,4 +149,4 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
   );
 };
 
-export default Transfer;
+export default AddTransaction;
