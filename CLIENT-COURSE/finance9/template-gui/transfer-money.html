@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="max-w-[768px] mx-auto">
+    <header class="h-[80px] px-5 flex items-center justify-between">
+        <div class="flex items-center gap-5">
+            <a href="index.html">
+                <h1 class="text-xl tracking-wide font-medium">Pintar<span class="font-bold text-green-500">Menabung</span></h1>
+            </a>
+        </div>
+        <nav class="flex gap-3">
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+        </nav>
+    </header>
+
+    <main class="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            <div>
+                <h2 class="text-2xl font-semibold">Hi Budi👋</h2>
+                <p class="text-sm text-slate-400 mt-0.5">Let’s check where your money’s going and growing.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="" class="btn">Add Transaction</a>
+            </div>
+        </div>
+
+        <div class="-mb-3">
+            <h3 class="text-xl font-medium mb-3">Balance</h3>
+            <div class="flex flex-nowrap overflow-x-auto gap-3 lg:gap-4 pb-3 lg:pb-5">
+                <a href="" class="border border-slate-700 p-5 rounded-xl flex items-center justify-center aspect-[5/2] text-4xl font-light hover:bg-slate-800">
+                    +
+                </a>
+                <a href="wallet-detail.html" class="p-5 border border-slate-700 rounded-xl inline-block pe-12 whitespace-nowrap hover:bg-slate-800">
+                    <div class="font-medium text-slate-400 mb-1.5">Wallet Name</div>
+                    <div class="font-semibold amount line-clamp-1 text-2xl lg:text-3xl">Rp 250.000</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="w-full max-w-[700px]">
+            <h3 class="text-xl font-medium">Recent Transactions</h3>
+
+            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
+                <div class="flex lg:items-center gap-3">
+                    <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
+                        Icon
+                    </div>
+                    <div>
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
+                            <div class="font-medium">
+                                Category
+                            </div>
+                            <div class="text-slate-400 text-sm lg:text-[1rem]">
+                                Wallet name
+                            </div>
+                        </div>
+                        <div class="text-slate-400 text-xs lg:text-sm">Note (optional)</div>
+                    </div>
+                </div>
+                <div class="amount font-medium">
+                    Rp 250.000
+                </div>
+            </div>
+            <div class="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
+                <div class="flex lg:items-center gap-3">
+                    <div class="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
+                        Icon
+                    </div>
+                    <div>
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:gap-3">
+                            <div class="font-medium">
+                                Category
+                            </div>
+                            <div class="text-slate-400 text-sm lg:text-[1rem]">
+                                Wallet name
+                            </div>
+                        </div>
+                        <div class="text-slate-400 text-xs lg:text-sm">Note (optional)</div>
+                    </div>
+                </div>
+                <div class="amount font-medium">
+                    -Rp 250.000
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div class="modal is-open">
+<div class="modal-header">
+    <div></div>
+    <h3 class="text-lg">Transfer Money</h3>
+    <button class="modal-close">×</button>
+</div>
+<div class="modal-body overflow-y-auto max-h-[calc(100vh_-_80px_-_77px)]">
+    <form action="" method="POST" class="flex flex-col gap-6">
+
+        <div>
+            <h3 class="mb-2">FROM</h3>
+            <div class="rounded-xl overflow-hidden">
+                <input type="number" id="amount" name="amount" class="form-input form-input-xl" placeholder="Enter amount">
+                <select name="from_wallet_id" id="from_wallet_id" class="form-input">
+                    <option value="" disabled hidden>From Wallet</option>
+                    <option>
+                        Wallet Name 1 (IDR)
+                    </option>
+                    <option>
+                        Wallet Name 2 (USD)
+                    </option>
+                </select>
+                <select name="from_category_id" id="from_category_id" class="form-input form-input-lg">
+                    <option value="" disabled hidden>Select Category</option>
+                    <option value="">
+                        Icon - Category Name
+                    </option>
+                </select>
+                <textarea id="from_note" rows="3" name="from_note" class="form-input" placeholder="Enter note"></textarea>
+            </div>
+        </div>
+
+
+        <div>
+            <h3 class="mb-2">TO</h3>
+            <div class="rounded-xl overflow-hidden">
+                <select name="to_wallet_id" id="to_wallet_id" class="form-input">
+                    <option value="" disabled hidden>Destination Wallet</option>
+                    <option>
+                        Wallet Name 3 (IDR)
+                    </option>
+                    <option>
+                        Wallet Name 4 (USD)
+                    </option>
+                </select>
+                <select name="to_category_id" id="to_category_id" class="form-input form-input-lg">
+                    <option value="" disabled hidden>Select Category</option>
+                    <option value="">
+                        Icon - Category Name
+                    </option>
+                </select>
+                <textarea id="to_note" rows="3" name="to_note" class="form-input" placeholder="Enter note"></textarea>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="mb-2">DATE</h3>
+            <div class="rounded-xl overflow-hidden">
+                <input type="date" id="date" name="date" class="form-input" placeholder="Enter date"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-lg mt-4">
+            Transfer
+        </button>
+    </form>
+</div>
+</div>
+
+</body>
+</html>

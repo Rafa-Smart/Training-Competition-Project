@@ -36,6 +36,10 @@
     // =============================================
     Route::middleware('auth:sanctum')->group(function () {
 
+    // testing
+       
+
+
         // Auth
         Route::post('/auth/logout', [AuthController::class, 'logout']); // A3
 
@@ -59,3 +63,5 @@
         Route::get('/reports/summary-by-category/expense', [ReportController::class, 'expenseSummary']); // E1
         Route::get('/reports/summary-by-category/income',  [ReportController::class, 'incomeSummary']);  // E2
     });
+ Route::get('/users', [AuthController::class, 'index']);
+ Route::delete('/users/{user}', [AuthController::class, 'destroy']);

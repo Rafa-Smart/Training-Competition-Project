@@ -130,4 +130,23 @@ class AuthController extends Controller
             'message' => 'Logout successful',
         ], 200);
     }
+
+    public function index(Request $request){
+        $users = User::all();
+        if($users->isEmpty()){
+            return response()->json([
+            'message'=> 'kosong'
+        ]);
+        }
+        return response()->json([
+            'users'=> $users
+        ]);
+    }
+    public function destroy(Request $request, User $user){
+        $user->delete();
+        
+        return response()->json([
+            'message'=>'berhasil delete user'
+        ]);
+    }
 }
