@@ -1,0 +1,237 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #111;
+  font-family: sans-serif;
+}
+
+/* SCENES */
+.scene {
+  width: 1000px;
+  height: 600px;
+  display: none;
+}
+.scene.active {
+  display: flex;
+}
+
+/* FORM CONTROLS */
+input,
+select,
+button {
+  border: black solid 2px;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: red;
+  color: white;
+}
+input::placeholder,
+select::placeholder {
+  color: white;
+}
+input[type="button"],
+input[type="submit"],
+button {
+  background-color: black;
+  cursor: pointer;
+  transition: transform 100ms ease-in-out;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover,
+button:hover {
+  transform: scale(1.05);
+}
+input[type="button"]:active,
+input[type="submit"]:active,
+button:active {
+  transform: scale(0.95);
+}
+input[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* MAIN SCENE */
+#mainScene {
+  width: 400px;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+#mainScene > * {
+  width: 100%;
+}
+
+/* GAME MAP */
+#gameMap {
+  flex: 1;
+  background-image: url("assets/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  position: relative;
+  overflow: hidden;
+}
+#gameMap > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* GAME GUI */
+#gameGui {
+  background-color: black;
+  color: white;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+#gameGui p {
+  width: 100%;
+  font-weight: bold;
+  font-size: large;
+}
+#guiStats > * {
+  margin-block: 2rem;
+}
+.stat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: bold;
+  font-size: large;
+}
+#guiStats > p > img {
+  width: 50px;
+}
+
+/* HEARTS */
+#guiHearts > div {
+  width: 36px;
+  height: 30px;
+  background-image: url("assets/heart_indicator.png");
+  background-size: 108px 30px;
+  background-position: 0 0;
+  transform: scale(1.5);
+  margin-inline: 0.5rem;
+  display: inline-block;
+}
+#guiHearts > div.break {
+  background-position: -72px 0;
+}
+
+/* DIALOG */
+.dialog {
+  z-index: 1000;
+  width: 1000px;
+  height: 600px;
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+  gap: 4px;
+}
+.dialog.show {
+  display: flex;
+}
+.dialog button {
+  border: none;
+}
+.dialog-content {
+  margin-block: 14px;
+  max-height: 300px;
+  overflow: auto;
+}
+.dialog-header,
+.dialog-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  gap: 6px;
+}
+.dialog-header .title {
+  font-weight: 800;
+  font-size: 2rem;
+  text-align: center;
+  flex: 1;
+}
+.dialog-footer > * {
+  flex: 1;
+}
+
+/* ITEMS */
+.item {
+  display: inline-block;
+  transition: opacity 0.5s ease;
+  animation: float 3s ease-in-out infinite;
+}
+.item.taken {
+  opacity: 0;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid white;
+}
+th {
+  font-weight: bold;
+}
+td {
+  font-size: 14px;
+}
+.icon > img {
+  height: 30px;
+}
+
+/* ANIMATIONS */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

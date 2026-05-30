@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bomskuy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Main Menu -->
+    <form id="mainScene" class="scene">
+      <img src="assets/logo.png" style="width: 260px" />
+      <input
+        type="text"
+        name="username"
+        placeholder="Enter your name"
+        required
+      />
+      <select name="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+      <div class="row">
+        <button type="submit" class="btn-red">Play</button>
+        <button
+          type="button"
+          class="btn-blue"
+          onclick="showDialog('tutorDialog')"
+        >
+          Instruction
+        </button>
+      </div>
+    </form>
+
+    <!-- Game -->
+    <div id="gameScene" class="scene">
+      <div id="gameMap"></div>
+      <div id="gameGui">
+        <img id="guiLogo" src="assets/logo_white.png" />
+        <div>
+          <p>Player: <b id="guiName">-</b></p>
+          <p>Time: <b id="guiTime">00:00</b></p>
+        </div>
+        <div id="guiHearts"><span></span><span></span><span></span></div>
+        <div class="stat">
+          <img src="assets/wall_crack.png" /> = <span id="guiBrick">0</span>
+        </div>
+        <div class="stat">
+          <img src="assets/tnt.png" /> = <span id="guiTNT">0</span>
+        </div>
+        <div class="stat">
+          <img src="assets/ice.png" /> = <span id="guiIce">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialogs -->
+    <div id="tutorDialog" class="dialog">
+      <h2>How to Play</h2>
+      <ol>
+        <li>Move with WASD or Arrow Keys</li>
+        <li>Press Space to place a bomb</li>
+        <li>Blow up bricks to find items</li>
+        <li>Avoid dogs and explosions</li>
+        <li>Press Esc to pause</li>
+      </ol>
+      <div class="footer">
+        <button class="btn-blue" onclick="hideDialog()">OK</button>
+      </div>
+    </div>
+
+    <div id="pauseDialog" class="dialog">
+      <h2>Paused</h2>
+      <div class="footer">
+        <button class="btn-red" onclick="location.reload()">Quit</button>
+        <button
+          class="btn-blue"
+          onclick="
+            hideDialog();
+            G.resume();
+          "
+        >
+          Resume
+        </button>
+      </div>
+    </div>
+
+    <div id="countdownDialog" class="dialog">
+      <div id="countNum">3</div>
+    </div>
+
+    <div id="goverDialog" class="dialog">
+      <h2>Game Over!</h2>
+      <p id="goverMsg"></p>
+      <div
+        style="display: flex; gap: 20px; margin: 8px 0"
+        id="goverStats"
+      ></div>
+      <div class="footer">
+        <button class="btn-red" onclick="G.saveScore()">Save Score</button>
+        <button class="btn-blue" onclick="showLeaderboard()">
+          Leaderboard
+        </button>
+      </div>
+    </div>
+
+    <div id="leaderDialog" class="dialog">
+      <h2>Leaderboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Time</th>
+            <th><img src="assets/wall_crack.png" /></th>
+            <th><img src="assets/tnt.png" /></th>
+            <th><img src="assets/ice.png" /></th>
+          </tr>
+        </thead>
+        <tbody id="leaderBody"></tbody>
+      </table>
+      <div class="footer">
+        <button class="btn-blue" onclick="showDialog('goverDialog')">
+          Back
+        </button>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+      setScene("mainScene");
+      document.getElementById("mainScene").onsubmit = (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        setScene("gameScene");
+        G.start(fd.get("username"), fd.get("difficulty"));
+      };
+      function setScene(id) {
+        document
+          .querySelectorAll(".scene")
+          .forEach((s) => s.classList.toggle("active", s.id === id));
+      }
+      function showDialog(id) {
+        document
+          .querySelectorAll(".dialog")
+          .forEach((d) => d.classList.toggle("show", d.id === id));
+      }
+      function hideDialog() {
+        document
+          .querySelectorAll(".dialog.show")
+          .forEach((d) => d.classList.remove("show"));
+      }
+      function showLeaderboard() {
+        const data = JSON.parse(localStorage.getItem("bomskuy") || "[]").sort(
+          (a, b) => b.walls - a.walls || b.tnt - a.tnt || b.ice - a.ice,
+        );
+        document.getElementById("leaderBody").innerHTML = data
+          .map(
+            (r) =>
+              `<tr><td>${r.player}</td><td>${r.time}</td><td>${r.walls}</td><td>${r.tnt}</td><td>${r.ice}</td></tr>`,
+          )
+          .join("");
+        showDialog("leaderDialog");
+      }
+    </script>
+  </body>
+</html>

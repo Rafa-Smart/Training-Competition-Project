@@ -1,0 +1,344 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --panel-bg: #101010;
+  --accent: #f2c94c;
+  --danger: #d94b4b;
+  --text: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.75);
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #0b0b0b;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font: inherit;
+}
+
+button,
+input[type="submit"] {
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  transform: scale(1.03);
+}
+
+button:active,
+input[type="submit"]:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.scene {
+  display: none;
+  width: min(1000px, 100vw);
+  height: min(600px, 100dvh);
+  position: relative;
+}
+
+.scene.active {
+  display: flex;
+}
+
+#mainScene {
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-card {
+  width: min(420px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.menu-logo {
+  width: min(320px, 80%);
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.menu-card input,
+.menu-card select,
+.menu-actions button {
+  width: 100%;
+}
+
+.menu-actions {
+  display: flex;
+  gap: 12px;
+}
+
+#gameScene {
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+#gameMap {
+  flex: 1;
+  position: relative;
+  background: url("assets/background.jpg") center / 100% 100% no-repeat;
+}
+
+#gameMap > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+#gameGui {
+  width: 250px;
+  padding: 28px 22px;
+  background: var(--panel-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+}
+
+#guiHeader {
+  width: min(100%, 180px);
+}
+
+.info-block,
+#guiStats {
+  width: 100%;
+}
+
+.info-block p {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#guiHearts {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0 22px;
+}
+
+#guiHearts > div {
+  width: 36px;
+  height: 30px;
+  background: url("assets/heart_indicator.png") 0 0 / 108px 30px no-repeat;
+  transform: scale(1.35);
+}
+
+#guiHearts > div.break {
+  background-position: -72px 0;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.stat img {
+  height: 30px;
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay);
+  z-index: 1000;
+}
+
+.dialog.show {
+  display: flex;
+}
+
+.dialog-box {
+  width: min(700px, 92vw);
+  max-height: min(600px, 92vh);
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.4);
+}
+
+.dialog-header,
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dialog-header {
+  margin-bottom: 14px;
+}
+
+.dialog-header.center {
+  justify-content: center;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 34px;
+  line-height: 1;
+  border: 0;
+  background: transparent;
+}
+
+.dialog-content {
+  max-height: 360px;
+  overflow: auto;
+  padding: 6px 2px 14px;
+}
+
+.dialog-content ol {
+  padding-left: 24px;
+  line-height: 1.6;
+}
+
+.dialog-footer > * {
+  flex: 1;
+}
+
+.danger {
+  background: #c53b3b;
+}
+
+.gameover-text {
+  font-size: 18px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.score-grid {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.countdown-box {
+  width: min(320px, 90vw);
+}
+
+.countdown-number {
+  font-size: 3rem;
+  text-align: center;
+  width: 100%;
+  animation: pop 0.5s ease;
+}
+
+.leaderboard-box {
+  width: min(860px, 94vw);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  text-align: center;
+}
+
+th {
+  font-size: 14px;
+}
+
+td {
+  font-size: 14px;
+}
+
+.icon img {
+  height: 28px;
+}
+
+.game-entity {
+  display: block;
+  will-change: transform;
+}
+
+.walking {
+  animation: walk 0.16s ease;
+}
+
+.taken {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.mark-tnt {
+  filter: sepia(1) saturate(6) hue-rotate(18deg) brightness(1.05);
+  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.35);
+}
+
+.mark-heart {
+  filter: saturate(1.5) hue-rotate(320deg) brightness(1.08);
+  box-shadow: 0 0 0 4px rgba(255, 86, 130, 0.35);
+}
+
+.mark-ice {
+  filter: sepia(0.55) hue-rotate(170deg) saturate(4) brightness(1.02);
+  box-shadow: 0 0 0 4px rgba(90, 185, 255, 0.38);
+}
+
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.75; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes walk {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}

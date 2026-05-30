@@ -126,7 +126,7 @@ console.log(categoryParameter);
             const data = response.data || [];
             setPosts(prev => page==1 ? data : [...prev, ...data]);
             setHasmore(data.length > 0);
-        }).finally(() => setLoading(false))
+        }).finally(() => setLoading(false))  
     }, [debounce, categoryParameter, page])
 
     const observe = useCallback((node) => {

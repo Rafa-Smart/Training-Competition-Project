@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bomskuy</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="prefetch" as="image" href="assets/background.jpg" />
+    <link rel="prefetch" as="image" href="assets/bomb.png" />
+    <link rel="prefetch" as="image" href="assets/char_down.png" />
+    <link rel="prefetch" as="image" href="assets/char_left.png" />
+    <link rel="prefetch" as="image" href="assets/char_right.png" />
+    <link rel="prefetch" as="image" href="assets/char_up.png" />
+    <link rel="prefetch" as="image" href="assets/dog_down.png" />
+    <link rel="prefetch" as="image" href="assets/dog_left.png" />
+    <link rel="prefetch" as="image" href="assets/dog_right.png" />
+    <link rel="prefetch" as="image" href="assets/dog_up.png" />
+    <link rel="prefetch" as="image" href="assets/explosion.png" />
+    <link rel="prefetch" as="image" href="assets/heart.png" />
+    <link rel="prefetch" as="image" href="assets/ice.png" />
+    <link rel="prefetch" as="image" href="assets/tnt.png" />
+    <link rel="prefetch" as="image" href="assets/wall.png" />
+  </head>
+  <body>
+    <!-- MAIN MENU -->
+    <form id="mainScene" class="scene" onsubmit="startGame(event)">
+      <img src="assets/logo.png" alt="Logo" style="width: 300px" />
+      <input
+        type="text"
+        id="usernameInput"
+        placeholder="Enter your name"
+        required
+        oninput="togglePlay()"
+      />
+      <select id="difficultySelect">
+        <option value="easy">Easy</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+      <div style="display: flex; gap: 1rem">
+        <input
+          id="playBtn"
+          style="flex: 1"
+          type="submit"
+          value="Play"
+          disabled
+        />
+        <input
+          style="flex: 1"
+          type="button"
+          value="Instruction"
+          onclick="showDialog('tutorDialog')"
+        />
+      </div>
+    </form>
+
+    <!-- GAME SCENE -->
+    <div id="gameScene" class="scene">
+      <div id="gameMap"></div>
+      <div id="gameGui">
+        <img src="assets/logo_white.png" alt="Logo" style="width: 100%" />
+        <div style="width: 100%">
+          <p>Player: <span id="guiUsername">-</span></p>
+          <p>Time: <span id="guiTimer">00:00</span></p>
+        </div>
+        <div id="guiStats">
+          <div id="guiHearts">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p class="stat">
+            <img src="assets/wall_crack.png" alt="Walls" /> =
+            <span id="guiBrick">0</span>
+          </p>
+          <p class="stat">
+            <img src="assets/tnt.png" alt="TNT" /> = <span id="guiTNT">0</span>
+          </p>
+          <p class="stat">
+            <img src="assets/ice.png" alt="Ice" /> = <span id="guiIce">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIALOGS -->
+    <div id="tutorDialog" class="dialog">
+      <div class="dialog-header"><h1 class="title">How to Play!</h1></div>
+      <div class="dialog-content">
+        <ol style="padding-left: 1.5rem; line-height: 2">
+          <li>Use W/A/S/D or arrow keys to move.</li>
+          <li>Press Space to place a bomb.</li>
+          <li>Press Esc to pause / resume.</li>
+          <li>When paused, nothing moves.</li>
+          <li>Pick up items for effects.</li>
+          <li>Watch out for dogs!</li>
+        </ol>
+      </div>
+      <div class="dialog-footer">
+        <button onclick="hideDialog()" style="background-color: cornflowerblue">
+          Ok
+        </button>
+      </div>
+    </div>
+
+    <div id="pauseDialog" class="dialog">
+      <div class="dialog-header"><h1 class="title">Paused</h1></div>
+      <div class="dialog-footer">
+        <button style="background-color: red" onclick="location.href = '/'">
+          Back
+        </button>
+        <button
+          onclick="
+            hideDialog();
+            isPaused = false;
+            startTimer();
+          "
+        >
+          Resume
+        </button>
+      </div>
+    </div>
+
+    <div id="countdownDialog" class="dialog">
+      <div class="dialog-header">
+        <h1 class="title" id="countdownNumber" style="font-size: 3rem">
+          GET READY
+        </h1>
+      </div>
+    </div>
+
+    <div id="goverDialog" class="dialog">
+      <div class="dialog-header"><h1 class="title">Game Over</h1></div>
+      <div class="dialog-content">
+        <p style="font-size: large; margin-bottom: 12px">
+          Well played <span id="goverUsername"></span>! Survived
+          <span id="goverTimer">00:00</span> and got:
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center">
+          <p class="stat">
+            <img src="assets/wall_crack.png" alt="Walls" /> =
+            <span id="goverBrick">0</span>
+          </p>
+          <p class="stat">
+            <img src="assets/tnt.png" alt="TNT" /> =
+            <span id="goverTNT">0</span>
+          </p>
+          <p class="stat">
+            <img src="assets/ice.png" alt="Ice" /> =
+            <span id="goverIce">0</span>
+          </p>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button style="background-color: red" onclick="saveScore()">
+          Save Score
+        </button>
+        <button
+          style="background-color: cornflowerblue"
+          onclick="showLeaderboard()"
+        >
+          Leaderboard
+        </button>
+      </div>
+    </div>
+
+    <div id="leaderboardDialog" class="dialog">
+      <div class="dialog-header"><h1 class="title">Leaderboard</h1></div>
+      <div class="dialog-content">
+        <table id="leaderboardTable">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Time</th>
+              <th class="icon">
+                <img src="assets/wall_crack.png" alt="Walls" />
+              </th>
+              <th class="icon"><img src="assets/bomb.png" alt="TNT" /></th>
+              <th class="icon"><img src="assets/ice.png" alt="Ice" /></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="dialog-footer">
+        <button
+          onclick="
+            hideDialog();
+            showGameover();
+          "
+        >
+          Back
+        </button>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+      // ===== UI HELPERS =====
+      function setScene(id) {
+        document.querySelectorAll(".scene").forEach(function (el) {
+          el.classList.toggle("active", el.id === id);
+        });
+      }
+
+      function showDialog(id) {
+        document.querySelectorAll(".dialog").forEach(function (el) {
+          el.classList.toggle("show", el.id === id);
+        });
+      }
+
+      function hideDialog() {
+        document.querySelectorAll(".dialog.show").forEach(function (el) {
+          el.classList.remove("show");
+        });
+      }
+
+      function togglePlay() {
+        document.getElementById("playBtn").disabled = !document
+          .getElementById("usernameInput")
+          .value.trim();
+      }
+
+      function formatTime(s) {
+        return (
+          String(Math.floor(s / 60)).padStart(2, "0") +
+          ":" +
+          String(s % 60).padStart(2, "0")
+        );
+      }
+
+      // ===== TIMER =====
+      var timerId = null;
+
+      function startTimer() {
+        if (timerId) return;
+        timerId = setInterval(function () {
+          gameStats.time++;
+          updateHUD();
+        }, 1000);
+      }
+
+      function stopTimer() {
+        clearInterval(timerId);
+        timerId = null;
+      }
+
+      // ===== HUD =====
+      function updateHUD() {
+        document.getElementById("guiTimer").textContent = formatTime(
+          gameStats.time,
+        );
+        var hearts = document.getElementById("guiHearts").children;
+        for (var i = 0; i < 3; i++)
+          hearts[i].className = gameStats.life <= i ? "break" : "";
+        document.getElementById("guiBrick").textContent = gameStats.walls;
+        document.getElementById("guiTNT").textContent = gameStats.tnt;
+        document.getElementById("guiIce").textContent = gameStats.freeze;
+      }
+
+      // ===== GAME FLOW =====
+      function startGame(e) {
+        e.preventDefault();
+        var name = document.getElementById("usernameInput").value.trim();
+        var diff = document.getElementById("difficultySelect").value;
+        gameStats.player = name;
+        document.getElementById("guiUsername").textContent = name;
+        setScene("gameScene");
+        startCountdown(name, diff);
+      }
+
+      function startCountdown(name, diff) {
+        var el = document.getElementById("countdownNumber");
+        var count = 3;
+        showDialog("countdownDialog");
+        var interval = setInterval(function () {
+          el.style.animation = "none";
+          void el.offsetWidth;
+          el.style.animation = "pop 0.5s ease";
+          el.textContent = count;
+          count--;
+          if (count === -1) el.textContent = "GO!";
+          else if (count < -1) {
+            clearInterval(interval);
+            hideDialog();
+            playGame(diff);
+          }
+        }, 1000);
+      }
+
+      function playGame(diff) {
+        // Pause toggle
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            isPaused = !isPaused;
+            if (isPaused) {
+              showDialog("pauseDialog");
+              stopTimer();
+            } else {
+              hideDialog();
+              startTimer();
+            }
+          }
+        });
+
+        startTimer();
+        initGame(document.getElementById("gameMap"));
+
+        statsListener = function () {
+          updateHUD();
+          if (gameStats.life <= 0) showGameover();
+        };
+
+        var player = new Player();
+        player.setPosition(1, 1);
+
+        // Bricks
+        for (var b = 0; b < 20; b++) {
+          var bp = validPos(player.position);
+          new Brick().setPosition(bp[0], bp[1]);
+        }
+
+        // Dogs
+        var dogCount = diff === "hard" ? 3 : diff === "normal" ? 2 : 1;
+        for (var d = 0; d < dogCount; d++) {
+          var dp = validPos(player.position);
+          var dog = new Dog(player);
+          dog.setPosition(dp[0], dp[1]);
+          dog.startChasing();
+        }
+      }
+
+      function showGameover() {
+        isPaused = false;
+        stopTimer();
+        document.getElementById("goverUsername").textContent = gameStats.player;
+        document.getElementById("goverTimer").textContent = formatTime(
+          gameStats.time,
+        );
+        document.getElementById("goverBrick").textContent = gameStats.walls;
+        document.getElementById("goverTNT").textContent = gameStats.tnt;
+        document.getElementById("goverIce").textContent = gameStats.freeze;
+        showDialog("goverDialog");
+      }
+
+      function saveScore() {
+        var board = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+        board.push({
+          player: gameStats.player,
+          time: gameStats.time,
+          walls: gameStats.walls,
+          tnt: gameStats.tnt,
+          freeze: gameStats.freeze,
+        });
+        localStorage.setItem("leaderboard", JSON.stringify(board));
+        location.href = "/";
+      }
+
+      function showLeaderboard() {
+        var board = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+        board.push({
+          player: gameStats.player,
+          time: gameStats.time,
+          walls: gameStats.walls,
+          tnt: gameStats.tnt,
+          freeze: gameStats.freeze,
+        });
+        board.sort(function (a, b) {
+          return b.walls !== a.walls
+            ? b.walls - a.walls
+            : b.tnt !== a.tnt
+              ? b.tnt - a.tnt
+              : b.freeze - a.freeze;
+        });
+
+        var tbody = document.querySelector("#leaderboardTable tbody");
+        tbody.innerHTML = "";
+        board.forEach(function (entry) {
+          var tr = document.createElement("tr");
+          ["player", "time", "walls", "tnt", "freeze"].forEach(function (key) {
+            var td = document.createElement("td");
+            td.textContent =
+              key === "time" ? formatTime(entry[key] || 0) : entry[key] || 0;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        showDialog("leaderboardDialog");
+      }
+
+      // Init
+      setScene("mainScene");
+    </script>
+  </body>
+</html>

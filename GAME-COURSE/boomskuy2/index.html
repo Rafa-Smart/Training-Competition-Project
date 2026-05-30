@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BOMSKUY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Welcome Screen -->
+<div id="welcome" class="overlay">
+  <div class="modal">
+    <img src="assets/logo.png" id="logo">
+    <input type="text" id="username" placeholder="Input Username">
+    <select id="level">
+      <option value="">Select Level</option>
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <div class="row">
+      <button id="btnPlay" disabled>Play</button>
+      <button id="btnInstruction">Instruction</button>
+    </div>
+  </div>
+</div>
+
+<!-- Instruction Modal -->
+<div id="instructionModal" class="overlay hidden">
+  <div class="modal">
+    <button id="closeInstruction" class="close">✕</button>
+    <h2>How to Play</h2>
+    <ol>
+      <li>Input Username</li>
+      <li>Put the bomb (Space)</li>
+      <li>Blow up walls</li>
+      <li>Blow up enemies</li>
+      <li>Avoid dogs & explosions</li>
+      <li>Enjoy!</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Countdown -->
+<div id="countdown" class="overlay hidden">
+  <div class="modal"><span id="countNum">3</span></div>
+</div>
+
+<!-- Pause -->
+<div id="pauseModal" class="overlay hidden">
+  <div class="modal">
+    <h2>PAUSED</h2>
+    <button id="btnContinue">Continue</button>
+  </div>
+</div>
+
+<!-- Game Over -->
+<div id="gameOverModal" class="overlay hidden">
+  <div class="modal">
+    <h2>Game Over!</h2>
+    <p id="goMsg"></p>
+    <div id="goStats"></div>
+    <div class="row">
+      <button id="btnSave">Save Score</button>
+      <button id="btnLeaderboard">Leaderboards</button>
+    </div>
+  </div>
+</div>
+
+<!-- Leaderboard -->
+<div id="leaderModal" class="overlay hidden">
+  <div class="modal">
+    <h2>Leaderboards</h2>
+    <table id="leaderTable">
+      <thead><tr><th>Player</th><th>Time</th><th>🧱</th><th>💣</th><th>🧊</th></tr></thead>
+      <tbody id="leaderBody"></tbody>
+    </table>
+    <div class="row">
+      <button id="btnPlayAgain">Play Again</button>
+      <button id="btnReset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game -->
+<div id="gameWrap" class="hidden">
+  <div id="gameArea">
+    <canvas id="gameCanvas" width="750" height="600"></canvas>
+  </div>
+  <div id="sidebar">
+    <div id="sideTitle">BOMSKUY</div>
+    <div id="sidePlayer"></div>
+    <div id="sideTime"></div>
+    <div id="sideHearts"></div>
+    <div class="sideItem"><img src="assets/explosion.png" class="icon"> = <span id="scoreWalls">0</span></div>
+    <div class="sideItem"><img src="assets/tnt.png" class="icon"> = <span id="scoreTnt">0</span></div>
+    <div class="sideItem"><img src="assets/ice.png" class="icon"> = <span id="scoreIce">0</span></div>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
