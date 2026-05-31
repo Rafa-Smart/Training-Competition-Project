@@ -52,7 +52,7 @@ const AddWallet = ({isOpen, onClose, onSuccess}) => {
                     <option value="" disabled>Select Currency</option>
                     {
                         currencies.map((currency, index) => {
-                            return <option value={currency.code}>{currency.code} {currency.name}</option>
+                            return <option key={index} value={currency.code}>{currency.code} {currency.name}</option>
                         } )
                     }
                 </select>

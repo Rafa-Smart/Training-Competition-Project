@@ -30,8 +30,8 @@ const DetailWallet = () => {
   const [wallet, setWallet] = useState({});
   const [editName, setEditName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState();
-  const [selectedYear, setSelectedYear] = useState();
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth()+1);
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
   const [loadingWallet, setLoadingWallet] = useState(false);
 
   const [showTransaction, setShowTransaction] = useState(false);
@@ -50,8 +50,9 @@ const DetailWallet = () => {
   const incomeInstanceRef = useRef();
 
   const handleClickEdit = async (e) => {
-    const name = editName.trim();
-    if (name == "") {
+    // const name = editName.trim();
+    if(e.key != "Enter")return
+    if (editName.trim() == "") {
       // hapus
       try {
         await walletApi.destroy(walletId);
@@ -62,8 +63,8 @@ const DetailWallet = () => {
     } else {
       // update
       try {
-        await walletApi.update(editName, walletId);
-        setWallet((prev) => ({ ...wallet, name: editName }));
+        await walletApi.update({name:editName}, walletId);
+        setWallet((prev) => ({ ...prev, name: editName }));
         setIsEdit(false);
       } catch (e) {
         alert("gagal update");
@@ -78,7 +79,7 @@ const DetailWallet = () => {
       .show(walletId)
       .then((response) => { 
         setWallet(response.data.data);
-        setEditName(wallet.name);
+        setEditName(response.data.data.name);
       })
       .catch((e) => alert(e))
       .finally(() => setLoadingWallet(false));
@@ -86,15 +87,12 @@ const DetailWallet = () => {
   useEffect(() => {
     loadWallet();
   }, [walletId]);
-
-  useEffect(() => {
-    loadMore(1, true);
-  }, [selectedMonth, selectedYear, walletId]);
+ 
 
   useEffect(() => {
     loadWallet();
     loadMore(1, true);
-  }, []);
+  }, [selectedMonth, selectedYear, walletId]);
   const handleDataChange = () => {
     reload();
     loadWallet();
@@ -132,7 +130,7 @@ const DetailWallet = () => {
       type: "doughnut",
       data: {
         labels: labels,
-        dataset: [
+        datasets: [
           {
             data: data,
             backgroundColor: colors,
@@ -163,26 +161,26 @@ const DetailWallet = () => {
           >
             ←
           </Link>
-          {editName ? (
+          {isEdit ? (
             <input
               type="text"
-              value={wallet.name}
+              value={editName}
               onChange={(e) => setEditName(e.target.value)}
               onKeyDown={handleClickEdit}
               onBlur={() => {
                 setIsEdit(false);
-                setEditName(wallet.name);
+                setEditName(editName);
               }}
               className="text-2xl font-semibold"
             >
-              {wallet.name}
+              
             </input>
           ) : (
             <h2
-              onDoubleClick={() => setIsEdit(true)}
+              onClick={() => setIsEdit(true)}
               className="text-2xl font-semibold"
             >
-              {wallet.name}
+              {editName}
             </h2>
           )}
         </div>

@@ -149,7 +149,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   </option>
                   {
                     wallets.map((wallet, index) => { 
-                        return <option value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
+                        return <option key={index} value={wallet.id}>{wallet.name} {wallet.currency_code}</option>
                        
                     })
                   }
@@ -167,7 +167,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                    {
                     categories.map((category, index) => {
                       if(category.type != "INCOME"){
-                        return <option value={category.id}>{category.icon} {category.name}</option>
+                        return <option key={index} value={category.id}>{category.icon} {category.name}</option>
                       }
                     })
                  }

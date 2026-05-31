@@ -92,7 +92,7 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   </option>
                   {wallets.map((wallet, index) => {
                     return (
-                      <option value={wallet.id}>
+                      <option value={wallet.id} key={index}>
                         {wallet.name} {wallet.currency_code}
                       </option>
                     );
@@ -111,7 +111,7 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
 
                   {categories.map((category, index) => {
                     return (
-                      <option value={category.id}>
+                      <option value={category.id} key={index}>
                         {category.icon} {category.name}
                       </option>
                     );
