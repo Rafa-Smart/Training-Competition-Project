@@ -280,6 +280,12 @@ class App {
         isExistingConn = pin;
     });
 
+    // jadi gini loh, disni mengenai fungsi submitCOnnect di sini itu ekanismenya adalh kita cari dulu koneksi yang ada, kalio suhda ada maka habis kita loop kan kita dapet ya existingnya, lau kit update dan push deh transportasiya tapi alo yang belum ada maka si array this.connectiosnnya kan lnagun di push, nah pertnayan saya kan si existng ini suhda merupakan objek utnggal dan terpisah dari si arra connections, terus kenapa perubahan yang ada di objek itu atay array transportasid ri si existing bisa masuk ke ocalsoraget
+
+    // karena objek isExisting ini dan connections[i] / pin itu merujuk di referensi yang sama
+    // jadi mau kita update di mana pun di kedua ini, maka akan merubah refernsi yang sama
+    // jelas yaaah
+
     if (isExistingConn) {
       let transportasi = isExistingConn.transportasi;
       transportasi.forEach((tran, i) => {

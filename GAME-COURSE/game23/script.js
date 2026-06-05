@@ -169,6 +169,8 @@ class App {
         const transportasi = conn.transportasi;
         const from = this.findPin(conn.from)
         const to = this.findPin(conn.to)
+        if(!to || !from) continue;
+        // WAIJB NIH YA CONTINUE
         for(let j = 0; j < transportasi.length; j++){
             this.ctx.beginPath();
             this.ctx.lineWidth = 6;
@@ -186,8 +188,18 @@ class App {
   submitConnect(distance, mode){
     let isExist;
     this.connections.forEach(conn => {
-        if(conn.from == this.connectFrom && conn.to == this.connectTo)
-    })
+        if(conn.from == this.connectFrom && conn.to == this.connectTo)isExist=conn;
+        if(conn.to == this.connectFrom && conn.from == this.connectTo)isExist=conn;
+    });
+
+    if(isExist){
+        isExist.transportasi.forEach(tran => {
+            if(tran.mode == mode){
+                alert('dah ada, cari lagi')
+                return
+            }
+        })
+    }
   }
   findPin(id){
     return this.pins.find(pin => pin.id == id);
