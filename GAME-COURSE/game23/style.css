@@ -97,3 +97,28 @@ body, html {
 .marker {
     filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg) brightness(100%)
 }
+
+#btnSearch {
+    width:100%;
+}
+
+.btns {
+    width:100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+#btnRoute {
+    position:absolute;
+    top:10%;
+    left:15%;
+    cursor: pointer;
+}
+ 
+
+#panelRoute {
+    position:absolute;
+    top:20%;
+    left:5%;
+     cursor: pointer;
+}

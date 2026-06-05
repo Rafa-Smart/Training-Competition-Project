@@ -38,6 +38,29 @@
                 <button type="submit">Connect</button>
             </form>
         </div>
+        <button id="btnRoute">Route</button>
+        <div id="panelRoute" class="popup hidden">
+            <div id="popup-header">
+                <span>Search Routes</span> 
+            </div>
+            <div>
+                <div>
+                    <label for="">From: <input type="text" id="inputFrom" placeholder="Distance"></label>
+                </div>
+                <div>
+                    <label for="">To: <input type="text" id="inputTo" placeholder="Distance"></label>
+                </div>
+               
+                <button id="btnSearch">search</button>
+                <div class="btns">
+                    <button data-sort="fastest">fastest</button>
+                    <button data-sort="cheaptest">cheaptest</button>
+                </div>
+                <div id="routeResults" class="hidden">
+
+                </div>
+            </div>
+        </div>
 
     </main>
     <script src="script.js"></script>

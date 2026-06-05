@@ -23,6 +23,7 @@ class App {
     this.connections = [];
     this.posisiMap = {};
     this.selectedLine = null;
+    this.sortMode = "fastest";
 
     const $ = (id) => document.getElementById(id);
     this.mapArea = $("map-area");
@@ -36,29 +37,32 @@ class App {
     this.closeAdd = $("closeAdd");
     this.inputName = $("inputName");
 
-
     this.popConnect = $("popConnect");
-    this.formConnect = $('formConnect');
-    this.inputDistance = $('inputDistance');
-    this.inputMode = $('inputMode');
-    this.closeConnect = $('closeConnect')
+    this.formConnect = $("formConnect");
+    this.inputDistance = $("inputDistance");
+    this.inputMode = $("inputMode");
+    this.closeConnect = $("closeConnect");
 
- 
+    this.panelRoute = $("panelRoute");
+    this.inputFrom = $("inputFrom");
+    this.inputTo = $("inputTo");
+    this.resultsRoute = $("routeResults");
+    this.btnSearch = $("btnSearch");
+    this.btnRoute = $("btnRoute");
 
- 
     this.load();
     this.fit();
     this.apply();
     this.render();
     this.setup();
     console.log("asda");
-// console.table(
-//     this.connections.map(c => ({
-//         id: c.id,
-//         from: c.from,
-//         to: c.to
-//     }))
-// );  
+    // console.table(
+    //     this.connections.map(c => ({
+    //         id: c.id,
+    //         from: c.from,
+    //         to: c.to
+    //     }))
+    // );
   }
 
   save() {
@@ -124,116 +128,117 @@ class App {
     this.pinpointsLayer.innerHTML = html;
   }
 
-  renderLines(){
+  renderLines() {
     this.canvas.width = App.LEBAR_MAP;
     this.canvas.height = App.TINGGI_MAP;
     this.connections.forEach((conn) => {
-        const transportasi = conn.transportasi;
-        const from = this.findPin(conn.from);
-        const to = this.findPin(conn.to);
-        transportasi.forEach((tran, index) => {
-            const off = this.offset(from, to, index, transportasi.length)
-            const x1 = from.x + off.x;
-            const x2 = to.x + off.x;
-            const y1 = from.y + off.y;
-            const y2 = to.y + off.y;
+      const transportasi = conn.transportasi;
+      const from = this.findPin(conn.from);
+      const to = this.findPin(conn.to);
+      transportasi.forEach((tran, index) => {
+        const off = this.offset(from, to, index, transportasi.length);
+        const x1 = from.x + off.x;
+        const x2 = to.x + off.x;
+        const y1 = from.y + off.y;
+        const y2 = to.y + off.y;
 
-            if(this.selectedLine == conn.id){
-                this.ctx.shadowColor = ' rgb(211, 204, 8)';
-                this.ctx.shadowBlur = 6;
-                this.ctx.lineWidth = 4;
-            }else {
-                this.ctx.shadowBlur = 2;    
-                this.ctx.shadowColor = 'transparent';
-                this.ctx.lineWidth = 2;
-            }
+        if (this.selectedLine == conn.id) {
+          this.ctx.shadowColor = " rgb(211, 204, 8)";
+          this.ctx.shadowBlur = 6;
+          this.ctx.lineWidth = 4;
+        } else {
+          this.ctx.shadowBlur = 2;
+          this.ctx.shadowColor = "transparent";
+          this.ctx.lineWidth = 2;
+        }
 
-            this.ctx.beginPath();
-            this.ctx.moveTo(x1, y1);
-            this.ctx.lineTo(x2, y2);
-            this.ctx.strokeStyle = App.Transports[tran.mode].color;
-            this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.strokeStyle = App.Transports[tran.mode].color;
+        this.ctx.stroke();
 
-            this.ctx.shadowBlur = 2;
-            this.ctx.shadowColor = 'transparent'
-            this.ctx.font = 'bold 12px sans-serif';
-            this.ctx.fillColor = App.Transports[tran.mode].color;
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(tran.distance,(x1 + x2)/2, (y1+y2)/2, )
-        })
-    })
+        this.ctx.shadowBlur = 2;
+        this.ctx.shadowColor = "transparent";
+        this.ctx.font = "bold 12px sans-serif";
+        this.ctx.fillColor = App.Transports[tran.mode].color;
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(tran.distance, (x1 + x2) / 2, (y1 + y2) / 2);
+      });
+    });
   }
 
   render() {
     this.renderPins();
-    this.renderLines()
+    this.renderLines();
     this.apply();
   }
 
+  findClickedLine(e) {
+    const posisimap = this.toMap(e.clientX, e.clientY);
+    for (let i = 0; i < this.connections.length; i++) {
+      const conn = this.connections[i];
+      const transportasi = conn.transportasi;
+      const from = this.findPin(conn.from);
+      const to = this.findPin(conn.to);
+      if (!to || !from) continue;
+      // WAIJB NIH YA CONTINUE
+      for (let j = 0; j < transportasi.length; j++) {
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 8 / this.scale;
+        this.ctx.moveTo(from.x, from.y);
+        this.ctx.lineTo(to.x, to.y);
 
-  findClickedLine(e){
-    const posisimap = this.toMap(e.clientX,e.clientY);
-    for(let i =0; i < this.connections.length; i++){
-        const conn = this.connections[i];
-        const transportasi = conn.transportasi;
-        const from = this.findPin(conn.from)
-        const to = this.findPin(conn.to)
-        if(!to || !from) continue;
-        // WAIJB NIH YA CONTINUE
-        for(let j = 0; j < transportasi.length; j++){
-            this.ctx.beginPath();
-            this.ctx.lineWidth = 8/this.scale;
-            this.ctx.moveTo(from.x, from.y);
-            this.ctx.lineTo(to.x, to.y);
-
-            if(this.ctx.isPointInStroke(posisimap.x, posisimap.y)){
-                return conn.id
-            }
+        if (this.ctx.isPointInStroke(posisimap.x, posisimap.y)) {
+          return conn.id;
         }
+      }
     }
     return null;
   }
 
-  submitConnect(distance, mode){
+  submitConnect(distance, mode) {
     let isExist;
-    this.connections.forEach(conn => {
-        if(conn.from == this.connectFrom && conn.to == this.connectTo)isExist=conn;
-        if(conn.to == this.connectFrom && conn.from == this.connectTo)isExist=conn;
+    this.connections.forEach((conn) => {
+      if (conn.from == this.connectFrom && conn.to == this.connectTo)
+        isExist = conn;
+      if (conn.to == this.connectFrom && conn.from == this.connectTo)
+        isExist = conn;
     });
 
-    if(isExist){
-        let t = true;
-        isExist.transportasi.forEach(tran => {
-            if(tran.mode == mode){
-                alert('dah ada, cari lagi')
-                t = false
-                return
-            }
-        });
-
-        if(t){
-            isExist.transportasi.push({
-                distance:distance,
-                mode:mode
-            })
+    if (isExist) {
+      let t = true;
+      isExist.transportasi.forEach((tran) => {
+        if (tran.mode == mode) {
+          alert("dah ada, cari lagi");
+          t = false;
+          return;
         }
-    }else {
-        this.connections.push({
-            id:Date.now(),
-            from:this.connectFrom,
-            to:this.connectTo,
-            transportasi: [{distance:distance, mode:mode}]
-        })
+      });
+
+      if (t) {
+        isExist.transportasi.push({
+          distance: distance,
+          mode: mode,
+        });
+      }
+    } else {
+      this.connections.push({
+        id: Date.now(),
+        from: this.connectFrom,
+        to: this.connectTo,
+        transportasi: [{ distance: distance, mode: mode }],
+      });
     }
     this.save();
-    this.cancelConnect()
+    this.cancelConnect();
     this.render();
   }
-  findPin(id){
-    return this.pins.find(pin => pin.id == id);
+  findPin(id) {
+    return this.pins.find((pin) => pin.id == id);
   }
-  findByName(name){
-    return this.pins.find(pin => pin.name == name.trim());
+  findByName(name) {
+    return this.pins.find((pin) => pin.name == name.trim());
   }
 
   addPin(pin) {
@@ -262,10 +267,12 @@ class App {
     this.render();
   }
 
-  deleteLine(){
-    this.connections = this.connections.filter(conn => conn.id != this.selectedLine);
+  deleteLine() {
+    this.connections = this.connections.filter(
+      (conn) => conn.id != this.selectedLine,
+    );
     this.save();
-    this.render()
+    this.render();
   }
 
   cancelConnect() {
@@ -274,25 +281,26 @@ class App {
     this.render();
   }
 
-  selectLine(id){
+  selectLine(id) {
     this.selectedLine = this.selectedLine == id ? null : id;
     this.render();
   }
 
-  offset(from, to, index, total){
-    if(total <=1)return {x:0, y:0};
-    const s = -(total - 1) * 3 + index* 6;
-    const dx  =Math.abs(from.x - to.x);
+  offset(from, to, index, total) {
+    if (total <= 1) return { x: 0, y: 0 };
+    const s = -(total - 1) * 3 + index * 6;
+    const dx = Math.abs(from.x - to.x);
     const dy = Math.abs(from.y - to.y);
-    if(dx > dy){
-        return {
-            x:0, y:s
-        }
-    }else {
-        return {
-            x:s,
-            y:0
-        }
+    if (dx > dy) {
+      return {
+        x: 0,
+        y: s,
+      };
+    } else {
+      return {
+        x: s,
+        y: 0,
+      };
     }
   }
 
@@ -304,6 +312,57 @@ class App {
 
   hide(el) {
     el.classList.add("hidden");
+  }
+
+  checkSearch() {
+    let from, to;
+    this.connections.forEach((conn) => {
+      from = this.findByName(self.inputFrom.value.trim());
+      to = this.findByName(self.inputTo.value.trim());
+    });
+    if (!to && from) return;
+    this.btnSearch.disabled = !(to &&  from && (to != from))
+  }
+
+
+  searchRoutes(){
+    const pinFrom = this.findByName(this.inputFrom.value.trim())
+    const pinTo = this.findByName(this.inputTo.value.trim())
+    if(!to || !from)return;
+    this.routes = [];
+    const visited = {}
+    visited[pinTo.id] = true;
+
+
+    const dfs = (current, path) => {
+
+        if(current == pinTo.id){
+            let duratio
+        }
+
+        this.connections.forEach((conn) => {
+            let next;
+            if(conn.from == current) next = conn.to
+            if(conn.to == current) next = conn.from
+            if(next&&!visited[next]){
+                visited[next] = true;
+                path.push({
+                    from:current,
+                    to:next,
+                    conn:conn
+                })
+                dfs(next, path)
+                delete visited[next];
+                path.pop()
+            }
+        })
+
+    }
+
+    dfs(pinFrom.id, []);
+    this.resultsRoute.classList.remove('hidden');
+    this.showRoutes()
+
   }
 
   setup() {
@@ -366,10 +425,10 @@ class App {
       e.preventDefault();
       self.hide(self.popAdd);
     };
-    self.closeConnect.onclick = function(e){
-        e.preventDefault();
-        self.hide(self.popConnect);
-    }
+    self.closeConnect.onclick = function (e) {
+      e.preventDefault();
+      self.hide(self.popConnect);
+    };
     self.formAdd.onsubmit = function (e) {
       e.preventDefault();
       const name = self.inputName.value.trim();
@@ -380,17 +439,15 @@ class App {
       }
     };
 
-    self.formConnect.onsubmit = function(e){
-        e.preventDefault();
-        const distance = self.inputDistance.value.trim();
-        const mode = self.inputMode.value;
-        if(mode && distance){
-            self.submitConnect(distance, mode);
-            self.hide(self.popConnect)
-        }
-    }
-
-
+    self.formConnect.onsubmit = function (e) {
+      e.preventDefault();
+      const distance = self.inputDistance.value.trim();
+      const mode = self.inputMode.value;
+      if (mode && distance) {
+        self.submitConnect(distance, mode);
+        self.hide(self.popConnect);
+      }
+    };
 
     self.mapArea.addEventListener("dblclick", function (e) {
       if (e.target.closest(".pinpoint,input,.popup")) return;
@@ -403,55 +460,62 @@ class App {
 
     self.pinpointsLayer.addEventListener("click", function (e) {
       const btnDelete = e.target.closest(".btn-delete");
-      if(btnDelete){
+      if (btnDelete) {
         self.deletePin(btnDelete.dataset.id);
-        return
+        return;
       }
 
-      const btnConnect = e.target.closest('.btn-connect')
-      if(btnConnect){
+      const btnConnect = e.target.closest(".btn-connect");
+      if (btnConnect) {
         self.startConnect(btnConnect.dataset.id);
         return;
       }
 
-      const pinpoint = e.target.closest('.pinpoint')
-      if(pinpoint && self.connectFrom && (self.connectFrom != pinpoint.dataset.id)){
+      const pinpoint = e.target.closest(".pinpoint");
+      if (
+        pinpoint &&
+        self.connectFrom &&
+        self.connectFrom != pinpoint.dataset.id
+      ) {
         self.connectTo = pinpoint.dataset.id;
-        self.inputDistance.value = '';
-        self.inputMode.value = '';
-        self.inputDistance.focus()
+        self.inputDistance.value = "";
+        self.inputMode.value = "";
+        self.inputDistance.focus();
         self.pop(self.popConnect, e.clientX, e.clientY);
       }
     });
     document.addEventListener("click", function (e) {
       if (e.target.closest(".pinpoint, input, .popup")) return;
-        
+
       const lineId = self.findClickedLine(e);
-      if(lineId ){
+      if (lineId) {
         self.selectedLine = lineId;
         self.render();
         return;
       }
 
-      if(self.connectFrom){
+      if (self.connectFrom) {
         self.cancelConnect();
-        return
+        return;
       }
 
-      if(self.selectedLine){
+      if (self.selectedLine) {
         self.selectedLine = null;
         self.render();
         return;
       }
-
     });
     document.addEventListener("keydown", function (e) {
       const input = e.target.closest(".input");
 
-      if((e.key == "Backspace"||e.key == 'Delete') && !input && self.selectedLine){
-        e.preventDefault()
-        self.deleteLine()
-        return
+      if (
+        (e.key == "Backspace" || e.key == "Delete") &&
+        !input &&
+        self.selectedLine
+      ) {
+        e.preventDefault();
+        self.deleteLine();
+        return;
       }
 
       if (e.key == "Escape") {
