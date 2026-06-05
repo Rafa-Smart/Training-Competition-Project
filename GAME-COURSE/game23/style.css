@@ -1,0 +1,99 @@
+* {
+    padding:0;
+    margin:0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body, html {
+    width:100%;
+    height:100vh;
+    background-color:#c8ebff;
+}
+#map-img {
+    user-select: none;
+    -webkit-user-drag: none;
+    /* display:block; */
+}
+#map-area {
+    position:absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    cursor:grab;
+}
+
+#map-area.grabbing {
+    cursor:grabbing;
+}
+
+#map-container {
+    transform-origin: 0 0;
+    position:absolute;
+}
+
+#lines-layer {
+    position:absolute;
+    left:0;
+    top:0;
+    pointer-events:none;
+}
+
+#pinpoints-layer {
+    position:absolute;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+
+.pinpoint {
+    position:absolute;
+    z-index: 900; 
+    transform: translate(-15%, -90%);cursor:pointer;
+    pointer-events: auto;
+}
+
+.popup {
+    position:absolute;
+    display:flex;
+    flex-direction:column;
+    border-radius:5px;
+    border:2px solid pink;
+    padding:5px;
+    cursor:pointer;
+}
+#formConnect {
+    display: flex;
+    flex-direction: column;
+}
+ 
+.pinpoint-header, .popup-header {  
+    margin-bottom: 5px;
+    justify-content: space-between;
+    align-items: center;
+    display:flex;
+    gap:5px;
+    border-radius:5px;
+    border:2px solid pink;
+    cursor:pointer;
+    z-index: 500;
+    background-color: aliceblue;
+}
+
+.pinpoint-header.connecting {
+    border:3px solid purple;
+    cursor:pointer;
+}
+.btn {
+    width:1.2rem;
+    height:1.2rem;
+}
+.hidden {
+    display:none !important;
+}
+
+.marker {
+    filter: invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg) brightness(100%)
+}

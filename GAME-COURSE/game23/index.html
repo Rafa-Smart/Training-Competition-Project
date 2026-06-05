@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="map-area">
+        <div id="map-container">
+            <img src="./assets/indonesia.svg" id="map-img" alt="">
+            <canvas id="lines-layer"></canvas>
+            <div id="pinpoints-layer"></div>
+        </div>
+        <div id="popAdd" class="popup hidden">
+            <div class="popup-header">
+                <span>Add Pinpoint</span>
+                <img src="./assets/BiXLg.svg" id="closeAdd" alt="" class="btn">
+            </div>
+            <form id="formAdd"  >
+                <input type="text" id="inputName" placeholder="name">
+            </form>
+        </div>
+        <div id="popConnect" class="popup hidden">
+            <div id="popup-header">
+                <span>Connect Pinpoint</span>
+                <img src="./assets/BiXLg.svg" id="closeConnect" alt="" class="btn">
+            </div>
+            <form id="formConnect"  >
+                <input type="text" id="inputDistance" placeholder="Distance">
+                <select name="inputMode" id="inputMode">
+                    <option value="" disabled>Select Option Mode</option>
+                    <option value="Train">Train</option>
+                    <option value="Bus">Bus</option>
+                    <option value="Airplane">Airplane</option>
+                </select>
+            </form>
+        </div>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
