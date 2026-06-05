@@ -43,13 +43,22 @@ class App {
     this.inputMode = $('inputMode');
     this.closeConnect = $('closeConnect')
 
+ 
 
+ 
     this.load();
     this.fit();
     this.apply();
     this.render();
     this.setup();
     console.log("asda");
+// console.table(
+//     this.connections.map(c => ({
+//         id: c.id,
+//         from: c.from,
+//         to: c.to
+//     }))
+// );  
   }
 
   save() {
@@ -123,27 +132,27 @@ class App {
         const from = this.findPin(conn.from);
         const to = this.findPin(conn.to);
         transportasi.forEach((tran, index) => {
-            const off = this.offset(from, to, index, total)
+            const off = this.offset(from, to, index, transportasi.length)
             const x1 = from.x + off.x;
             const x2 = to.x + off.x;
-            const y1 = from.x + off.x;
-            const y2 = from.y + off.y;
+            const y1 = from.y + off.y;
+            const y2 = to.y + off.y;
 
             if(this.selectedLine == conn.id){
                 this.ctx.shadowColor = ' rgb(211, 204, 8)';
                 this.ctx.shadowBlur = 6;
                 this.ctx.lineWidth = 4;
             }else {
-                this.ctx.shadowBlur = 2;
+                this.ctx.shadowBlur = 2;    
                 this.ctx.shadowColor = 'transparent';
-                this.lineWidth = 2;
+                this.ctx.lineWidth = 2;
             }
 
             this.ctx.beginPath();
             this.ctx.moveTo(x1, y1);
             this.ctx.lineTo(x2, y2);
             this.ctx.strokeStyle = App.Transports[tran.mode].color;
-            this.stroke();
+            this.ctx.stroke();
 
             this.ctx.shadowBlur = 2;
             this.ctx.shadowColor = 'transparent'
@@ -173,11 +182,11 @@ class App {
         // WAIJB NIH YA CONTINUE
         for(let j = 0; j < transportasi.length; j++){
             this.ctx.beginPath();
-            this.ctx.lineWidth = 6;
+            this.ctx.lineWidth = 8/this.scale;
             this.ctx.moveTo(from.x, from.y);
-            this.ctx.lineTo(from.y, to.y);
+            this.ctx.lineTo(to.x, to.y);
 
-            if(this.ctx.isPointInStroke(posisiMap.x, posisimap.y)){
+            if(this.ctx.isPointInStroke(posisimap.x, posisimap.y)){
                 return conn.id
             }
         }
@@ -193,13 +202,32 @@ class App {
     });
 
     if(isExist){
+        let t = true;
         isExist.transportasi.forEach(tran => {
             if(tran.mode == mode){
                 alert('dah ada, cari lagi')
+                t = false
                 return
             }
+        });
+
+        if(t){
+            isExist.transportasi.push({
+                distance:distance,
+                mode:mode
+            })
+        }
+    }else {
+        this.connections.push({
+            id:Date.now(),
+            from:this.connectFrom,
+            to:this.connectTo,
+            transportasi: [{distance:distance, mode:mode}]
         })
     }
+    this.save();
+    this.cancelConnect()
+    this.render();
   }
   findPin(id){
     return this.pins.find(pin => pin.id == id);
@@ -256,7 +284,7 @@ class App {
     const s = -(total - 1) * 3 + index* 6;
     const dx  =Math.abs(from.x - to.x);
     const dy = Math.abs(from.y - to.y);
-    if(dx < dy){
+    if(dx > dy){
         return {
             x:0, y:s
         }
@@ -352,6 +380,16 @@ class App {
       }
     };
 
+    self.formConnect.onsubmit = function(e){
+        e.preventDefault();
+        const distance = self.inputDistance.value.trim();
+        const mode = self.inputMode.value;
+        if(mode && distance){
+            self.submitConnect(distance, mode);
+            self.hide(self.popConnect)
+        }
+    }
+
 
 
     self.mapArea.addEventListener("dblclick", function (e) {
@@ -387,12 +425,41 @@ class App {
     });
     document.addEventListener("click", function (e) {
       if (e.target.closest(".pinpoint, input, .popup")) return;
+        
+      const lineId = self.findClickedLine(e);
+      if(lineId ){
+        self.selectedLine = lineId;
+        self.render();
+        return;
+      }
+
+      if(self.connectFrom){
+        self.cancelConnect();
+        return
+      }
+
+      if(self.selectedLine){
+        self.selectedLine = null;
+        self.render();
+        return;
+      }
+
     });
     document.addEventListener("keydown", function (e) {
       const input = e.target.closest(".input");
+
+      if((e.key == "Backspace"||e.key == 'Delete') && !input && self.selectedLine){
+        e.preventDefault()
+        self.deleteLine()
+        return
+      }
+
       if (e.key == "Escape") {
         self.hide(self.popAdd);
         self.hide(self.popConnect);
+        self.selectedLine = null;
+        self.cancelConnect();
+        self.render();
       }
     });
   }
