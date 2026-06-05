@@ -321,48 +321,79 @@ class App {
       to = this.findByName(self.inputTo.value.trim());
     });
     if (!to && from) return;
-    this.btnSearch.disabled = !(to &&  from && (to != from))
+    this.btnSearch.disabled = !(to && from && to != from);
   }
 
-
-  searchRoutes(){
-    const pinFrom = this.findByName(this.inputFrom.value.trim())
-    const pinTo = this.findByName(this.inputTo.value.trim())
-    if(!to || !from)return;
+  searchRoutes() {
+    const pinFrom = this.findByName(this.inputFrom.value.trim());
+    const pinTo = this.findByName(this.inputTo.value.trim());
+    if (!to || !from) return;
     this.routes = [];
-    const visited = {}
+    const visited = {};
     visited[pinTo.id] = true;
 
-
     const dfs = (current, path) => {
+      if (current == pinTo.id) {
+        let duration = 0;
+        let cost = 0;
+        let steps = [];
 
-        if(current == pinTo.id){
-            let duratio
-        }
+        path.forEach((p) => {
+          const conn = p.conn;
+          const transportasi = conn.transportasi;
+          let from = this.findPin(conn.from).name;
+          let to = this.findPin(conn.to).name;
+          let bestValue = Infinity;
+          let best = transportasi[0];
 
-        this.connections.forEach((conn) => {
-            let next;
-            if(conn.from == current) next = conn.to
-            if(conn.to == current) next = conn.from
-            if(next&&!visited[next]){
-                visited[next] = true;
-                path.push({
-                    from:current,
-                    to:next,
-                    conn:conn
-                })
-                dfs(next, path)
-                delete visited[next];
-                path.pop()
+          transportasi.forEach((tran, index) => {
+            const config = App.Transports[tran.mode];
+            const value =
+              this.sortMode == "fastest"
+                ? tran.distance / config.speed
+                : tran.distance * cost;
+            if (value < bestValue) {
+              bestValue = value;
+              best = tran;
             }
-        })
+          });
+          const config = App.Transports[tran.mode];
+          duration += best.distance / config.speed;
+          cost += best.distance * config.cost;
+          steps.push(
+            `(${from}) -> (${to}) duration:${duration} | cost:${cost}`,
+          );
+        });
+        this.routes.push({
+          duration: duration,
+          cost: cost,
+          steps: steps,
+        });
 
-    }
+        return;
+      }
+
+      this.connections.forEach((conn) => {
+        let next;
+        if (conn.from == current) next = conn.to;
+        if (conn.to == current) next = conn.from;
+        if (next && !visited[next]) {
+          visited[next] = true;
+          path.push({
+            from: current,
+            to: next,
+            conn: conn,
+          });
+          dfs(next, path);
+          delete visited[next];
+          path.pop();
+        }
+      });
+    };
 
     dfs(pinFrom.id, []);
-    this.resultsRoute.classList.remove('hidden');
-    this.showRoutes()
-
+    this.resultsRoute.classList.remove("hidden");
+    this.showRoutes();
   }
 
   setup() {
