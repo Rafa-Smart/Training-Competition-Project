@@ -1,68 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <main id="map-area">
-        <div id="map-container">
-            <img src="./assets/indonesia.svg" id="map-img" alt="">
-            <canvas id="lines-layer"></canvas>
-            <div id="pinpoints-layer"></div>
+      <div id="map-container">
+        <img src="./assets/indonesia.svg" id="map-img" alt="" />
+        <canvas id="lines-layer"></canvas>
+        <div id="pinpoints-layer"></div>
+      </div>
+      <div id="popAdd" class="popup hidden">
+        <div class="popup-header">
+          <span>Add Pinpoint</span>
+          <img src="./assets/BiXLg.svg" id="closeAdd" alt="" class="btn" />
         </div>
-        <div id="popAdd" class="popup hidden">
-            <div class="popup-header">
-                <span>Add Pinpoint</span>
-                <img src="./assets/BiXLg.svg" id="closeAdd" alt="" class="btn">
-            </div>
-            <form id="formAdd"  >
-                <input type="text" id="inputName" placeholder="name">
-            </form>
+        <form id="formAdd">
+          <input type="text" id="inputName" placeholder="name" />
+        </form>
+      </div>
+      <div id="popConnect" class="popup hidden">
+        <div id="popup-header">
+          <span>Connect Pinpoint</span>
+          <img src="./assets/BiXLg.svg" id="closeConnect" alt="" class="btn" />
         </div>
-        <div id="popConnect" class="popup hidden">
-            <div id="popup-header">
-                <span>Connect Pinpoint</span>
-                <img src="./assets/BiXLg.svg" id="closeConnect" alt="" class="btn">
-            </div>
-            <form id="formConnect"  >
-                <input type="text" id="inputDistance" placeholder="Distance">
-                <select name="inputMode" id="inputMode">
-                    <option value="" disabled>Select Option Mode</option>
-                    <option value="Train">Train</option>
-                    <option value="Bus">Bus</option>
-                    <option value="Airplane">Airplane</option>
-                </select>
-                <button type="submit">Connect</button>
-            </form>
+        <form id="formConnect">
+          <input type="text" id="inputDistance" placeholder="Distance" />
+          <select name="inputMode" id="inputMode">
+            <option value="" disabled>Select Option Mode</option>
+            <option value="Train">Train</option>
+            <option value="Bus">Bus</option>
+            <option value="Airplane">Airplane</option>
+          </select>
+          <button type="submit">Connect</button>
+        </form>
+      </div>
+      <button id="btnRoute">Route</button>
+      <div id="panelRoute" class="popup hidden">
+        <div id="popup-header">
+          <span>Search Routes</span>
         </div>
-        <button id="btnRoute">Route</button>
-        <div id="panelRoute" class="popup hidden">
-            <div id="popup-header">
-                <span>Search Routes</span> 
-            </div>
-            <div>
-                <div>
-                    <label for="">From: <input type="text" id="inputFrom" placeholder="Distance"></label>
-                </div>
-                <div>
-                    <label for="">To: <input type="text" id="inputTo" placeholder="Distance"></label>
-                </div>
-               
-                <button id="btnSearch">search</button>
-                <div class="btns">
-                    <button data-sort="fastest">fastest</button>
-                    <button data-sort="cheaptest">cheaptest</button>
-                </div>
-                <div id="routeResults" class="hidden">
+        <div>
+          <div>
+            <label for=""
+              >From: <input type="text" id="inputFrom" placeholder="Distance"
+            /></label>
+          </div>
+          <div>
+            <label for=""
+              >To: <input type="text" id="inputTo" placeholder="Distance"
+            /></label>
+          </div>
 
-                </div>
-            </div>
+          <button id="btnSearch">search</button>
+          <div class="btns">
+            <button data-sort="fastest" class="sort-btn active">fastest</button>
+            <button data-sort="cheaptest" class="sort-btn">cheaptest</button>
+          </div>
         </div>
-
+        <div id="routeResults" class=" "> 
+ 
+        </div>
+      </div>
     </main>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

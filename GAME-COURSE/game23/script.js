@@ -135,6 +135,7 @@ class App {
       const transportasi = conn.transportasi;
       const from = this.findPin(conn.from);
       const to = this.findPin(conn.to);
+      if(!to || ! from)return
       transportasi.forEach((tran, index) => {
         const off = this.offset(from, to, index, transportasi.length);
         const x1 = from.x + off.x;
@@ -317,21 +318,22 @@ class App {
   checkSearch() {
     let from, to;
     this.connections.forEach((conn) => {
-      from = this.findByName(self.inputFrom.value.trim());
-      to = this.findByName(self.inputTo.value.trim());
+      from = this.findByName(this.inputFrom.value);
+      to = this.findByName(this.inputTo.value);
     });
-    if (!to && from) return;
-    this.btnSearch.disabled = !(to && from && to != from);
+
+    this.btnSearch.disabled = !(to && from && from != to);
   }
 
   searchRoutes() {
-    const pinFrom = this.findByName(this.inputFrom.value.trim());
-    const pinTo = this.findByName(this.inputTo.value.trim());
-    if (!to || !from) return;
+    let pinFrom = this.findByName(this.inputFrom.value.trim());
+    let pinTo = this.findByName(this.inputTo.value.trim());
+    if (!pinFrom || !pinTo) return;
     this.routes = [];
     const visited = {};
-    visited[pinTo.id] = true;
-
+    visited[pinFrom.id] = true;
+    // console.log({pinFrom})
+    // console.log({pinTo})
     const dfs = (current, path) => {
       if (current == pinTo.id) {
         let duration = 0;
@@ -341,35 +343,38 @@ class App {
         path.forEach((p) => {
           const conn = p.conn;
           const transportasi = conn.transportasi;
-          let from = this.findPin(conn.from).name;
-          let to = this.findPin(conn.to).name;
+
+          let fromName = this.findPin(conn.from).name;
+          let toName = this.findPin(conn.to).name;
           let bestValue = Infinity;
           let best = transportasi[0];
 
-          transportasi.forEach((tran, index) => {
-            const config = App.Transports[tran.mode];
-            const value =
+          transportasi.forEach((tran) => {
+            let config = App.Transports[tran.mode];
+            let value =
               this.sortMode == "fastest"
                 ? tran.distance / config.speed
-                : tran.distance * cost;
+                : tran.distance * config.cost;
+
             if (value < bestValue) {
               bestValue = value;
               best = tran;
             }
           });
-          const config = App.Transports[tran.mode];
+
+          let config = App.Transports[best.mode];
           duration += best.distance / config.speed;
           cost += best.distance * config.cost;
           steps.push(
-            `(${from}) -> (${to}) duration:${duration} | cost:${cost}`,
+            `${fromName} -> ${toName} | dur: ${duration} | cost; ${cost}`,
           );
         });
+
         this.routes.push({
           duration: duration,
           cost: cost,
           steps: steps,
         });
-
         return;
       }
 
@@ -377,13 +382,16 @@ class App {
         let next;
         if (conn.from == current) next = conn.to;
         if (conn.to == current) next = conn.from;
-        if (next && !visited[next]) {
+
+        if (!visited[next] && next) {
+          // console.log(next)
           visited[next] = true;
           path.push({
             from: current,
             to: next,
             conn: conn,
           });
+
           dfs(next, path);
           delete visited[next];
           path.pop();
@@ -394,6 +402,39 @@ class App {
     dfs(pinFrom.id, []);
     this.resultsRoute.classList.remove("hidden");
     this.showRoutes();
+  }
+
+  showRoutes() {
+    let sorted = this.routes
+      .slice()
+      .sort((a, b) => {
+        if (this.sortMode == "fastest") {
+          return a.duration - b.duration;
+        } else {
+          return a.cost - b.cost;
+        }
+      })
+      .slice(0, 10);
+
+    let html = ``;
+    // console.log(sorted)
+this.resultsRoute.innerHTML = ``;
+    sorted.forEach((data, index) => {
+      html += `
+                    <div class="routeCard">
+                        <div class="routeSteps">
+                            ${data.steps.map((step, index) => `<div>${index + 1} ${step}</div>`).join("")}
+                        </div>
+                        <div class="routeInfo">
+                            <span>duration:${data.duration}</span>
+                            <span>cost:${data.cost}</span>
+                        </div>
+                    </div>
+      `;
+      // this.resultsRoute.innerHTML = html;
+    });
+    this.resultsRoute.innerHTML = html;
+    console.log(this.resultsRoute.innerHTML);
   }
 
   setup() {
@@ -480,6 +521,10 @@ class App {
       }
     };
 
+    self.btnRoute.onclick = () => {
+      self.panelRoute.classList.toggle("hidden");
+    };
+
     self.mapArea.addEventListener("dblclick", function (e) {
       if (e.target.closest(".pinpoint,input,.popup")) return;
       e.preventDefault();
@@ -557,6 +602,22 @@ class App {
         self.render();
       }
     });
+
+    this.inputFrom.oninput = () => this.checkSearch();
+    this.inputTo.oninput = () => this.checkSearch();
+    this.btnSearch.onclick = () => this.searchRoutes();
+
+    const buttons = document.querySelectorAll(".sort-btn");
+    if (buttons) {
+      buttons.forEach((button) => {
+        button.onclick = function (e) {
+          buttons.forEach((b) => b.classList.remove("active"));
+          button.classList.add("active");
+          self.sortMode = button.getAttribute("data-sort");
+          self.searchRoutes();
+        };
+      });
+    }
   }
 }
 
