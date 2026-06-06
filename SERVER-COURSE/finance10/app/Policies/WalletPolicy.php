@@ -21,7 +21,7 @@ class WalletPolicy
      */
     public function view(User $user, Wallet $wallet): bool
     {
-        return auth()->id() == $wallet->user_id;
+        return $user->id == $wallet->user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class WalletPolicy
      */
     public function update(User $user, Wallet $wallet): bool
     {
-        return false;
+        return $user->id == $wallet->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class WalletPolicy
      */
     public function delete(User $user, Wallet $wallet): bool
     {
-        return false;
+        return $user->id == $wallet->user_id;
     }
 
     /**

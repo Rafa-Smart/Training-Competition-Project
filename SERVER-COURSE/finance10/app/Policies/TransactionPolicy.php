@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Transaction;
 use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\Auth\Access\Response;
 
-class WalletPolicy
+class TransactionPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,9 +19,9 @@ class WalletPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Wallet $wallet): bool
+    public function view(User $user, Transaction $transaction): bool
     {
-        return auth()->id() == $wallet->user_id;
+        return $user->id == $transaction->wallet->user_id;
     }
 
     /**
@@ -35,23 +35,23 @@ class WalletPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Wallet $wallet): bool
+    public function update(User $user, Transaction $transaction): bool
     {
-        return false;
+        return $user->id == $transaction->wallet->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Wallet $wallet): bool
+    public function delete(User $user, Transaction $transaction): bool
     {
-        return false;
+        return $user->id == $transaction->wallet->user_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Wallet $wallet): bool
+    public function restore(User $user, Transaction $transaction): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class WalletPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Wallet $wallet): bool
+    public function forceDelete(User $user, Transaction $transaction): bool
     {
         return false;
     }

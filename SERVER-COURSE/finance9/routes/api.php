@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function(){
         'wallets'=>WalletController::class,
         'transactions'=>TransactionController::class
     ]);
+    
 
     Route::get('/reports/summary-by-category/expense');
     Route::get('/reports/summary-by-category/income');
