@@ -14,7 +14,9 @@ const Home = () => {
     const [showWallet, setShowWallet] = useState(false);
     const [showTransaction, setShowTransaction] = useState(false);
     const {user} = useAuth();
-    const [transactions, page, loading, hasMore, loadMore, reload] = useInfiniteScroll();
+    const [transactions, page, loading, hasMore, loadMore, reload]= useInfiniteScroll();
+
+    console.log(transactions)
 // showTransaction
     const loadWallet = () => {
         setLoadingWallet(true)

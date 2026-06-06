@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { walletApi } from "../api/wallet";
-import { Chart, Legend, plugins } from "chart.js";
+import  Chart from "chart.js/auto";
 import { formatCurrency } from "../utils/format";
 import TransactionItem from "../components/TransactionItem";
 import AddTransaction from "../components/AddTransaction";
@@ -28,9 +28,9 @@ const DetailWallet = () => {
   const navigate = useNavigate();
   const today = new Date();
   const [wallet, setWallet] = useState({});
-  const [editName, setEditName] = useState('');
+  const [editName, setEditName] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth()+1);
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
   const [loadingWallet, setLoadingWallet] = useState(false);
 
@@ -51,7 +51,7 @@ const DetailWallet = () => {
 
   const handleClickEdit = async (e) => {
     // const name = editName.trim();
-    if(e.key != "Enter")return
+    if (e.key != "Enter") return;
     if (editName.trim() == "") {
       // hapus
       try {
@@ -63,7 +63,7 @@ const DetailWallet = () => {
     } else {
       // update
       try {
-        await walletApi.update({name:editName}, walletId);
+        await walletApi.update({ name: editName }, walletId);
         setWallet((prev) => ({ ...prev, name: editName }));
         setIsEdit(false);
       } catch (e) {
@@ -77,7 +77,7 @@ const DetailWallet = () => {
     setLoadingWallet(true);
     walletApi
       .show(walletId)
-      .then((response) => { 
+      .then((response) => {
         setWallet(response.data.data);
         setEditName(response.data.data.name);
       })
@@ -86,11 +86,12 @@ const DetailWallet = () => {
   };
   useEffect(() => {
     loadWallet();
+    reload();
   }, [walletId]);
- 
 
   useEffect(() => {
     loadWallet();
+    reload();
     loadMore(1, true);
   }, [selectedMonth, selectedYear, walletId]);
   const handleDataChange = () => {
@@ -104,15 +105,22 @@ const DetailWallet = () => {
     return transactions[index].date != transactions[index - 1].date;
   };
 
-  useEffect(() => {
+  useEffect(() => {  console.log(expenseRef.current);
+  console.log(incomeRef.current);
     reportApi.expense().then((response) => {
       const summary = response.data.data.summary;
+      console.log(summary)
       renderChart(expenseRef, expenseInstanceRef, summary, "EXPENSE");
     });
     reportApi.income().then((response) => {
       const summary = response?.data?.data?.summary;
       renderChart(incomeRef, incomeInstanceRef, summary, "INCOME");
     });
+
+    return () => {
+      expenseInstanceRef.current?.destroy();
+      incomeInstanceRef.current?.destroy();
+    };
   }, [selectedMonth, selectedYear, walletId]);
 
   const renderChart = (ref, instanceRef, summary, type) => {
@@ -122,41 +130,59 @@ const DetailWallet = () => {
     }
     if (!summary || !summary.length) return;
 
-    const data = summary.map((s) => s.amount);
+    const data = summary.map((s) => Number(s.amount));
     const labels = summary.map((e) => `${e.category.icon} ${e.category.name}`);
     const colors = summary.map((e) => e.category.color || "gray");
-
-    instanceRef.current = new Chart(ref.current, {
-      type: "doughnut",
+console.log('sebelum')
+instanceRef.current = new Chart(ref.current, {
+  type: "doughnut",
       data: {
         labels: labels,
         datasets: [
           {
             data: data,
-            backgroundColor: colors,
+            backgroundColor: [
+  "#ff0000",
+  "#00ff00",
+  "#0000ff",
+  "#ffff00",
+  "#ff00ff",
+  "#00ffff",
+  "#ff8800",
+  "#88ff00",
+  "#0088ff",
+  "#8800ff",
+],
             borderWidth: 3,
             borderColor: "black",
           },
         ],
       },
-      option: {
+      options: {
         responsive: true,
         plugins: {
-          Legend: {
+          legend: {
             position: "bottom",
-            labels: { color: "red", padding: "4px", font: { size: 14 } },
+            labels: { color: "red", padding: 4, font: { size: 14 } },
           },
         },
       },
     });
+    console.log('sesudah')
   };
 
-  if (loadingWallet) return <main className="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto"><span className="loading"></span></main>;
+  if (loadingWallet)
+    return (
+      <main className="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
+        <span className="loading"></span>
+      </main>
+    );
   return (
     <>
       <main className="px-5 py-8 lg:p-10 bg-slate-900 border border-slate-800 rounded-tl-3xl rounded-tr-3xl shadow flex flex-col gap-10 h-[calc(100vh_-_80px)] overflow-y-auto">
         <div className="flex items-center gap-3.5">
-          <Link to={'/'}
+          <Link
+            to={"/"}
             className="btn btn text-lg! aspect-[1/1] inline-flex! bg-transparent! p-3.5! border border-slate-700 items-center justify-center leading-[1]"
           >
             ←
@@ -172,9 +198,7 @@ const DetailWallet = () => {
                 setEditName(editName);
               }}
               className="text-2xl font-semibold"
-            >
-              
-            </input>
+            ></input>
           ) : (
             <h2
               onClick={() => setIsEdit(true)}
@@ -223,29 +247,32 @@ const DetailWallet = () => {
                 </select>
               </div>
               <div className="flex overflow-x-auto h-full">
-               {months.map((month, index) => {
-                    return (
-                      <button
+                {months.map((month, index) => {
+                  return (
+                    <button
                       key={index}
-                      onClick={(e) => setSelectedMonth(index+1)}
-                      className={`whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg ${index+1 == selectedMonth ? "opacity-100" : "opacity-50"}`}
+                      onClick={(e) => setSelectedMonth(index + 1)}
+                      className={`whitespace-nowrap h-full p-4 rounded-tl-lg rounded-tr-lg ${index + 1 == selectedMonth ? "opacity-100" : "opacity-50"}`}
                     >
                       {month}
                     </button>
-                    );
-                  })}
-                
+                  );
+                })}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-10 py-6">
               <div className="flex flex-col items-center gap-5">
                 <h2 className="text-lg">EXPENSE</h2>
-                <canvas ref={expenseRef}></canvas>
+                <canvas ref={expenseRef} width={300} height={300}  style={{
+    border: "1px solid red"
+  }}></canvas>
               </div>
               <div className="flex flex-col items-center gap-5">
                 <h2 className="text-lg">INCOME</h2>
-                <canvas ref={incomeRef}></canvas>
+                <canvas ref={incomeRef} width={300} height={300}  style={{
+    border: "1px solid red"
+  }}></canvas>
               </div>
             </div>
 

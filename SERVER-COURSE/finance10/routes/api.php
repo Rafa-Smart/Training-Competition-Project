@@ -18,9 +18,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/auth/logout', [AuthController::class,'logout']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/currencies', [CurrencyController::class, 'index']);
-    Route::apiResource('wallet', WalletController::class);
-    Route::apiResource('transaction', TransactionController::class);
+    Route::apiResource('/wallets', WalletController::class);
+    Route::apiResource('/transactions', TransactionController::class);
 
-    Route::get('/api/reports/summary-by-category/income', [ReportController::class, 'income']);
-    Route::get('/api/reports/summary-by-category/expense', [ReportController::class, 'expense']);
+    Route::get('/reports/summary-by-category/income', [ReportController::class, 'income']);
+    Route::get('/reports/summary-by-category/expense', [ReportController::class, 'expense']);
 });

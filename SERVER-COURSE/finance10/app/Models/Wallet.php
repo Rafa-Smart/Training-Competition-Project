@@ -16,9 +16,9 @@ class Wallet extends Model
 
     protected $appends = ['balance'];
 
-    public function getBalanceAtributte()
+    public function getBalanceAttribute()
     {
-        $transactions = $this->transactions()->with(['wallet', 'category']);
+        $transactions = $this->transactions()->with(['wallet', 'category'])->get();
 
         $income = $transactions->where('category.type', 'INCOME')->sum('amount');
         $expense = $transactions->where('category.type', 'EXPENSE')->sum('amount');

@@ -3,6 +3,7 @@ import { getToday, parseErrors } from "../utils/format";
 import { walletApi } from "../api/wallet";
 import { categoryApi } from "../api/category";
 import AlertError from "../utils/Alert";
+import { transactionApi } from "../api/transaction";
 
 const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
   const [form, setForm] = useState({
@@ -35,7 +36,9 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
         setCategories(response.data.data.categories);
       });
       walletApi.get().then((response) => setWallets(response.data.data.wallets))
-  }, [isOpen])
+  }, [isOpen]);
+
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,7 +50,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
       alert('ga boleh sama bro walletnya')
     }
     try {
-      await walletApi.create({...form, amount:parseInt(form.amount)});
+      await transactionApi.transfer({...form, amount:parseInt(form.amount)});
       onClose();
       onSuccess();
     } catch (e) {
@@ -71,7 +74,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
           <button className="modal-close" onClick={(e) => onClose()}>×</button>
         </div>
         <div className="modal-body overflow-y-auto max-h-[calc(100vh_-_80px_-_77px)]">
-          <form action="" method="POST" className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} method="POST" className="flex flex-col gap-6">
           <AlertError messages={errors}></AlertError>
             <div>
               <h3 className="mb-2">FROM</h3>
@@ -115,7 +118,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                  
                  {
                     categories.map((category, index) => {
-                      if(category.type != "EXPENSE"){
+                      if(category.type != "INCOME"){
                         return <option value={category.id}>{category.icon} {category.name}</option>
                       }
                     })
@@ -166,7 +169,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   </option>
                    {
                     categories.map((category, index) => {
-                      if(category.type != "INCOME"){
+                      if(category.type != "EXPENSE"){
                         return <option key={index} value={category.id}>{category.icon} {category.name}</option>
                       }
                     })

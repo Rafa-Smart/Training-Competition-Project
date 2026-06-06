@@ -6,7 +6,8 @@ const useInfiniteScroll = (params ={}) => {
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const [loading, setLoading]  = useState(false);
-    const load = useCallback( async(pageNumber, reset) => {
+    // console.log(transactions)
+    const load = useCallback( async(pageNumber, reset=false) => {
         setLoading(true)
         try {
             const response = await transactionApi.get({
@@ -14,14 +15,15 @@ const useInfiniteScroll = (params ={}) => {
                 page:pageNumber,
                 per_page:25
             });
-
+            const data = response.data[0]
+            // console.log(data.data)
             if(reset){
-                setTransactions(response.data.data);
+                setTransactions(data.data);
             }else {
-                setTransactions((prev) => [...prev, ...response.data.data]);
+                setTransactions((prev) => [...prev, ...data.data ]);
             }
-            setHasMore(response.data.current_page < response.data.last_page);
-            setPage(response.data.current_page);
+            setHasMore(data.current_page < data.last_page);
+            setPage(data.current_page);
         }catch(e){
             
             alert(e)

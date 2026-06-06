@@ -14,7 +14,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $wallets = Wallet::all();
+        $wallets = Wallet::where('user_id', auth()->id())->get();
          return response()->json([
             'status' => 'success',
             'message' => 'Get all wallets successful',

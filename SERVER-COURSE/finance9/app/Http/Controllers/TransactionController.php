@@ -19,9 +19,10 @@ class TransactionController extends Controller
         //  $per_page = $request->query('per_page') || 25;
 
         $transactions = Transaction::with(['category', 'wallet'])->whereHas('wallet', function($wallet){
-            if($wallet->user_id == auth()->id()){
-                return $wallet;
-            }
+            $wallet->where('user_id', auth()->id());
+            // if($wallet->user_id == auth()->id()){
+            //     return $wallet;
+            // }
 
             // atau gini
             // $wallet->where('user_id', auth()->id());

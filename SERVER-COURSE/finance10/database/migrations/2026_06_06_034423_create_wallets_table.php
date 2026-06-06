@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('currency_code');
             $table->foreign('currency_code')->references('code')->on('currencies')->cascadeOnDelete();
             $table->string('name');
             $table->softDeletes();

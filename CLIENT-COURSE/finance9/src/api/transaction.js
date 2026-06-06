@@ -10,14 +10,15 @@ const transactionApi = {
             category_id:data.to_category_id,
             amount:data.to_amount,
             date:data.date,
-            note:data.to_note || ''
+            note:data.to_note || '',
+            amount:data.amount
         })
          await app.post('transactions', {
             wallet_id:data.from_wallet_id,
             category_id:data.from_category_id,
             amount:data.from_amount,
             date:data.date,
-            note:data.from_note || ''
+            note:data.from_note || '',amount:data.amount
         })
     }
 }

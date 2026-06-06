@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function(AuthenticationException $auth){
             return response()->json([
                 'status'=>'error',
-                'message'> 'Unauthenticated.'
+                'message'=> 'Unauthenticated.'
             ], 401);
         });
         $exceptions->render(function(NotFoundHttpException $notFound){
