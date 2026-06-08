@@ -2,8 +2,8 @@ import app from "./axios";
 
 const transactionApi = {
   index: (params = []) => app.get("transactions"),
-  create: (data) => app.post("transactions"),
-  delete:(id) => app.delete('transctions/'+id),
+  create: (data) => app.post("transactions/", data),
+  delete:(id) => app.delete('transactions/'+id),
   transfer: async (data) => {
     await app.post("transactions", {
       wallet_id: data.from_wallet_id,

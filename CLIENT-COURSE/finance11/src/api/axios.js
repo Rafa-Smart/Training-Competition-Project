@@ -1,7 +1,11 @@
 import axios from "axios";
 
 const app = axios.create({
-    baseURL:'http://localhost:8000/api/'
+    baseURL:'http://localhost:8000/api/',
+    headers:{
+        'Content-Type':"application/json",
+        "Accept":"application/json"
+    }
 })
 
 app.interceptors.request.use((config) =>{
@@ -17,7 +21,7 @@ app.interceptors.request.use((config) =>{
 app.interceptors.response.use((response) => {
     return response;
 }, (error) => {
-    const isLogin = error.url.includes('auth/login');
+    const isLogin = error?.url?.includes('auth/login');
 
     if(error?.response?.status == 401 && !isLogin){
         localStorage.setItem('user', null)

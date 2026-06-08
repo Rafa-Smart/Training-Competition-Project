@@ -4,7 +4,7 @@ import { authApi } from "../api/auth";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setuser] = useState();
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState();
 
@@ -12,15 +12,15 @@ const AuthProvider = ({ children }) => {
     const dataUser = localStorage.getItem("user");
     const dataToken = localStorage.getItem("token");
     if (dataUser && dataToken) {
-      setuser(JSON.parse(dataUser));
+      setUser(JSON.parse(dataUser));
       setToken(dataToken);
     }
     setLoading(false);
   }, []);
 
   const loginUser = (userData, tokenData) => {
-    if (!userData || !tokenData) console.log("data kosong");
-    setUSer(userData);
+    if (!userData || !tokenData) return;
+    setUser(userData);
     setToken(tokenData);
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", tokenData);
@@ -33,19 +33,23 @@ const AuthProvider = ({ children }) => {
     } catch (e) {
       console.log(e);
     } finally {
-      setUSer(null);
+      setUser(null);
       setToken(null);
       localStorage.setItem("user", null);
       localStorage.setItem("token", null);
-      window.location.href = '/login'
+      window.location.href = "/login";
     }
   };
 
   const value = {
-    user, token, loading, loginUser, logout
-  }
-  return <AuthContext.Provider value={value}></AuthContext.Provider>
+    user,
+    token,
+    loading,
+    loginUser,
+    logout,
+  };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 export default AuthProvider;
 
-export const  useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

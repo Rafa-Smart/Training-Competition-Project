@@ -32,7 +32,10 @@ class TransactionController extends Controller
     return response()->json([
             $transactions->paginate($per_page)
         ], 200);
-
+    return response()->json(
+    $transactions->paginate($per_page),
+    200
+);
     }
 
     /**

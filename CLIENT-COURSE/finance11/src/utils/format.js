@@ -1,9 +1,10 @@
 const formatCurrency = (amount, currenct = "IDR") => {
     const hasil = new Intl.NumberFormat('id-ID').format(amount);
-    return `${currency} ${hasil}`
+    return `${currenct} ${hasil}`
 }
 
 const parseErrors = (errors) => {
+    if(!errors)return
     return Object.values(errors).flat()
 }
 

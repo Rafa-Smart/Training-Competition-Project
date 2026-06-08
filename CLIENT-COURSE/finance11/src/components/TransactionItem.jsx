@@ -2,7 +2,7 @@ import { transactionApi } from "../api/transction";
 import { formatCurrency, formatDate } from "../utils/format";
 
 const TransactionItem = ({transaction, onDelete, showDate}) => {
-    const isExpense = trnsction?.category?.type == 'EXPENSE';
+    const isExpense = transaction?.category?.type == 'EXPENSE';
 
     const handleDelete =async() => {
         try {
@@ -13,12 +13,12 @@ const TransactionItem = ({transaction, onDelete, showDate}) => {
         }
     }
 
-    return <div className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
+    return <div onClick={handleDelete} className="cursor-pointer flex lg:items-center justify-between border-b border-slate-700 py-3 lg:py-4 gap-3 text-lg">
     {
         showDate && formatDate(transaction.date)
     }
                 <div className="flex lg:items-center gap-3">
-                    <div className="aspect-[1/1] h-[40px] flex items-center justify-center bg-red-200 border-2 border-red-300 rounded-full">
+                    <div className={`aspect-[1/1] h-[40px] flex items-center justify-center border-2 ${isExpense ? "bg-red-200  border-red-300 ":"bg-green-200  border-green-300 "}rounded-full`}>
                         {transaction?.category.icon || ''}
                     </div>
                     <div>

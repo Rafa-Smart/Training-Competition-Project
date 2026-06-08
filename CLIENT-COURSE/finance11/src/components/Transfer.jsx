@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
 import { getToday, parseErrors } from "../utils/format";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import AlertError from "../utils/Alert";
 import { transactionApi } from "../api/transction";
 import { categoryApi } from "../api/category";
 import { walletApi } from "../api/wallet";
 
 const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
-  const { user, loginUser } = useAuthth();
+  const { user, loginUser } = useAuth();
   const [exponseCategories, setExpenseCategories] = useState([]);
   const [incomeCategories, seIncomeCategories] = useState([]);
   const [wallets, setWallets] = useState([]);
@@ -26,7 +26,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
   useEffect(() => {
     if (isOpen) {
       setForm({
-        from_wallet_id: defaultId || '',
+        from_wallet_id: defaultId || "",
         from_category_id: "",
         from_note_id: "",
         to_wallet_id: "",
@@ -40,11 +40,11 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
     categoryApi.index().then((response) => {
       setExpenseCategories(
         response.data.data.categories.filter((c) => c.type == "EXPENSE") || [],
-      ).catch((e) => console.log("gagal ambil catgory expense"));
+      )
       setExpenseCategories(
         response.data.data.categories.filter((c) => c.type == "INCOME") || [],
-      ).catch((e) => console.log("gagal ambil category income"));
-    });
+      )
+    }).catch((e) => console.log("gagal ambil catgory expense"));;
 
     walletApi
       .index()
@@ -67,7 +67,8 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
     } catch (e) {
       setErrors(parseErrors(e.response?.data?.errors) || ["terjadi kesalahan"]);
     } finally {
-      setLoading(false);
+      setLoading(false);onClose();
+      onSuccess()
     }
   };
 

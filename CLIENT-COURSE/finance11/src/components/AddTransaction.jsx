@@ -2,39 +2,39 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
 import { getToday, parseErrors } from "../utils/format";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import AlertError from "../utils/Alert";
 import { transactionApi } from "../api/transction";
 import { categoryApi } from "../api/category";
 import { walletApi } from "../api/wallet";
 
 const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
-  const { user, loginUser } = useAuthth();
-  const [categories, setCategories] = useState([]); 
+  const { user, loginUser } = useAuth();
+  const [categories, setCategories] = useState([]);
   const [wallets, setWallets] = useState([]);
   const [form, setForm] = useState({
     wallet_id: "",
     category_id: "",
-    note_id: "", 
+    note: "",
     amount: "",
     date: "",
   });
   useEffect(() => {
     if (isOpen) {
       setForm({
-    wallet_id: defaultId || '',
-    category_id: "",
-    note_id: "", 
-    amount: "",
+        wallet_id: defaultId || "",
+        category_id: "",
+        note: "",
+        amount: "",
         date: getToday(),
       });
     }
 
     categoryApi.index().then((response) => {
-      setCategories(
-        response.data.data.categories || [],
-      ).catch((e) => console.log("gagal ambil catgory")); 
-    });
+      setCategories(response.data.data.categories || [])
+    }).catch((e) =>
+        console.log("gagal ambil catgory"),
+      );;
 
     walletApi
       .index()
@@ -52,12 +52,13 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await transactionApi.transfer({ ...form, amount: Number(form.amount) });
+      await transactionApi.create({ ...form, amount: Number(form.amount) });
       navigate("/");
     } catch (e) {
       setErrors(parseErrors(e.response?.data?.errors) || ["terjadi kesalahan"]);
     } finally {
-      setLoading(false);
+      setLoading(false);onClose();
+      onSuccess()
     }
   };
 
@@ -71,7 +72,7 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
       <div className="modal-header">
         <div></div>
         <h3 className="text-lg">Add Transaction</h3>
-        <button className="modal-close" onclick={() => onClose()}>
+        <button className="modal-close" onClick={() => onClose()}>
           ×
         </button>
       </div>
@@ -82,7 +83,7 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
           className="flex flex-col gap-6"
         >
           <AlertError messages={errors}></AlertError>
-          <div> 
+          <div>
             <div className="rounded-xl overflow-hidden">
               <h3 className="mb-2">Add Transaction</h3>
               <input
@@ -118,13 +119,13 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                 name="category_id"
                 id="category_id"
                 className="form-input form-input-lg"
-              > 
+              >
                 <option value="" disabled hidden>
                   Select Category
                 </option>
-                {exponseCategories.map((category, index) => {
+                {categories.map((category, index) => {
                   return (
-                    <option value={category.id}>
+                    <option value={category.id} key={index}>
                       {category.icon} - {category.name}
                     </option>
                   );
@@ -150,20 +151,14 @@ const AddTransaction = ({ isOpen, onClose, onSuccess, defaultId }) => {
                   placeholder="Enter date"
                 />
               </div>
-              <textarea
-                onChange={handleChange}
-                value={form.to_note}
-                id="to_note"
-                rows="3"
-                name="to_note"
-                className="form-input"
-                placeholder="Enter note"
-              ></textarea>
+              
             </div>
           </div>
 
           <button type="submit" className="btn btn-lg mt-4">
-            Add Transaction
+            {
+              loading? "Add Transaction...":"Add Transaction"
+            }
           </button>
         </form>
       </div>

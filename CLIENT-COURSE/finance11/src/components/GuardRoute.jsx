@@ -1,10 +1,10 @@
-import { Navigate } from "react-router";
-import { useAuth } from "../context/AuthContext"
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const GuardRoute = ({children}) => {
-    const {user} = useAuth();
-    if(user)return <Navigate to={'/'} replace></Navigate>
-    return <>{children}</>
-}
+const GuardRoute = ({ children }) => {
+  const { user } = useAuth();
+  if (user) return <Navigate to={"/"} replace></Navigate>;
+  return <>{children}</>;
+};
 
 export default GuardRoute;

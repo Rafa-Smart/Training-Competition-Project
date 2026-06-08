@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { transactionApi } from "../api/transction";
 
 const useInfiniteScroll = (params = {}) => {
-    const [transactions, setTransactions] = useState();
+    const [transactions, setTransactions] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false)

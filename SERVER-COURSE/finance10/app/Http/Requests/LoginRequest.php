@@ -30,7 +30,7 @@ class LoginRequest extends FormRequest
     }
     public function messages(){
         return [ 
-             'email.unique'=> "The email field is required.",
+             'email.unique'=> "The email unique",
              'email.required'=> 'The email has already been taken.',
             'password'=> 'The password field must be at least 6
 characters.'
