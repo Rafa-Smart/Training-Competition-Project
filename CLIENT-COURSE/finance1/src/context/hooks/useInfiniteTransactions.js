@@ -42,10 +42,10 @@ export function useInfiniteTransactions(params = {}) {
         const res = await getTransactions({
           ...params, // Filter dari luar (misal: month, year, wallet_id)
           page: pageNumber,
-          per_page: 25,
+          per_page: 5,
         });
 
-        const data = res.data; // { current_page, data: [...], last_page, total }
+        const data = res.data[0]; // { current_page, data: [...], last_page, total }
         // console.log(data);
 
         

@@ -24,3 +24,4 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/reports/summary-by-category/income', [ReportController::class, 'income']);
     Route::get('/reports/summary-by-category/expense', [ReportController::class, 'expense']);
 });
+Route::get('/categories', [CategoryController::class, 'index']);

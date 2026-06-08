@@ -15,7 +15,7 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $per_page = $request->query('per_page');
+        $per_page = $request->query('per_page') ?? 5;
         $transactions = Transaction::with(['category', 'wallet'])->whereHas('wallet', function($w){
             return $w->where('user_id', auth()->id());
         })->orderBy('date', 'desc');

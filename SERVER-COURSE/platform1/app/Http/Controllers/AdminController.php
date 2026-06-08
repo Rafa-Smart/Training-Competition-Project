@@ -12,7 +12,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = User::where('role', 'admin')
+        $admins = Admin::where('role', 'admin')
             ->orderBy('username')
             ->get(['username', 'last_login_at', 'created_at', 'updated_at']);
 

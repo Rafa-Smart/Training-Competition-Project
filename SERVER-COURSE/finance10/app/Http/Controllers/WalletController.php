@@ -57,6 +57,7 @@ class WalletController extends Controller
     public function show(Wallet $wallet)
     {
         Gate::authorize('view', $wallet);
+ 
          return response()->json([
             'status' => 'success',
             'message' => "Get detail wallet successful",
