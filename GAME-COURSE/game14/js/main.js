@@ -58,7 +58,7 @@ class App {
     this.load();
     this.fit();
     this.apply();
-    this.render();
+    this.render();  
     this.setup();
     console.log("masuk constructor");
   }
@@ -71,12 +71,11 @@ class App {
   load() {
     this.pins = JSON.parse(localStorage.getItem("pins")) ?? [];
     this.connection = JSON.parse(localStorage.getItem("connection")) ?? [];
-    
   }
 
   apply() {
     this.mapContainer.style.transform = `translate(${this.ox}px, ${this.oy}px) scale(${this.scale})`;
-  }
+  } 
 
   fit() {
     console.log("masuk fit");
@@ -492,8 +491,8 @@ class App {
     });
 
     self.mapArea.addEventListener("mousedown", function (e) {
-      if (e.button) return;
-      self.isDragging = true;
+        if (e.button) return;
+        self.isDragging = true;
       self.soy = self.oy;
       self.sox = self.ox;
       self.dragX = e.clientX;
@@ -501,8 +500,8 @@ class App {
     });
 
     document.addEventListener("mousemove", function (e) {
-      e.preventDefault();
-      self.mapContainer.classList.add("grabbing");
+      e.preventDefault(); 
+      self.mapContainer.classList.add("grabbing"); 
       if (!self.isDragging) return; 
       self.ox = self.sox + (e.clientX - self.dragX);
       self.oy = self.soy + (e.clientY - self.dragY);

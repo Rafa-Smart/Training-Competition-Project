@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main id="map-area">
+        <div id="map-container">
+            <img src="./assets/indonesia.svg" alt="" id="map-img">
+            <canvas id="lines-layer"></canvas>
+            <div id="pinpoints-layer"></div>
+        </div>
+        <div id="popAdd">
+            <div class="pop-header">
+                <span>Add pinpoint</span>
+                <img src="./assets/BiXLg.svg" alt="">
+            </div>
+            <form  id="formAdd">
+                <input type="text" id="'inputName">
+            </form>
+        </div>
+        <div class="pinpoint" data-id="">
+             <div class="pinpoint-header">
+                <span>name</span>
+                <img src="./assets/MdiTransitConnectionVariant.svg" alt="" class="btn btn-connect" data-id="">
+                <img src="./assets/MdiTrashCanOutline.svg" alt="" class="btn btn-delete" data-id="">
+            </div>
+            <div>
+                <img src="./assets/MaterialSymbolsLocationOn.svg" alt="" class="marker">
+            </div>
+        </div>
+    </main>
+    <script src="./main.js"></script>
+</body>
+</html>

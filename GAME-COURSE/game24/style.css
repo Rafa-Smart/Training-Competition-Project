@@ -1,0 +1,56 @@
+* {
+    padding:0;
+    margin:0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #c8ebff;
+    font-family: 'Courier New', Courier, monospace;
+    width:100%;
+    height:100vh;
+}
+
+#map-area {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    cursor: pointer;
+}
+#map-img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#map-area.grabbing {
+     cursor: grabbing;
+}
+
+#map-container {
+    position: absolute;
+    transform-origin: 0 0;
+}
+
+#lines-layer {
+    position: absolute;
+    left:0;
+    top:0;
+    pointer-events: none;
+}
+
+#pinpoints-layer {
+    position: absolute;
+    left:0;
+    top:0;
+    pointer-events: none;
+}
+
+.pinpoint {
+    pointer-events: auto;
+}
+
+.marker {
+    filter:invert(100%) sepia(100%) saturate(2000%) hue-rotate(340deg) brightness(100%)
+}

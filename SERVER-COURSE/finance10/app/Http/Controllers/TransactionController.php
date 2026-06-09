@@ -15,6 +15,12 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
+        $request->validate([
+            'month' => 'nullable|integer|between:1,12',
+            'year' => 'nullable|integer|min:2000|max:2100',
+            'wallet_id' => 'nullable|integer|exists:wallets,id',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
         $per_page = $request->query('per_page') ?? 5;
         $transactions = Transaction::with(['category', 'wallet'])->whereHas('wallet', function($w){
             return $w->where('user_id', auth()->id());
