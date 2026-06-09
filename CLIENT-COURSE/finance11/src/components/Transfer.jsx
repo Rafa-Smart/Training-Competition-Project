@@ -41,10 +41,10 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
       setExpenseCategories(
         response.data.data.categories.filter((c) => c.type == "EXPENSE") || [],
       )
-      setExpenseCategories(
+      setIncomeCategories(
         response.data.data.categories.filter((c) => c.type == "INCOME") || [],
       )
-    }).catch((e) => console.log("gagal ambil catgory expense"));;
+    }).catch((e) => console.log("gagal ambil catgory expense"));
 
     walletApi
       .index()
@@ -82,7 +82,7 @@ const Transfer = ({ isOpen, onClose, onSuccess, defaultId }) => {
       <div className="modal-header">
         <div></div>
         <h3 className="text-lg">Transfer Money</h3>
-        <button className="modal-close" onclick={() => onClose()}>
+        <button className="modal-close" onClick={() => onClose()}>
           ×
         </button>
       </div>
