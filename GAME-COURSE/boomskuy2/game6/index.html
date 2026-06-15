@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <form id="formScene" class="scene active">
+      <img src="./assets/logo.png" alt="" style="width: 300px" />
+      <input type="text" id="userNameInput" required onInput="togglePlay()" />
+      <select name="" id="level">
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+
+      <div style="display: flex; gap: 1px">
+        <button type="submit" style="flex: 1" value="play" id="playBtn">
+          Play
+        </button>
+        <button
+          type="button"
+          style="flex: 1"
+          value="play"
+          id="instructionBtn"
+          onClick="showInstruction()"
+        >
+          Show Instruction
+        </button>
+      </div>
+    </form>
+
+    <div class="modal active" id="modalInstruction">
+      <div class="btns">
+        <h2>Instruction</h2>
+        <p class="x" onClick="showInstruction()">X</p>
+      </div>
+      <div class="instrucions">
+        <ol style="padding-left: 1.5rem; line-height: 2">
+          <li>Use W/A/S/D or arrow keys to move.</li>
+          <li>Press Space to place a bomb.</li>
+          <li>Press Esc to pause / resume.</li>
+          <li>When paused, nothing moves.</li>
+          <li>Pick up items for effects.</li>
+          <li>Watch out for dogs!</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scene" id="gameGui">
+      <div id="gameMap"></div>
+      <div id="panel">
+        <img src="./assets/logo_white.png" alt="" />
+        <div style="width: 100%">
+          <div>Player:<span id="playerName">-</span></div>
+          <div>Time:<span id="playerTime">00:00</span></div>
+        </div>
+        <div class="stats">
+          <div id="hearts">
+            <span width="1590px" height="100px">❤️</span>
+            <span>❤️</span>
+            <span>❤️</span>
+            <!-- <img src="./assets/heart.png" alt="" />
+            <img src="./assets/heart.png" alt="" />
+            <img src="./assets/heart.png" alt="" />  -->
+          </div>
+          <div style="width: 100%">
+            <div>
+              <img src="./assets/bomb.png" alt="" />:<span id="bombGui">-</span>
+            </div>
+            <div>
+              <img src="./assets/tnt.png" alt="" />:<span id="tntGui">-</span>
+            </div>
+            <div>
+              <img src="./assets/ice.png" alt="" />:<span id="iceGui">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div width="100%" style="text-align: center;">
+      <h1 id="countDown" class="hidden">3</h1>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+      document.getElementById("formScene").onsubmit = function (e) {
+        e.preventDefault();
+        startGame();
+      };
+      window.onload = () => togglePlay();
+      function togglePlay() {
+        document.getElementById("playBtn").disabled = !document
+          .getElementById("userNameInput")
+          .value.trim();
+      }
+
+      function showInstruction() {
+        document.getElementById("modalInstruction").classList.toggle("active");
+      }
+
+      function startGame(e) {
+        const nameUser = document.getElementById("userNameInput").value.trim();
+        const level = document.getElementById("level").value;
+        document.getElementById("formScene").classList.remove("active");
+        startCountDown()
+ 
+        const global = {};
+      }
+      function startCountDown() {
+        const countdown = document.getElementById("countDown");
+        countdown.classList.remove("hidden");
+         countdown.style.display = "flex";
+        let num = 3;
+        const timer = setInterval(() => {
+          num--;
+          console.log(num)
+          if (num > 0) {
+            countdown.textContent = num;
+          } else if (num == 0) {
+            countdown.textContent = "Go!";
+          } else {
+            clearInterval(timer)
+            document.getElementById("gameGui").classList.add("active");
+            countdown.classList.add("hidden");
+            initGame()
+          }
+        }, 1000);
+      }
+
+      const TILE_SIZE = 60;
+      const mapArea = [
+        [1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1],
+    ]
+
+    let player = {
+        x:0,
+        y:0,
+        direction:'down',
+        moving:false
+    }
+    let playerEl;
+
+    function createPlayer () {
+        const mapAreaData = document.getElementById('gameMap');
+        playerEl = document.createElement('div')
+        playerEl.className = 'player';
+        playerEl.style.left = player.x * TILE_SIZE + 'px';
+        playerEl.style.top = player.y * TILE_SIZE + 'px';
+        playerEl.style.backgroundImage = 'url(./assets/char_down.png)';
+        mapAreaData.appendChild(playerEl);
+    }function isWall(x, y) {
+  if (y < 0 || y >= mapArea.length) return true;
+  if (x < 0 || x >= mapArea[0].length) return true;
+  return mapArea[y][x] === 1;
+}
+function movePlayer(dx, dy, direction, sprite) {
+  const newX = player.x + dx;
+  const newY = player.y + dy;
+
+  if (isWall(newX, newY)) return;
+
+  player.x = newX;
+  player.y = newY;
+  player.direction = direction;
+
+  playerEl.style.left = player.x * TILE_SIZE + "px";
+  playerEl.style.top = player.y * TILE_SIZE + "px";
+  playerEl.style.backgroundImage = `url("./assets/${sprite}")`;
+}
+document.addEventListener("keydown", (e) => {
+  if (!playerEl) return;
+
+  switch (e.key) {
+    case "ArrowUp":
+    case "w":
+    case "W":
+      movePlayer(0, -1, "up", "char_up.png");
+      break;
+
+    case "ArrowDown":
+    case "s":
+    case "S":
+      movePlayer(0, 1, "down", "char_down.png");
+      break;
+
+    case "ArrowLeft":
+    case "a":
+    case "A":
+      movePlayer(-1, 0, "left", "char_left.png");
+      break;
+
+    case "ArrowRight":
+    case "d":
+    case "D":
+      movePlayer(1, 0, "right", "char_right.png");
+      break;
+  }
+});
+
+      function initGame(){
+        createPlayer()
+      }
+    </script>
+  </body>
+</html>
